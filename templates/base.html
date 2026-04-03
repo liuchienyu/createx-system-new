@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Createx 辦公系統{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="sidebar-expanded">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="brand">
+                    <h2>Createx</h2>
+                    <p>辦公系統</p>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                    <span class="nav-text">首頁儀表板</span>
+                </a>
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                    <span class="nav-text">登出</span>
+                </a>
+            </nav>
+            {% else %}
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('auth.login') }}">
+                    <span class="nav-text">登入</span>
+                </a>
+            </nav>
+            {% endif %}
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h1 class="page-title">{% block page_title %}Createx 辦公系統{% endblock %}</h1>
+                    <p class="page-subtitle">{% block page_subtitle %}內部管理平台{% endblock %}</p>
+                </div>
+
+                {% if current_user.is_authenticated %}
+                <div class="topbar-right">
+                    <div class="topbar-user-info">
+                        <span class="topbar-user-name">{{ current_user.display_name }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <section class="flash-wrapper">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </section>
+                {% endif %}
+            {% endwith %}
+
+            <section class="content-area">
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

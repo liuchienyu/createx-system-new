@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - Createx{% endblock %}
+{% block page_title %}首頁儀表板{% endblock %}
+{% block page_subtitle %}歡迎進入 Createx 新版系統骨架{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>登入成功</h3>
+    <p>目前使用者：{{ user.display_name }}</p>
+    <p>角色：{{ user.roles | join(', ') }}</p>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}登入 - Createx{% endblock %}
+{% block page_title %}登入{% endblock %}
+{% block page_subtitle %}請輸入帳號與密碼{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 480px; margin: 0 auto;">
+    <form method="post">
+        <label>帳號</label>
+        <input type="text" name="username" required>
+
+        <label>密碼</label>
+        <input type="password" name="password" required>
+
+        <div class="page-actions" style="margin-top: 16px;">
+            <button type="submit" class="btn">登入</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

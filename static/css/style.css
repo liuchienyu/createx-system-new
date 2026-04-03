@@ -1,0 +1,146 @@
+:root {
+    --primary-600: #7c3aed;
+    --primary-700: #6d28d9;
+    --neutral-0: #ffffff;
+    --neutral-100: #f5f7fb;
+    --neutral-300: #e5e7eb;
+    --neutral-600: #64748b;
+    --neutral-900: #1f2937;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Noto Sans TC", Arial, sans-serif;
+    background: linear-gradient(180deg, #f8f7ff 0%, #f5f7fb 100%);
+    color: var(--neutral-900);
+}
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #4c1d95 0%, #6d28d9 100%);
+    color: white;
+    padding: 20px 16px;
+}
+
+.brand h2 {
+    margin: 0;
+}
+
+.brand p {
+    margin: 6px 0 0;
+    opacity: 0.8;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.nav-link {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.main-content {
+    flex: 1;
+    padding: 24px;
+}
+
+.topbar {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.page-subtitle {
+    margin: 8px 0 0;
+    color: var(--neutral-600);
+}
+
+.content-area {
+    background: rgba(255,255,255,0.86);
+    border: 1px solid var(--neutral-300);
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.card {
+    background: var(--neutral-0);
+    border: 1px solid var(--neutral-300);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid var(--neutral-300);
+    border-radius: 12px;
+    margin-bottom: 14px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.flash-wrapper {
+    margin-bottom: 16px;
+}
+
+.flash-message {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.flash-success {
+    background: #f3e8ff;
+    color: #5b21b6;
+}
+
+.flash-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+}
