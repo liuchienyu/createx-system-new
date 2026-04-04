@@ -10,6 +10,16 @@ from modules.hr.services.employees import list_active_employees_basic
 hr_leave_bp = Blueprint("hr_leave", __name__, url_prefix="/hr")
 
 
+
+@hr_leave_bp.route("/leave-requests")
+@login_required
+def leave_requests_index():
+    requests = []
+    return render_template(
+        "leave_requests_index.html",
+        requests=requests
+    )
+
 @hr_leave_bp.route("/leave-types")
 @login_required
 @permission_required("view_leave")
