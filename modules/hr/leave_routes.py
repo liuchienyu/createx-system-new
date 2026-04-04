@@ -119,14 +119,6 @@ def leave_request_delete(request_id: int):
     return redirect(url_for("hr_leave.leave_requests_index"))
 
 
-@hr_leave_bp.route("/leave-types")
-@login_required
-@permission_required("view_leave")
-def leave_types_index():
-    database_url = current_app.config["DATABASE_URL"]
-    return render_template("hr/leave_types_index.html", leave_types=get_leave_types(database_url, False))
-
-
 @hr_leave_bp.route("/leave-types/<int:type_id>/disable", methods=["POST"])
 @login_required
 @permission_required("delete_leave_types")
