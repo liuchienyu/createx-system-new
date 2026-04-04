@@ -7,6 +7,7 @@ from modules.auth.routes import auth_bp
 from modules.dashboard.routes import dashboard_bp
 from modules.admin import admin_bp
 from modules.finance import finance_bp
+from modules.projects import projects_bp
 
 
 def create_app():
@@ -22,6 +23,7 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(finance_bp)
+    app.register_blueprint(projects_bp)
 
     @app.errorhandler(403)
     def handle_403(_error):

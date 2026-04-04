@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}專案損益表 - Createx{% endblock %}
+{% block page_title %}專案損益表{% endblock %}
+{% block page_subtitle %}查看 {{ project.name }} 的專案收入與支出分類統計{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p><strong>專案名稱：</strong>{{ project.name }}</p>
+    <p><strong>收入：</strong>{{ report.total_income }}</p>
+    <p><strong>支出：</strong>{{ report.total_expense }}</p>
+    <p><strong>淨額：</strong>{{ report.net_amount }}</p>
+</div>
+
+<div class="card">
+    <h3>收入分類</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in report.income_by_category %}
+                <tr>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not report.income_by_category %}
+                <tr>
+                    <td colspan="2">目前沒有收入資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>支出分類</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in report.expense_by_category %}
+                <tr>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not report.expense_by_category %}
+                <tr>
+                    <td colspan="2">目前沒有支出資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="page-actions">
+    <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="btn btn-secondary">返回</a>
+</div>
+{% endblock %}

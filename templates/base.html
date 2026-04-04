@@ -48,6 +48,17 @@
                     </div>
                 </details>
                 {% endif %}
+                {% if current_user.has_permission('view_projects') %}
+                <details class="nav-group" open>
+                    <summary><span class="nav-text">專案管理</span></summary>
+                    <div class="nav-submenu">
+                        <a href="{{ url_for('projects.project_index') }}"><span class="nav-text">專案列表</span></a>
+                        {% if current_user.has_permission('edit_projects') %}
+                        <a href="{{ url_for('projects.project_create') }}"><span class="nav-text">新增專案</span></a>
+                        {% endif %}
+                    </div>
+                </details>
+                {% endif %}
 
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">
                     <span class="nav-text">登出</span>

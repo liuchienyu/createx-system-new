@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}專案明細 - Createx{% endblock %}
+{% block page_title %}專案明細{% endblock %}
+{% block page_subtitle %}查看專案資料、財務與應收應付內容{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p><strong>專案名稱：</strong>{{ project.name }}</p>
+    <p><strong>專案說明：</strong>{{ project.description or '' }}</p>
+    <p><strong>期間：</strong>{{ project.start_date or '' }} ~ {{ project.end_date or '' }}</p>
+    <p><strong>狀態：</strong>{{ '啟用中' if project.is_active else '停用' }}</p>
+</div>
+
+<div class="card">
+    <h3>專案損益摘要</h3>
+    <p>收入：{{ summary.total_income }}</p>
+    <p>支出：{{ summary.total_expense }}</p>
+    <p>淨額：{{ summary.net_amount }}</p>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>專案財務紀錄</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>分類</th>
+                    <th>項目</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in finance_records %}
+                <tr>
+                    <td>{{ r.record_date }}</td>
+                    <td>{{ r.category_type }}</td>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.item_name }}</td>
+                    <td>{{ r.amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not finance_records %}
+                <tr>
+                    <td colspan="5">目前沒有財務紀錄</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>專案應收應付紀錄</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>類型</th>
+                    <th>標題</th>
+                    <th>對象</th>
+                    <th>金額</th>
+                    <th>到期日</th>
+                    <th>狀態</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in ar_ap_records %}
+                <tr>
+                    <td>{{ r.record_type }}</td>
+                    <td>{{ r.title }}</td>
+                    <td>{{ r.counterparty or '' }}</td>
+                    <td>{{ r.amount }}</td>
+                    <td>{{ r.due_date or '' }}</td>
+                    <td>{{ r.status }}</td>
+                </tr>
+                {% endfor %}
+                {% if not ar_ap_records %}
+                <tr>
+                    <td colspan="6">目前沒有應收應付紀錄</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="page-actions">
+    <a href="{{ url_for('projects.project_index') }}" class="btn btn-secondary">返回</a>
+    <a href="{{ url_for('projects.project_profit_report', project_id=project.id) }}" class="btn">查看損益表</a>
+</div>
+{% endblock %}
