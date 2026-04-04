@@ -16,7 +16,7 @@ hr_leave_bp = Blueprint("hr_leave", __name__, url_prefix="/hr")
 def leave_requests_index():
     requests = []
     return render_template(
-        "leave_requests_index.html",
+        "hr/leave_requests_index.html",
         requests=requests
     )
 
