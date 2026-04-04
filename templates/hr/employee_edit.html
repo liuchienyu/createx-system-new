@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}編輯員工 - Createx{% endblock %}
+{% block page_title %}編輯員工{% endblock %}
+{% block page_subtitle %}修改員工主檔資料{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 960px;">
+    <form method="post">
+        <label>系統帳號</label>
+        <select name="user_id">
+            <option value="">不綁定</option>
+            {% for u in available_users %}
+            <option value="{{ u.id }}" {% if employee.user_id == u.id %}selected{% endif %}>
+                {{ u.username }}{% if u.display_name %} - {{ u.display_name }}{% endif %}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>員工編號</label>
+        <input type="text" name="employee_no" value="{{ employee.employee_no }}" required>
+
+        <label>姓名</label>
+        <input type="text" name="name" value="{{ employee.name }}" required>
+
+        <label>英文名</label>
+        <input type="text" name="english_name" value="{{ employee.english_name or '' }}">
+
+        <label>暱稱</label>
+        <input type="text" name="nickname" value="{{ employee.nickname or '' }}">
+
+        <label>性別</label>
+        <input type="text" name="gender" value="{{ employee.gender or '' }}">
+
+        <label>生日</label>
+        <input type="date" name="birthday" value="{{ employee.birthday or '' }}">
+
+        <label>手機</label>
+        <input type="text" name="phone" value="{{ employee.phone or '' }}">
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ employee.email or '' }}">
+
+        <label>地址</label>
+        <textarea name="address" rows="3">{{ employee.address or '' }}</textarea>
+
+        <label>緊急聯絡人</label>
+        <input type="text" name="emergency_contact_name" value="{{ employee.emergency_contact_name or '' }}">
+
+        <label>緊急聯絡電話</label>
+        <input type="text" name="emergency_contact_phone" value="{{ employee.emergency_contact_phone or '' }}">
+
+        <label>狀態</label>
+        <select name="status">
+            <option value="active" {% if employee.status == 'active' %}selected{% endif %}>在職</option>
+            <option value="probation" {% if employee.status == 'probation' %}selected{% endif %}>試用</option>
+            <option value="leave" {% if employee.status == 'leave' %}selected{% endif %}>留停</option>
+            <option value="terminated" {% if employee.status == 'terminated' %}selected{% endif %}>離職</option>
+            <option value="archived" {% if employee.status == 'archived' %}selected{% endif %}>封存</option>
+        </select>
+
+        <label>到職日</label>
+        <input type="date" name="hire_date" value="{{ employee.hire_date or '' }}">
+
+        <label>離職日</label>
+        <input type="date" name="leave_date" value="{{ employee.leave_date or '' }}">
+
+        <label>部門</label>
+        <select name="department_id">
+            <option value="">請選擇</option>
+            {% for d in departments %}
+            <option value="{{ d.id }}" {% if employee.department_id == d.id %}selected{% endif %}>{{ d.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>職稱</label>
+        <select name="job_title_id">
+            <option value="">請選擇</option>
+            {% for jt in job_titles %}
+            <option value="{{ jt.id }}" {% if employee.job_title_id == jt.id %}selected{% endif %}>{{ jt.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>直屬主管</label>
+        <select name="manager_employee_id">
+            <option value="">請選擇</option>
+            {% for m in manager_employees %}
+            <option value="{{ m.id }}" {% if employee.manager_employee_id == m.id %}selected{% endif %}>
+                {{ m.employee_no }} - {{ m.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>備註</label>
+        <textarea name="notes" rows="4">{{ employee.notes or '' }}</textarea>
+
+        <div class="page-actions" style="margin-top:16px;">
+            <a href="{{ url_for('hr_employees.index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">儲存</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

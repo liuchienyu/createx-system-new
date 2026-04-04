@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}請假申請明細 - Createx{% endblock %}
+{% block page_title %}請假申請明細{% endblock %}
+{% block page_subtitle %}查看與審核請假申請{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p><strong>員工：</strong>{{ leave_request.employee_no }} - {{ leave_request.employee_name }}</p>
+    <p><strong>請假類型：</strong>{{ leave_request.leave_type_name }}</p>
+    <p><strong>開始時間：</strong>{{ leave_request.start_datetime }}</p>
+    <p><strong>結束時間：</strong>{{ leave_request.end_datetime }}</p>
+    <p><strong>時數：</strong>{{ leave_request.hours }}</p>
+    <p><strong>原因：</strong>{{ leave_request.reason or '' }}</p>
+    <p><strong>狀態：</strong>{{ leave_request.status }}</p>
+    <p><strong>審核人：</strong>{{ leave_request.approved_by_name or '' }}</p>
+    <p><strong>審核時間：</strong>{{ leave_request.approved_at or '' }}</p>
+    <p><strong>審核備註：</strong>{{ leave_request.approval_note or '' }}</p>
+</div>
+
+{% if current_user.has_permission('approve_leave') and leave_request.status == 'pending' %}
+<div class="card" style="max-width: 900px;">
+    <form method="post">
+        <label>審核備註</label>
+        <textarea name="approval_note" rows="4"></textarea>
+
+        <div class="page-actions">
+            <a href="{{ url_for('hr_leave.leave_requests_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" name="action" value="approved" class="btn">核准</button>
+            <button type="submit" name="action" value="rejected" class="btn btn-danger">駁回</button>
+            <button type="submit" name="action" value="cancelled" class="btn btn-warning">取消</button>
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="page-actions">
+    <a href="{{ url_for('hr_leave.leave_requests_index') }}" class="btn btn-secondary">返回</a>
+</div>
+{% endif %}
+{% endblock %}

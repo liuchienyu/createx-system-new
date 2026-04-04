@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}部門管理 - Createx{% endblock %}
+{% block page_title %}部門管理{% endblock %}
+{% block page_subtitle %}管理部門、上下層與停用狀態{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="section-header">
+        <h3>部門列表</h3>
+        {% if current_user.has_permission('edit_departments') %}
+        <a class="btn" href="{{ url_for('hr_departments.create') }}">新增</a>
+        {% endif %}
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>部門名稱</th>
+                    <th>上層部門</th>
+                    <th>排序</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in departments %}
+                <tr>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.parent_name or '' }}</td>
+                    <td>{{ d.sort_order }}</td>
+                    <td>
+                        {% if d.is_active %}
+                        <span class="status-chip status-chip-success">啟用中</span>
+                        {% else %}
+                        <span class="status-chip status-chip-neutral">停用</span>
+                        {% endif %}
+                    </td>
+                    <td class="inline-actions">
+                        {% if current_user.has_permission('edit_departments') %}
+                        <a class="btn btn-sm" href="{{ url_for('hr_departments.edit', department_id=d.id) }}">編輯</a>
+                        {% endif %}
+
+                        {% if current_user.has_permission('delete_departments') and d.is_active %}
+                        <form method="post"
+                              action="{{ url_for('hr_departments.disable', department_id=d.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認停用部門？"
+                              data-confirm-text="停用後新資料將不能再選用此部門。"
+                              data-confirm-button="確認停用">
+                            <button type="submit" class="btn btn-sm btn-danger">停用</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not departments %}
+                <tr><td colspan="5">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

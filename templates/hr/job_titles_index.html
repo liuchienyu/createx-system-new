@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}職稱管理 - Createx{% endblock %}
+{% block page_title %}職稱管理{% endblock %}
+{% block page_subtitle %}管理職稱、層級與停用狀態{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="section-header">
+        <h3>職稱列表</h3>
+        {% if current_user.has_permission('edit_job_titles') %}
+        <a class="btn" href="{{ url_for('hr_job_titles.create') }}">新增</a>
+        {% endif %}
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>職稱名稱</th>
+                    <th>職等</th>
+                    <th>排序</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jt in job_titles %}
+                <tr>
+                    <td>{{ jt.name }}</td>
+                    <td>{{ jt.level }}</td>
+                    <td>{{ jt.sort_order }}</td>
+                    <td>
+                        {% if jt.is_active %}
+                        <span class="status-chip status-chip-success">啟用中</span>
+                        {% else %}
+                        <span class="status-chip status-chip-neutral">停用</span>
+                        {% endif %}
+                    </td>
+                    <td class="inline-actions">
+                        {% if current_user.has_permission('edit_job_titles') %}
+                        <a class="btn btn-sm" href="{{ url_for('hr_job_titles.edit', title_id=jt.id) }}">編輯</a>
+                        {% endif %}
+
+                        {% if current_user.has_permission('delete_job_titles') and jt.is_active %}
+                        <form method="post"
+                              action="{{ url_for('hr_job_titles.disable', title_id=jt.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認停用職稱？"
+                              data-confirm-text="停用後新資料將不能再選用此職稱。"
+                              data-confirm-button="確認停用">
+                            <button type="submit" class="btn btn-sm btn-danger">停用</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not job_titles %}
+                <tr><td colspan="5">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

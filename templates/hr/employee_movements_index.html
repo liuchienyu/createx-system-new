@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}任用異動 - Createx{% endblock %}
+{% block page_title %}任用異動{% endblock %}
+{% block page_subtitle %}管理員工任用、調動、升遷與離職紀錄{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>異動類型</label>
+            <select name="movement_type">
+                <option value="">全部</option>
+                {% for value, label in movement_types %}
+                <option value="{{ value }}" {% if movement_type == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_movements.index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_employee_movements') %}
+            <a href="{{ url_for('hr_movements.create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>員工</th>
+                    <th>異動類型</th>
+                    <th>生效日期</th>
+                    <th>原部門 / 職稱</th>
+                    <th>新部門 / 職稱</th>
+                    <th>狀態異動</th>
+                    <th>備註</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movements %}
+                <tr>
+                    <td>{{ m.employee_no }} - {{ m.employee_name }}</td>
+                    <td>{{ m.movement_type }}</td>
+                    <td>{{ m.effective_date }}</td>
+                    <td>{{ m.from_department_name or '' }} / {{ m.from_job_title_name or '' }}</td>
+                    <td>{{ m.to_department_name or '' }} / {{ m.to_job_title_name or '' }}</td>
+                    <td>{{ m.from_status or '' }} → {{ m.to_status or '' }}</td>
+                    <td>{{ m.remark or '' }}</td>
+                    <td class="inline-actions">
+                        {% if current_user.has_permission('delete_employee_movements') %}
+                        <form method="post"
+                              action="{{ url_for('hr_movements.delete', movement_id=m.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除異動紀錄？"
+                              data-confirm-text="刪除後將無法復原，且不會自動回復員工主檔。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not movements %}
+                <tr><td colspan="8">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

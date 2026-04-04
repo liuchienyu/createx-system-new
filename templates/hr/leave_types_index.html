@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}請假類型管理 - Createx{% endblock %}
+{% block page_title %}請假類型管理{% endblock %}
+{% block page_subtitle %}管理請假類型與啟用狀態{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="section-header">
+        <h3>請假類型列表</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>代碼</th>
+                    <th>名稱</th>
+                    <th>是否給薪</th>
+                    <th>排序</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lt in leave_types %}
+                <tr>
+                    <td>{{ lt.code }}</td>
+                    <td>{{ lt.name }}</td>
+                    <td>{{ '是' if lt.is_paid else '否' }}</td>
+                    <td>{{ lt.sort_order }}</td>
+                    <td>{{ '啟用中' if lt.is_active else '停用' }}</td>
+                    <td class="inline-actions">
+                        {% if current_user.has_permission('delete_leave_types') and lt.is_active %}
+                        <form method="post"
+                              action="{{ url_for('hr_leave.leave_type_disable', type_id=lt.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認停用請假類型？"
+                              data-confirm-text="停用後將不再提供新申請選用，但歷史資料仍會保留。"
+                              data-confirm-button="確認停用">
+                            <button type="submit" class="btn btn-sm btn-danger">停用</button>
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not leave_types %}
+                <tr><td colspan="6">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

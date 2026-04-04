@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}新增請假申請 - Createx{% endblock %}
+{% block page_title %}新增請假申請{% endblock %}
+{% block page_subtitle %}建立新的請假申請資料{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px;">
+    <form method="post">
+        <label>員工</label>
+        <select name="employee_id" required>
+            <option value="">請選擇</option>
+            {% for e in employees %}
+            <option value="{{ e.id }}" {% if selected_employee_id == e.id|string %}selected{% endif %}>
+                {{ e.employee_no }} - {{ e.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>請假類型</label>
+        <select name="leave_type_id" required>
+            <option value="">請選擇</option>
+            {% for lt in leave_types %}
+            <option value="{{ lt.id }}">{{ lt.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>開始時間</label>
+        <input type="datetime-local" name="start_datetime" required>
+
+        <label>結束時間</label>
+        <input type="datetime-local" name="end_datetime" required>
+
+        <label>請假原因</label>
+        <textarea name="reason" rows="4"></textarea>
+
+        <div class="page-actions">
+            <a href="{{ url_for('hr_leave.leave_requests_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

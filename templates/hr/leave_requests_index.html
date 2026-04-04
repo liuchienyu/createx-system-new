@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}請假管理 - Createx{% endblock %}
+{% block page_title %}請假管理{% endblock %}
+{% block page_subtitle %}管理請假申請、審核與刪除{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>員工</label>
+            <select name="employee_id">
+                <option value="">全部</option>
+                {% for e in employees %}
+                <option value="{{ e.id }}" {% if employee_id == e.id|string %}selected{% endif %}>
+                    {{ e.employee_no }} - {{ e.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>狀態</label>
+            <select name="status">
+                <option value="">全部</option>
+                <option value="pending" {% if status == 'pending' %}selected{% endif %}>待審核</option>
+                <option value="approved" {% if status == 'approved' %}selected{% endif %}>已核准</option>
+                <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>已駁回</option>
+                <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>已取消</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_leave.leave_requests_index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_leave') %}
+            <a href="{{ url_for('hr_leave.leave_request_create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>員工</th>
+                    <th>請假類型</th>
+                    <th>開始時間</th>
+                    <th>結束時間</th>
+                    <th>時數</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in leave_requests %}
+                <tr>
+                    <td>{{ r.employee_no }} - {{ r.employee_name }}</td>
+                    <td>{{ r.leave_type_name }}</td>
+                    <td>{{ r.start_datetime }}</td>
+                    <td>{{ r.end_datetime }}</td>
+                    <td>{{ r.hours }}</td>
+                    <td>{{ r.status }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('hr_leave.leave_request_detail', request_id=r.id) }}">明細</a>
+
+                        {% if current_user.has_permission('delete_leave') and r.status == 'pending' %}
+                        <form method="post"
+                              action="{{ url_for('hr_leave.leave_request_delete', request_id=r.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除請假申請？"
+                              data-confirm-text="刪除後將無法復原，此操作僅適用於待審核請假單。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not leave_requests %}
+                <tr><td colspan="7">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
