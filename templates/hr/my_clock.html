@@ -2,21 +2,65 @@
 {% block title %}我的打卡 - Createx{% endblock %}
 {% block page_title %}我的打卡{% endblock %}
 {% block page_subtitle %}進行上下班打卡{% endblock %}
+
 {% block content %}
 <div class="card" style="max-width: 720px;">
     <p><strong>員工：</strong>{{ employee.employee_no }} - {{ employee.name }}</p>
-    <p><strong>目前時間：</strong>{{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p><strong>目前時間：</strong><span id="clock-page-now">{{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</span></p>
 
     {% if today_record %}
     <p><strong>今日上班：</strong>{{ today_record.check_in_time or '尚未打卡' }}</p>
     <p><strong>今日下班：</strong>{{ today_record.check_out_time or '尚未打卡' }}</p>
+    <p><strong>今日狀態：</strong>{{ today_record.status or 'present' }}</p>
     {% else %}
     <p><strong>今日尚無出勤紀錄</strong></p>
     {% endif %}
 
     <form method="post" class="page-actions">
+        {% if not today_record or not today_record.check_in_time %}
         <button type="submit" name="action" value="clock_in" class="btn">上班打卡</button>
+        {% endif %}
+
+        {% if today_record and today_record.check_in_time and not today_record.check_out_time %}
         <button type="submit" name="action" value="clock_out" class="btn btn-warning">下班打卡</button>
+        {% endif %}
+
+        {% if today_record and today_record.check_in_time and today_record.check_out_time %}
+        <span class="status-chip status-chip-success">今日已完成打卡</span>
+        {% endif %}
     </form>
 </div>
+
+<script>
+    function updateClockPageNow() {
+        const now = new Date();
+        const options = {
+            timeZone: "Asia/Taipei",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        };
+
+        const formatter = new Intl.DateTimeFormat("zh-TW", options);
+        const parts = formatter.formatToParts(now);
+        const data = {};
+
+        parts.forEach(part => {
+            data[part.type] = part.value;
+        });
+
+        const formatted = `${data.year}-${data.month}-${data.day} ${data.hour}:${data.minute}:${data.second}`;
+        const target = document.getElementById("clock-page-now");
+        if (target) {
+            target.textContent = formatted;
+        }
+    }
+
+    updateClockPageNow();
+    setInterval(updateClockPageNow, 1000);
+</script>
 {% endblock %}
