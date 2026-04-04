@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}公文模板 - Createx{% endblock %}
+{% block page_title %}公文模板管理{% endblock %}
+{% block page_subtitle %}管理公文類型模板與固定簽核流程{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="is_active">
+                <option value="">全部</option>
+                <option value="true" {% if active_filter == 'true' %}selected{% endif %}>啟用中</option>
+                <option value="false" {% if active_filter == 'false' %}selected{% endif %}>停用</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('approvals.templates_index') }}" class="btn btn-secondary">清除</a>
+            <a href="{{ url_for('approvals.templates_create') }}" class="btn">新增模板</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>模板名稱</th>
+                    <th>公文類型</th>
+                    <th>標題模板</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in templates %}
+                <tr>
+                    <td>{{ t.template_name }}</td>
+                    <td>{{ t.doc_type }}</td>
+                    <td>{{ t.title_template }}</td>
+                    <td>{{ '啟用中' if t.is_active else '停用' }}</td>
+                    <td class="inline-actions">
+                        {% if t.is_active %}
+                        <form method="post"
+                              action="{{ url_for('approvals.templates_disable', template_id=t.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認停用模板？"
+                              data-confirm-text="停用後將不能再從此模板建立公文。"
+                              data-confirm-button="確認停用">
+                            <button type="submit" class="btn btn-sm btn-danger">停用</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not templates %}
+                <tr><td colspan="5">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
