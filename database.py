@@ -285,6 +285,23 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS audit_logs (
+                    id SERIAL PRIMARY KEY,
+                    module_name VARCHAR(50) NOT NULL,
+                    action_type VARCHAR(30) NOT NULL,
+                    target_type VARCHAR(50) NOT NULL,
+                    target_id INTEGER,
+                    actor_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    actor_name VARCHAR(100),
+                    summary TEXT,
+                    detail_json JSONB,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)

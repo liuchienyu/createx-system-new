@@ -72,3 +72,16 @@ def update_finance_category(database_url: str, category_id: int, category_type: 
                 (category_type, name, sort_order, is_active, category_id),
             )
         conn.commit()
+
+def disable_finance_category(database_url: str, category_id: int):
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE finance_categories
+                SET is_active = FALSE
+                WHERE id = %s
+                """,
+                (category_id,),
+            )
+        conn.commit()

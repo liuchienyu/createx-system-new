@@ -50,6 +50,11 @@ def leave_request_create():
         if not employee_id or not leave_type_id or not start_datetime or not end_datetime:
             flash("請填寫必要欄位", "danger")
             return redirect(url_for("hr_leave.leave_request_create"))
+        
+        leave_type_ids = {lt["id"] for lt in get_leave_types(database_url, "true")}
+        if int(leave_type_id) not in leave_type_ids:
+            flash("請假類型不存在或已停用", "danger")
+            return redirect(url_for("hr_leave.leave_request_create"))
 
         hours = calculate_leave_hours(start_datetime, end_datetime)
         if hours <= 0:

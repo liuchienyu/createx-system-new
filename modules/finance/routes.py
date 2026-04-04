@@ -17,6 +17,7 @@ from modules.finance.category_services import (
     get_finance_category,
     create_finance_category,
     update_finance_category,
+    disable_finance_category,
 )
 from modules.finance.ar_ap_services import (
     list_ar_ap_records,
@@ -31,6 +32,10 @@ from modules.finance.report_services import (
     get_monthly_report_data,
 )
 
+from io import BytesIO
+from flask import send_file
+from openpyxl import Workbook
+
 finance_bp = Blueprint("finance", __name__)
 
 
@@ -40,8 +45,11 @@ finance_bp = Blueprint("finance", __name__)
 def finance_index():
     database_url = current_app.config["DATABASE_URL"]
     month = (request.args.get("month") or "").strip()
+    category_type = (request.args.get("category_type") or "").strip()
+    project_id = (request.args.get("project_id") or "").strip()
 
-    records, _, _ = list_finance_records(database_url, month)
+    records, _, _ = list_finance_records(database_url, month, category_type, project_id)
+    projects = list_projects_for_select(database_url)
 
     total_income = sum(float(r["amount"]) for r in records if r["category_type"] == "income")
     total_expense = sum(float(r["amount"]) for r in records if r["category_type"] == "expense")
@@ -50,9 +58,54 @@ def finance_index():
         "finance/index.html",
         records=records,
         month=month,
+        category_type=category_type,
+        project_id=project_id,
+        projects=projects,
         total_income=total_income,
         total_expense=total_expense,
         net_amount=total_income - total_expense,
+    )
+
+@finance_bp.route("/finance/export/excel")
+@login_required
+@permission_required("view_finance")
+def finance_export_excel():
+    database_url = current_app.config["DATABASE_URL"]
+    month = (request.args.get("month") or "").strip()
+    category_type = (request.args.get("category_type") or "").strip()
+    project_id = (request.args.get("project_id") or "").strip()
+
+    records, _, _ = list_finance_records(database_url, month, category_type, project_id)
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "財務紀錄"
+
+    ws.append(["日期", "類型", "分類", "項目", "金額", "付款方式", "交易對象", "專案", "備註"])
+
+    for r in records:
+        ws.append([
+            str(r["record_date"] or ""),
+            r["category_type"] or "",
+            r["category_name"] or "",
+            r["item_name"] or "",
+            float(r["amount"] or 0),
+            r["payment_method"] or "",
+            r["counterparty"] or "",
+            r["project_name"] or "",
+            r["note"] or "",
+        ])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    filename = f"finance_records_{month or 'all'}.xlsx"
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
 
@@ -525,3 +578,18 @@ def ar_ap_mark_completed(record_id: int):
         flash("已更新為完成狀態", "success")
 
     return redirect(url_for("finance.ar_ap_index"))
+
+@finance_bp.route("/finance/categories/<int:category_id>/disable", methods=["POST"])
+@login_required
+@permission_required("edit_finance")
+def finance_category_disable(category_id: int):
+    database_url = current_app.config["DATABASE_URL"]
+    category = get_finance_category(database_url, category_id)
+
+    if not category:
+        abort(404)
+
+    disable_finance_category(database_url, category_id)
+    flash("財務分類已停用", "success")
+    return redirect(url_for("finance.finance_category_index"))
+

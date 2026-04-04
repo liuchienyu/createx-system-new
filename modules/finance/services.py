@@ -22,7 +22,7 @@ def parse_month_filter(month_str: str):
         return None, None
 
 
-def list_finance_records(database_url: str, month: str = ""):
+def list_finance_records(database_url: str, month: str = "", category_type: str = "", project_id: str = ""):
     start_date, end_date = parse_month_filter(month)
 
     query = """
@@ -42,11 +42,23 @@ def list_finance_records(database_url: str, month: str = ""):
         LEFT JOIN users u ON u.id = fr.created_by
         LEFT JOIN projects p ON p.id = fr.project_id
     """
+    conditions = []
     params = []
 
     if start_date and end_date:
-        query += " WHERE fr.record_date >= %s AND fr.record_date < %s"
+        conditions.append("fr.record_date >= %s AND fr.record_date < %s")
         params.extend([start_date, end_date])
+
+    if category_type in ["income", "expense"]:
+        conditions.append("fr.category_type = %s")
+        params.append(category_type)
+
+    if project_id:
+        conditions.append("fr.project_id = %s")
+        params.append(int(project_id))
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
 
     query += " ORDER BY fr.record_date DESC, fr.id DESC"
 

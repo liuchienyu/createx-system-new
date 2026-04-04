@@ -60,6 +60,16 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% if c.is_active %}
+                <form method="post"
+                    action="{{ url_for('finance.finance_category_disable', category_id=c.id) }}"
+                    class="inline-delete-form"
+                    data-confirm-title="確認停用財務分類？"
+                    data-confirm-text="停用後新資料將不能再選用此分類。"
+                    data-confirm-button="確認停用">
+                    <button type="submit" class="btn btn-sm btn-danger">停用</button>
+                </form>
+                {% endif %}
                 {% if not categories %}
                 <tr>
                     <td colspan="5">目前沒有資料</td>

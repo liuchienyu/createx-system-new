@@ -7,18 +7,42 @@
 {% block content %}
 <div class="card">
     <form method="get" class="form-row">
-        <div>
-            <label>月份</label>
-            <input type="month" name="month" value="{{ month }}">
-        </div>
-        <div class="page-actions">
-            <button type="submit" class="btn btn-secondary">查詢</button>
-            <a href="{{ url_for('finance.finance_index') }}" class="btn btn-secondary">清除</a>
-            {% if current_user.has_permission('edit_finance') %}
-            <a href="{{ url_for('finance.finance_create') }}" class="btn">新增</a>
-            {% endif %}
-        </div>
-    </form>
+    <div>
+        <label>月份</label>
+        <input type="month" name="month" value="{{ month }}">
+    </div>
+
+    <div>
+        <label>收支類型</label>
+        <select name="category_type">
+            <option value="">全部</option>
+            <option value="income" {% if category_type == 'income' %}selected{% endif %}>收入</option>
+            <option value="expense" {% if category_type == 'expense' %}selected{% endif %}>支出</option>
+        </select>
+    </div>
+
+    <div>
+        <label>專案</label>
+        <select name="project_id">
+            <option value="">全部</option>
+            {% for p in projects %}
+            <option value="{{ p.id }}" {% if project_id == p.id|string %}selected{% endif %}>{{ p.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="page-actions">
+        <button type="submit" class="btn btn-secondary">查詢</button>
+        <a href="{{ url_for('finance.finance_index') }}" class="btn btn-secondary">清除</a>
+        {% if current_user.has_permission('edit_finance') %}
+        <a href="{{ url_for('finance.finance_create') }}" class="btn">新增</a>
+        {% endif %}
+        <a href="{{ url_for('finance.finance_export_excel', month=month, category_type=category_type, project_id=project_id) }}"
+        class="btn btn-secondary">
+            匯出 Excel
+        </a>
+    </div>
+</form>
 </div>
 
 <div class="card">

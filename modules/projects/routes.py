@@ -57,6 +57,10 @@ def project_create():
         if not name:
             flash("請輸入專案名稱", "danger")
             return redirect(url_for("projects.project_create"))
+        
+        if start_date and end_date and end_date < start_date:
+            flash("結束日期不可早於開始日期", "danger")
+            return redirect(url_for("projects.project_create"))
 
         create_project(
             database_url=database_url,
@@ -92,6 +96,10 @@ def project_edit(project_id: int):
 
         if not name:
             flash("請輸入專案名稱", "danger")
+            return redirect(url_for("projects.project_edit", project_id=project_id))
+        
+        if start_date and end_date and end_date < start_date:
+            flash("結束日期不可早於開始日期", "danger")
             return redirect(url_for("projects.project_edit", project_id=project_id))
 
         update_project(

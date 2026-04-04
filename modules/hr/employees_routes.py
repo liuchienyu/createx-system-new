@@ -58,6 +58,10 @@ def create():
         if not data["name"]:
             flash("請輸入姓名", "danger")
             return redirect(url_for("hr_employees.create"))
+        
+        if data["hire_date"] and data["leave_date"] and data["leave_date"] < data["hire_date"]:
+            flash("離職日不可早於到職日", "danger")
+            return redirect(url_for("hr_employees.create"))
 
         create_employee(database_url, data)
         flash("員工資料建立成功", "success")
@@ -110,6 +114,10 @@ def edit(employee_id: int):
         if not data["name"]:
             flash("請輸入姓名", "danger")
             return redirect(url_for("hr_employees.edit", employee_id=employee_id))
+        
+        if data["hire_date"] and data["leave_date"] and data["leave_date"] < data["hire_date"]:
+            flash("離職日不可早於到職日", "danger")
+            return redirect(url_for("hr_employees.create"))
 
         update_employee(database_url, employee_id, data)
         flash("員工資料更新成功", "success")
