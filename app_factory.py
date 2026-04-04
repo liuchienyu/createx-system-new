@@ -4,7 +4,7 @@ from config import Config
 from database import init_db
 from extensions import login_manager
 from modules.auth.routes import auth_bp
-from modules.dashboard.routes import dashboard_bp
+from modules.dashboard import dashboard_bp
 from modules.admin import admin_bp
 from modules.finance import finance_bp
 from modules.projects import projects_bp

@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Createx{% endblock %}
+{% block page_title %}首頁儀表板{% endblock %}
+{% block page_subtitle %}依權限顯示的統一管理首頁{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>歡迎回來，{{ current_user.display_name }}</h3>
+    <p>今天是 {{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>快捷入口</h3>
+    </div>
+    <div class="page-actions">
+        {% if current_user.has_permission('view_finance') %}
+        <a class="btn" href="{{ url_for('finance.finance_dashboard') }}">財務儀表板</a>
+        <a class="btn btn-secondary" href="{{ url_for('finance.finance_index') }}">財務紀錄</a>
+        {% endif %}
+
+        {% if current_user.has_permission('view_projects') %}
+        <a class="btn" href="{{ url_for('projects.project_index') }}">專案列表</a>
+        {% endif %}
+
+        {% if current_user.has_permission('view_hr') %}
+        <a class="btn" href="{{ url_for('hr_employees.index') }}">人員主檔</a>
+        {% endif %}
+
+        {% if current_user.has_permission('view_leave') %}
+        <a class="btn btn-secondary" href="{{ url_for('hr_leave.leave_requests_index') }}">請假管理</a>
+        {% endif %}
+
+        {% if current_user.has_permission('view_attendance') %}
+        <a class="btn btn-secondary" href="{{ url_for('hr_attendance.attendance_index') }}">出勤管理</a>
+        {% endif %}
+
+        {% if current_user.has_permission('clock_attendance') %}
+        <a class="btn btn-warning" href="{{ url_for('hr_attendance.my_clock') }}">我的打卡</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if current_user.has_permission('view_finance') %}
+<div class="card">
+    <div class="section-header">
+        <h3>本月財務摘要（{{ current_month }}）</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <tbody>
+                <tr>
+                    <th>本月收入</th>
+                    <td>{{ total_income }}</td>
+                    <th>本月支出</th>
+                    <td>{{ total_expense }}</td>
+                    <th>本月淨額</th>
+                    <td>{{ net_amount }}</td>
+                </tr>
+                <tr>
+                    <th>待收總額</th>
+                    <td>{{ total_receivable }}</td>
+                    <th>待付總額</th>
+                    <td>{{ total_payable }}</td>
+                    <th></th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>最近財務紀錄</h3>
+        <a class="btn btn-sm" href="{{ url_for('finance.finance_index') }}">查看全部</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>分類</th>
+                    <th>項目</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent_finance_records %}
+                <tr>
+                    <td>{{ r.record_date }}</td>
+                    <td>{{ r.category_type }}</td>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.item_name }}</td>
+                    <td>{{ r.amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not recent_finance_records %}
+                <tr>
+                    <td colspan="5">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if current_user.has_permission('view_projects') %}
+<div class="card">
+    <div class="section-header">
+        <h3>專案摘要</h3>
+        <a class="btn btn-sm" href="{{ url_for('projects.project_index') }}">查看全部</a>
+    </div>
+    <p>啟用中專案數：{{ active_project_count }}</p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>專案名稱</th>
+                    <th>收入</th>
+                    <th>支出</th>
+                    <th>淨額</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in top_projects %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.total_income }}</td>
+                    <td>{{ p.total_expense }}</td>
+                    <td>{{ p.net_amount }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('projects.project_detail', project_id=p.id) }}">明細</a>
+                        <a class="btn btn-sm" href="{{ url_for('projects.project_profit_report', project_id=p.id) }}">損益</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not top_projects %}
+                <tr>
+                    <td colspan="5">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if current_user.has_permission('view_hr') or current_user.has_permission('view_departments') or current_user.has_permission('view_job_titles') %}
+<div class="card">
+    <div class="section-header">
+        <h3>HR 摘要</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <tbody>
+                <tr>
+                    <th>在職</th>
+                    <td>{{ employee_active_count }}</td>
+                    <th>試用</th>
+                    <td>{{ employee_probation_count }}</td>
+                    <th>留停</th>
+                    <td>{{ employee_leave_count }}</td>
+                </tr>
+                <tr>
+                    <th>離職</th>
+                    <td>{{ employee_terminated_count }}</td>
+                    <th>封存</th>
+                    <td>{{ employee_archived_count }}</td>
+                    <th>啟用部門</th>
+                    <td>{{ active_department_count }}</td>
+                </tr>
+                <tr>
+                    <th>啟用職稱</th>
+                    <td>{{ active_job_title_count }}</td>
+                    <th></th>
+                    <td></td>
+                    <th></th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if current_user.has_permission('view_leave') %}
+<div class="card">
+    <div class="section-header">
+        <h3>待審核請假</h3>
+        <a class="btn btn-sm" href="{{ url_for('hr_leave.leave_requests_index') }}">查看全部</a>
+    </div>
+    <p>待審核筆數：{{ pending_leave_count }}</p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>員工</th>
+                    <th>請假類型</th>
+                    <th>開始時間</th>
+                    <th>結束時間</th>
+                    <th>時數</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in pending_leave_requests %}
+                <tr>
+                    <td>{{ r.employee_no }} - {{ r.employee_name }}</td>
+                    <td>{{ r.leave_type_name }}</td>
+                    <td>{{ r.start_datetime }}</td>
+                    <td>{{ r.end_datetime }}</td>
+                    <td>{{ r.hours }}</td>
+                    <td>
+                        <a class="btn btn-sm" href="{{ url_for('hr_leave.leave_request_detail', request_id=r.id) }}">審核</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not pending_leave_requests %}
+                <tr>
+                    <td colspan="6">目前沒有待審核請假</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if current_user.has_permission('clock_attendance') %}
+<div class="card">
+    <div class="section-header">
+        <h3>我的今日打卡狀態</h3>
+        <a class="btn btn-sm" href="{{ url_for('hr_attendance.my_clock') }}">前往打卡</a>
+    </div>
+
+    {% if my_employee %}
+        <p>員工：{{ my_employee.employee_no }} - {{ my_employee.name }}</p>
+
+        {% if today_attendance %}
+            <p>上班：{{ today_attendance.check_in_time or '尚未打卡' }}</p>
+            <p>下班：{{ today_attendance.check_out_time or '尚未打卡' }}</p>
+            <p>狀態：{{ today_attendance.status }}</p>
+        {% else %}
+            <p>今天尚未建立出勤紀錄</p>
+        {% endif %}
+    {% else %}
+        <p>目前帳號尚未綁定員工資料</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
