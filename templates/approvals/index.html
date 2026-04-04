@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}公文列表 - Createx{% endblock %}
+{% block page_title %}公文列表{% endblock %}
+{% block page_subtitle %}查看所有公文與目前簽核狀態{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="status">
+                <option value="">全部</option>
+                <option value="draft" {% if status == 'draft' %}selected{% endif %}>草稿</option>
+                <option value="pending" {% if status == 'pending' %}selected{% endif %}>簽核中</option>
+                <option value="approved" {% if status == 'approved' %}selected{% endif %}>已核准</option>
+                <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>已退回</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_approvals') %}
+            <a href="{{ url_for('approvals.create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>公文編號</th>
+                    <th>標題</th>
+                    <th>類型</th>
+                    <th>申請人</th>
+                    <th>狀態</th>
+                    <th>目前關卡</th>
+                    <th>目前簽核人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in documents %}
+                <tr>
+                    <td>{{ d.doc_no }}</td>
+                    <td>{{ d.title }}</td>
+                    <td>{{ d.doc_type }}</td>
+                    <td>{{ d.applicant_name or '' }}</td>
+                    <td>{{ d.status }}</td>
+                    <td>{{ d.current_step }}</td>
+                    <td>{{ d.current_approver_name or '' }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('approvals.detail', document_id=d.id) }}">明細</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not documents %}
+                <tr><td colspan="8">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

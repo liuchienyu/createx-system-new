@@ -16,6 +16,7 @@ from modules.hr import (
     hr_leave_bp,
     hr_attendance_bp,
 )
+from modules.approvals import approvals_bp
 
 
 def create_app():
@@ -38,6 +39,9 @@ def create_app():
     app.register_blueprint(hr_movements_bp)
     app.register_blueprint(hr_leave_bp)
     app.register_blueprint(hr_attendance_bp)
+    app.register_blueprint(approvals_bp)
+    
+
     @app.errorhandler(403)
     def handle_403(_error):
         return render_template("403.html"), 403

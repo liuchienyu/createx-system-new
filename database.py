@@ -302,6 +302,50 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS approval_documents (
+                    id SERIAL PRIMARY KEY,
+                    doc_no VARCHAR(50) UNIQUE NOT NULL,
+                    title VARCHAR(200) NOT NULL,
+                    doc_type VARCHAR(50) NOT NULL,
+                    applicant_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    applicant_name VARCHAR(100),
+                    content TEXT,
+                    status VARCHAR(30) NOT NULL DEFAULT 'draft',
+                    current_step INTEGER NOT NULL DEFAULT 0,
+                    current_approver_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    submitted_at TIMESTAMP NULL,
+                    completed_at TIMESTAMP NULL,
+                    rejected_at TIMESTAMP NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS approval_documents (
+                    id SERIAL PRIMARY KEY,
+                    doc_no VARCHAR(50) UNIQUE NOT NULL,
+                    title VARCHAR(200) NOT NULL,
+                    doc_type VARCHAR(50) NOT NULL,
+                    applicant_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    applicant_name VARCHAR(100),
+                    content TEXT,
+                    status VARCHAR(30) NOT NULL DEFAULT 'draft',
+                    current_step INTEGER NOT NULL DEFAULT 0,
+                    current_approver_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    submitted_at TIMESTAMP NULL,
+                    completed_at TIMESTAMP NULL,
+                    rejected_at TIMESTAMP NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}新增公文 - Createx{% endblock %}
+{% block page_title %}新增公文{% endblock %}
+{% block page_subtitle %}建立新的公文草稿與簽核流程{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 960px;">
+    <form method="post">
+        <label>建議公文編號</label>
+        <input type="text" value="{{ suggested_doc_no }}" disabled>
+
+        <label>公文標題</label>
+        <input type="text" name="title" required>
+
+        <label>公文類型</label>
+        <input type="text" name="doc_type" placeholder="例如：請款單、請假單、採購申請、內部簽呈" required>
+
+        <label>公文內容</label>
+        <textarea name="content" rows="8"></textarea>
+
+        <label>第一關簽核人</label>
+        <select name="approver_1" required>
+            <option value="">請選擇</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}">{{ u.display_name or u.username }}</option>
+            {% endfor %}
+        </select>
+
+        <label>第二關簽核人</label>
+        <select name="approver_2">
+            <option value="">不設定</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}">{{ u.display_name or u.username }}</option>
+            {% endfor %}
+        </select>
+
+        <label>第三關簽核人</label>
+        <select name="approver_3">
+            <option value="">不設定</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}">{{ u.display_name or u.username }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="page-actions">
+            <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立草稿</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

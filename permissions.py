@@ -27,6 +27,9 @@ PERMS = [
     ("clock_attendance", "可進行上下班打卡"),
     ("admin_users", "可管理使用者"),
     ("admin_roles", "可管理角色"),
+    ("view_approvals", "可查看公文簽核模組"),
+    ("edit_approvals", "可建立與送出公文"),
+    ("approve_documents", "可執行公文簽核"),
 ]
 
 DEFAULT_ROLES = {
@@ -63,6 +66,9 @@ DEFAULT_ROLES = {
             "edit_attendance",
             "delete_attendance",
             "clock_attendance",
+            "view_approvals",
+            "edit_approvals",
+            "approve_documents",
         ],
     },
     "Staff": {
@@ -78,6 +84,8 @@ DEFAULT_ROLES = {
             "edit_leave",
             "view_attendance",
             "clock_attendance",
+            "view_approvals",
+            "edit_approvals",
         ],
     },
     "Viewer": {

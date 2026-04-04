@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}待我簽核 - Createx{% endblock %}
+{% block page_title %}待我簽核{% endblock %}
+{% block page_subtitle %}查看目前輪到我簽核的公文{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>公文編號</th>
+                    <th>標題</th>
+                    <th>類型</th>
+                    <th>申請人</th>
+                    <th>狀態</th>
+                    <th>目前關卡</th>
+                    <th>送出時間</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in documents %}
+                <tr>
+                    <td>{{ d.doc_no }}</td>
+                    <td>{{ d.title }}</td>
+                    <td>{{ d.doc_type }}</td>
+                    <td>{{ d.applicant_name or '' }}</td>
+                    <td>{{ d.status }}</td>
+                    <td>{{ d.current_step }}</td>
+                    <td>{{ d.submitted_at or '' }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('approvals.detail', document_id=d.id) }}">前往簽核</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not documents %}
+                <tr><td colspan="8">目前沒有待你簽核的公文</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
