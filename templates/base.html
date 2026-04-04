@@ -69,6 +69,12 @@
                             <span class="nav-text">待我簽核</span>
                         </a>
                         {% endif %}
+                        {% if current_user.has_permission('manage_approval_templates') %}
+                        <a class="{% if ep in ['approvals.templates_index', 'approvals.templates_create'] %}active{% endif %}"
+                        href="{{ url_for('approvals.templates_index') }}">
+                            <span class="nav-text">模板管理</span>
+                        </a>
+                        {% endif %}
                     </div>
                 </details>
                 {% endif %}

@@ -309,3 +309,79 @@ def approve_document(database_url: str, document_id: int, approver_user_id: int,
         conn.commit()
 
     return True, "公文已完成核准"
+
+def create_document_from_template(database_url: str, data: dict):
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, template_name, doc_type, title_template, content_template, is_active
+                FROM approval_templates
+                WHERE id = %s
+                """,
+                (data["template_id"],),
+            )
+            template = cur.fetchone()
+
+            if not template:
+                return None, "模板不存在"
+
+            if not template["is_active"]:
+                return None, "模板已停用"
+
+            cur.execute(
+                """
+                SELECT step_no, approver_user_id, approver_name
+                FROM approval_template_steps
+                WHERE template_id = %s
+                ORDER BY step_no ASC
+                """,
+                (data["template_id"],),
+            )
+            template_steps = cur.fetchall()
+
+            if not template_steps:
+                return None, "模板尚未設定簽核流程"
+
+            title = data["title"] or template["title_template"]
+            content = data["content"] or template["content_template"]
+
+            cur.execute(
+                """
+                INSERT INTO approval_documents (
+                    doc_no, title, doc_type, applicant_user_id, applicant_name,
+                    content, status, current_step, current_approver_user_id
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, 'draft', 0, NULL)
+                RETURNING id
+                """,
+                (
+                    data["doc_no"],
+                    title,
+                    template["doc_type"],
+                    data["applicant_user_id"],
+                    data["applicant_name"],
+                    content,
+                ),
+            )
+            document_id = cur.fetchone()["id"]
+
+            for step in template_steps:
+                cur.execute(
+                    """
+                    INSERT INTO approval_steps (
+                        document_id, step_no, approver_user_id, approver_name, action_status
+                    )
+                    VALUES (%s, %s, %s, %s, 'pending')
+                    """,
+                    (
+                        document_id,
+                        step["step_no"],
+                        step["approver_user_id"],
+                        step["approver_name"],
+                    ),
+                )
+
+        conn.commit()
+
+    return document_id, "已依模板建立公文草稿"

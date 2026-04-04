@@ -1,25 +1,47 @@
 {% extends "base.html" %}
 {% block title %}新增公文 - Createx{% endblock %}
 {% block page_title %}新增公文{% endblock %}
-{% block page_subtitle %}建立新的公文草稿與簽核流程{% endblock %}
+{% block page_subtitle %}建立新的公文草稿或使用模板快速建立{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width: 960px;">
     <form method="post">
+        {% if mode != "template" %}
         <label>建議公文編號</label>
         <input type="text" value="{{ suggested_doc_no }}" disabled>
 
-        <label>公文標題</label>
-        <input type="text" name="title" required>
+        <label>套用模板</label>
+        <select name="template_id">
+            <option value="">不使用模板，手動建立</option>
+            {% for t in templates %}
+            <option value="{{ t.id }}">{{ t.template_name }}（{{ t.doc_type }}）</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        <label>{% if mode == "template" %}模板名稱{% else %}公文標題{% endif %}</label>
+        <input type="text" name="{% if mode == 'template' %}template_name{% else %}title{% endif %}" required>
 
         <label>公文類型</label>
         <input type="text" name="doc_type" placeholder="例如：請款單、請假單、採購申請、內部簽呈" required>
 
-        <label>公文內容</label>
-        <textarea name="content" rows="8"></textarea>
+        <label>{% if mode == "template" %}標題模板{% else %}公文內容{% endif %}</label>
+        <textarea name="{% if mode == 'template' %}content_template{% else %}content{% endif %}" rows="8"></textarea>
+
+        {% if mode == "template" %}
+        <label>標題模板</label>
+        <input type="text" name="title_template" required>
+
+        <div style="margin: 12px 0 18px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="is_active" checked>
+                啟用模板
+            </label>
+        </div>
+        {% endif %}
 
         <label>第一關簽核人</label>
-        <select name="approver_1" required>
+        <select name="approver_1" {% if mode == "template" %}required{% endif %}>
             <option value="">請選擇</option>
             {% for u in approver_users %}
             <option value="{{ u.id }}">{{ u.display_name or u.username }}</option>
@@ -43,8 +65,9 @@
         </select>
 
         <div class="page-actions">
-            <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
-            <button type="submit" class="btn">建立草稿</button>
+            <a href="{% if mode == 'template' %}{{ url_for('approvals.templates_index') }}{% else %}{{ url_for('approvals.index') }}{% endif %}"
+               class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">{% if mode == "template" %}建立模板{% else %}建立草稿{% endif %}</button>
         </div>
     </form>
 </div>

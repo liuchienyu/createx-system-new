@@ -346,12 +346,41 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS approval_templates (
+                    id SERIAL PRIMARY KEY,
+                    template_name VARCHAR(100) NOT NULL UNIQUE,
+                    doc_type VARCHAR(50) NOT NULL,
+                    title_template VARCHAR(200) NOT NULL,
+                    content_template TEXT,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS approval_template_steps (
+                    id SERIAL PRIMARY KEY,
+                    template_id INTEGER NOT NULL REFERENCES approval_templates(id) ON DELETE CASCADE,
+                    step_no INTEGER NOT NULL,
+                    approver_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    approver_name VARCHAR(100),
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    UNIQUE(template_id, step_no)
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)
     seed_admin_user(database_url)
     seed_finance_categories(database_url)
     seed_hr_basic_data(database_url)
+    seed_approval_templates(database_url)
 
 
 def seed_rbac(database_url: str) -> None:
@@ -568,5 +597,53 @@ def seed_hr_basic_data(database_url: str):
                     ON CONFLICT (code) DO NOTHING
                     """,
                     (code, name, is_paid, sort_order),
+                )
+        conn.commit()
+
+def seed_approval_templates(database_url: str):
+    default_templates = [
+        {
+            "template_name": "一般簽呈",
+            "doc_type": "general_request",
+            "title_template": "一般簽呈申請",
+            "content_template": "請填寫申請事由、內容說明、預期效益。",
+        },
+        {
+            "template_name": "請款申請單",
+            "doc_type": "payment_request",
+            "title_template": "請款申請 - {主題}",
+            "content_template": "請填寫請款事由、金額、付款對象、相關附件說明。",
+        },
+        {
+            "template_name": "採購申請單",
+            "doc_type": "purchase_request",
+            "title_template": "採購申請 - {主題}",
+            "content_template": "請填寫採購目的、品項、預算、使用時程。",
+        },
+        {
+            "template_name": "活動預算申請",
+            "doc_type": "event_budget",
+            "title_template": "活動預算申請 - {活動名稱}",
+            "content_template": "請填寫活動名稱、預算內容、收益預估、執行期間。",
+        },
+    ]
+
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            for item in default_templates:
+                cur.execute(
+                    """
+                    INSERT INTO approval_templates (
+                        template_name, doc_type, title_template, content_template, is_active
+                    )
+                    VALUES (%s, %s, %s, %s, TRUE)
+                    ON CONFLICT (template_name) DO NOTHING
+                    """,
+                    (
+                        item["template_name"],
+                        item["doc_type"],
+                        item["title_template"],
+                        item["content_template"],
+                    ),
                 )
         conn.commit()

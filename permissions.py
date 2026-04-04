@@ -30,6 +30,7 @@ PERMS = [
     ("view_approvals", "可查看公文簽核模組"),
     ("edit_approvals", "可建立與送出公文"),
     ("approve_documents", "可執行公文簽核"),
+    ("manage_approval_templates", "可管理公文模板與簽核流程模板"),
 ]
 
 DEFAULT_ROLES = {
@@ -69,6 +70,7 @@ DEFAULT_ROLES = {
             "view_approvals",
             "edit_approvals",
             "approve_documents",
+            "manage_approval_templates",
         ],
     },
     "Staff": {

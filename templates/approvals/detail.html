@@ -53,6 +53,7 @@
     <form method="post" action="{{ url_for('approvals.submit', document_id=document.id) }}">
         <div class="page-actions">
             <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
+            <a href="{{ url_for('approvals.export_pdf', document_id=document.id) }}" class="btn btn-secondary">匯出 PDF</a>
             <button type="submit" class="btn">送出簽核</button>
         </div>
     </form>
@@ -64,15 +65,16 @@
         <textarea name="note" rows="4"></textarea>
 
         <div class="page-actions">
-            <a href="{{ url_for('approvals.my_pending') }}" class="btn btn-secondary">返回</a>
-            <button type="submit" name="action" value="approved" class="btn">核准</button>
-            <button type="submit" name="action" value="rejected" class="btn btn-danger">退回</button>
+            <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
+            <a href="{{ url_for('approvals.export_pdf', document_id=document.id) }}" class="btn btn-secondary">匯出 PDF</a>
+            <button type="submit" class="btn">送出簽核</button>
         </div>
     </form>
 </div>
 {% else %}
 <div class="page-actions">
     <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
+    <a href="{{ url_for('approvals.export_pdf', document_id=document.id) }}" class="btn btn-secondary">匯出 PDF</a>
 </div>
 {% endif %}
 {% endblock %}
