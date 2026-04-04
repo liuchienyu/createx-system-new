@@ -1,18 +1,23 @@
 from database import get_db
 
 
-def list_job_titles(database_url: str, only_active: bool = False):
+def list_job_titles(database_url: str, active_filter: str = ""):
     query = """
         SELECT id, name, level, sort_order, is_active
         FROM job_titles
     """
-    if only_active:
+    params = []
+
+    if active_filter == "true":
         query += " WHERE is_active = TRUE"
+    elif active_filter == "false":
+        query += " WHERE is_active = FALSE"
+
     query += " ORDER BY level ASC, sort_order ASC, id ASC"
 
     with get_db(database_url) as conn:
         with conn.cursor() as cur:
-            cur.execute(query)
+            cur.execute(query, params)
             return cur.fetchall()
 
 

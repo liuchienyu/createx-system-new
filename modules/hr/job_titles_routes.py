@@ -14,8 +14,13 @@ hr_job_titles_bp = Blueprint("hr_job_titles", __name__, url_prefix="/hr/job-titl
 @permission_required("view_job_titles")
 def index():
     database_url = current_app.config["DATABASE_URL"]
-    return render_template("hr/job_titles_index.html", job_titles=list_job_titles(database_url, False))
-
+    active_filter = (request.args.get("is_active") or "").strip()
+    job_titles = list_job_titles(database_url, active_filter)
+    return render_template(
+        "hr/job_titles_index.html",
+        job_titles=job_titles,
+        active_filter=active_filter,
+    )
 
 @hr_job_titles_bp.route("/create", methods=["GET", "POST"])
 @login_required

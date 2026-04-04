@@ -2,18 +2,23 @@ from datetime import datetime
 from database import get_db
 
 
-def get_leave_types(database_url: str, only_active: bool = True):
+def get_leave_types(database_url: str, active_filter: str = "true"):
     query = """
         SELECT id, code, name, is_paid, sort_order, is_active
         FROM leave_types
     """
-    if only_active:
+    params = []
+
+    if active_filter == "true":
         query += " WHERE is_active = TRUE"
+    elif active_filter == "false":
+        query += " WHERE is_active = FALSE"
+
     query += " ORDER BY sort_order ASC, id ASC"
 
     with get_db(database_url) as conn:
         with conn.cursor() as cur:
-            cur.execute(query)
+            cur.execute(query, params)
             return cur.fetchall()
 
 

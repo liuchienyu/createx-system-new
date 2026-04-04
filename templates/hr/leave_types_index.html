@@ -8,6 +8,23 @@
     <div class="section-header">
         <h3>請假類型列表</h3>
     </div>
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="is_active">
+                <option value="">全部</option>
+                <option value="true" {% if active_filter == 'true' %}selected{% endif %}>啟用中</option>
+                <option value="false" {% if active_filter == 'false' %}selected{% endif %}>停用</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_leave.leave_types_index') }}" class="btn btn-secondary">清除</a>
+        </div>
+    </form>
+</div>
 
     <div class="table-wrap">
         <table>

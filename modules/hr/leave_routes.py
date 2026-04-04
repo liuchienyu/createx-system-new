@@ -10,22 +10,18 @@ from modules.hr.services.employees import list_active_employees_basic
 hr_leave_bp = Blueprint("hr_leave", __name__, url_prefix="/hr")
 
 
-@hr_leave_bp.route("/leave-requests")
+@hr_leave_bp.route("/leave-types")
 @login_required
 @permission_required("view_leave")
-def leave_requests_index():
+def leave_types_index():
     database_url = current_app.config["DATABASE_URL"]
-    status = (request.args.get("status") or "").strip()
-    employee_id = (request.args.get("employee_id") or "").strip()
-
+    active_filter = (request.args.get("is_active") or "").strip()
+    leave_types = get_leave_types(database_url, active_filter if active_filter else "")
     return render_template(
-        "hr/leave_requests_index.html",
-        leave_requests=list_leave_requests(database_url, status, employee_id),
-        employees=list_active_employees_basic(database_url),
-        status=status,
-        employee_id=employee_id,
+        "hr/leave_types_index.html",
+        leave_types=leave_types,
+        active_filter=active_filter,
     )
-
 
 @hr_leave_bp.route("/leave-requests/create", methods=["GET", "POST"])
 @login_required
@@ -68,7 +64,7 @@ def leave_request_create():
     return render_template(
         "hr/leave_request_create.html",
         employees=list_active_employees_basic(database_url),
-        leave_types=get_leave_types(database_url, True),
+        leave_types=get_leave_types(database_url, "true"),
         selected_employee_id=selected_employee_id,
     )
 
