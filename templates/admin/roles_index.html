@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}角色管理 - Createx{% endblock %}
+{% block page_title %}角色管理{% endblock %}
+{% block page_subtitle %}管理角色與權限內容{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="section-header">
+        <h3>角色列表</h3>
+        <a class="btn" href="{{ url_for('admin.role_create') }}">新增</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>角色名稱</th>
+                    <th>說明</th>
+                    <th>權限數</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in roles %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.description or '' }}</td>
+                    <td>{{ r.permission_count }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('admin.role_edit', role_id=r.id) }}">編輯</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not roles %}
+                <tr>
+                    <td colspan="5">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

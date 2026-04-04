@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}新增角色 - Createx{% endblock %}
+{% block page_title %}新增角色{% endblock %}
+{% block page_subtitle %}建立新的角色與權限組合{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 980px;">
+    <form method="post">
+        <label>角色名稱</label>
+        <input type="text" name="name" required>
+
+        <label>角色說明</label>
+        <textarea name="description" rows="3"></textarea>
+
+        <label>權限清單</label>
+        {% for p in permissions %}
+        <div style="margin-bottom: 8px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="permission_ids" value="{{ p.id }}">
+                {{ p.code }}{% if p.description %} - {{ p.description }}{% endif %}
+            </label>
+        </div>
+        {% endfor %}
+
+        <div class="page-actions" style="margin-top: 16px;">
+            <a href="{{ url_for('admin.roles_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
