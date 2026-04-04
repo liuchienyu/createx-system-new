@@ -14,8 +14,13 @@ hr_departments_bp = Blueprint("hr_departments", __name__, url_prefix="/hr/depart
 @permission_required("view_departments")
 def index():
     database_url = current_app.config["DATABASE_URL"]
-    departments = list_departments(database_url, False)
-    return render_template("hr/departments_index.html", departments=departments)
+    active_filter = (request.args.get("is_active") or "").strip()
+    departments = list_departments(database_url, active_filter)
+    return render_template(
+        "hr/departments_index.html",
+        departments=departments,
+        active_filter=active_filter,
+    )
 
 
 @hr_departments_bp.route("/create", methods=["GET", "POST"])

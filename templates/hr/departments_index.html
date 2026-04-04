@@ -5,12 +5,24 @@
 
 {% block content %}
 <div class="card">
-    <div class="section-header">
-        <h3>部門列表</h3>
-        {% if current_user.has_permission('edit_departments') %}
-        <a class="btn" href="{{ url_for('hr_departments.create') }}">新增</a>
-        {% endif %}
-    </div>
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="is_active">
+                <option value="">全部</option>
+                <option value="true" {% if active_filter == 'true' %}selected{% endif %}>啟用中</option>
+                <option value="false" {% if active_filter == 'false' %}selected{% endif %}>停用</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_departments.index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_departments') %}
+            <a class="btn" href="{{ url_for('hr_departments.create') }}">新增</a>
+            {% endif %}
+        </div>
+    </form>
 
     <div class="table-wrap">
         <table>

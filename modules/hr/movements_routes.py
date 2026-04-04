@@ -71,3 +71,4 @@ def delete(movement_id: int):
     delete_movement(database_url, movement_id)
     flash("任用異動紀錄已刪除", "success")
     return redirect(url_for("hr_movements.index"))
+

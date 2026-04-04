@@ -1,20 +1,25 @@
 from database import get_db
 
 
-def list_departments(database_url: str, only_active: bool = False):
+def list_departments(database_url: str, active_filter: str = ""):
     query = """
         SELECT d.id, d.name, d.parent_id, d.sort_order, d.is_active,
                p.name AS parent_name
         FROM departments d
         LEFT JOIN departments p ON p.id = d.parent_id
     """
-    if only_active:
+    params = []
+
+    if active_filter == "true":
         query += " WHERE d.is_active = TRUE"
+    elif active_filter == "false":
+        query += " WHERE d.is_active = FALSE"
+
     query += " ORDER BY d.sort_order ASC, d.id ASC"
 
     with get_db(database_url) as conn:
         with conn.cursor() as cur:
-            cur.execute(query)
+            cur.execute(query, params)
             return cur.fetchall()
 
 
