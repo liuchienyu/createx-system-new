@@ -20,9 +20,11 @@ PERMS = [
     ("edit_leave", "可建立與編輯請假管理"),
     ("approve_leave", "可審核請假"),
     ("delete_leave", "可刪除請假申請"),
+    ("delete_leave_types", "可停用請假類型"),
     ("view_attendance", "可查看出勤管理"),
     ("edit_attendance", "可建立與編輯出勤管理"),
     ("delete_attendance", "可刪除出勤紀錄"),
+    ("clock_attendance", "可進行上下班打卡"),
     ("admin_users", "可管理使用者"),
     ("admin_roles", "可管理角色"),
 ]
@@ -56,9 +58,11 @@ DEFAULT_ROLES = {
             "edit_leave",
             "approve_leave",
             "delete_leave",
+            "delete_leave_types",
             "view_attendance",
             "edit_attendance",
             "delete_attendance",
+            "clock_attendance",
         ],
     },
     "Staff": {
@@ -73,6 +77,7 @@ DEFAULT_ROLES = {
             "view_leave",
             "edit_leave",
             "view_attendance",
+            "clock_attendance",
         ],
     },
     "Viewer": {

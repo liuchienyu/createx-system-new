@@ -8,6 +8,14 @@ from modules.dashboard.routes import dashboard_bp
 from modules.admin import admin_bp
 from modules.finance import finance_bp
 from modules.projects import projects_bp
+from modules.hr import (
+    hr_employees_bp,
+    hr_departments_bp,
+    hr_job_titles_bp,
+    hr_movements_bp,
+    hr_leave_bp,
+    hr_attendance_bp,
+)
 
 
 def create_app():
@@ -24,7 +32,12 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(finance_bp)
     app.register_blueprint(projects_bp)
-
+    app.register_blueprint(hr_employees_bp)
+    app.register_blueprint(hr_departments_bp)
+    app.register_blueprint(hr_job_titles_bp)
+    app.register_blueprint(hr_movements_bp)
+    app.register_blueprint(hr_leave_bp)
+    app.register_blueprint(hr_attendance_bp)
     @app.errorhandler(403)
     def handle_403(_error):
         return render_template("403.html"), 403

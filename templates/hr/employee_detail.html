@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}員工明細 - Createx{% endblock %}
+{% block page_title %}員工明細{% endblock %}
+{% block page_subtitle %}查看員工完整資料、異動、請假與出勤{% endblock %}
+{% block content %}
+<div class="card">
+    <p><strong>員工編號：</strong>{{ employee.employee_no }}</p>
+    <p><strong>姓名：</strong>{{ employee.name }}</p>
+    <p><strong>部門：</strong>{{ employee.department_name or '' }}</p>
+    <p><strong>職稱：</strong>{{ employee.job_title_name or '' }}</p>
+    <p><strong>直屬主管：</strong>{{ employee.manager_name or '' }}</p>
+    <p><strong>系統帳號：</strong>{{ employee.username or '' }}</p>
+    <p><strong>狀態：</strong>{{ employee.status }}</p>
+    <p><strong>到職日：</strong>{{ employee.hire_date or '' }}</p>
+    <p><strong>手機：</strong>{{ employee.phone or '' }}</p>
+    <p><strong>Email：</strong>{{ employee.email or '' }}</p>
+    <p><strong>備註：</strong>{{ employee.notes or '' }}</p>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>任用異動歷程</h3>
+        {% if current_user.has_permission('edit_employee_movements') %}
+        <a class="btn btn-sm" href="{{ url_for('hr_movements.create') }}?employee_id={{ employee.id }}">新增</a>
+        {% endif %}
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>日期</th><th>類型</th><th>原部門/職稱</th><th>新部門/職稱</th><th>狀態</th></tr></thead>
+            <tbody>
+                {% for m in movements %}
+                <tr>
+                    <td>{{ m.effective_date }}</td>
+                    <td>{{ m.movement_type }}</td>
+                    <td>{{ m.from_department_name or '' }} / {{ m.from_job_title_name or '' }}</td>
+                    <td>{{ m.to_department_name or '' }} / {{ m.to_job_title_name or '' }}</td>
+                    <td>{{ m.from_status or '' }} → {{ m.to_status or '' }}</td>
+                </tr>
+                {% endfor %}
+                {% if not movements %}<tr><td colspan="5">目前沒有資料</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>最近請假紀錄</h3>
+        {% if current_user.has_permission('edit_leave') %}
+        <a class="btn btn-sm" href="{{ url_for('hr_leave.leave_request_create') }}?employee_id={{ employee.id }}">新增</a>
+        {% endif %}
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>類型</th><th>開始</th><th>結束</th><th>時數</th><th>狀態</th></tr></thead>
+            <tbody>
+                {% for r in leave_requests %}
+                <tr>
+                    <td>{{ r.leave_type_name }}</td>
+                    <td>{{ r.start_datetime }}</td>
+                    <td>{{ r.end_datetime }}</td>
+                    <td>{{ r.hours }}</td>
+                    <td>{{ r.status }}</td>
+                </tr>
+                {% endfor %}
+                {% if not leave_requests %}<tr><td colspan="5">目前沒有資料</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>最近出勤紀錄</h3>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>日期</th><th>上班</th><th>下班</th><th>狀態</th><th>備註</th></tr></thead>
+            <tbody>
+                {% for r in attendance_records %}
+                <tr>
+                    <td>{{ r.attendance_date }}</td>
+                    <td>{{ r.check_in_time or '' }}</td>
+                    <td>{{ r.check_out_time or '' }}</td>
+                    <td>{{ r.status }}</td>
+                    <td>{{ r.note or '' }}</td>
+                </tr>
+                {% endfor %}
+                {% if not attendance_records %}<tr><td colspan="5">目前沒有資料</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="page-actions">
+    <a href="{{ url_for('hr_employees.index') }}" class="btn btn-secondary">返回</a>
+</div>
+{% endblock %}

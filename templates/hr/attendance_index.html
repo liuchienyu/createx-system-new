@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}出勤管理 - Createx{% endblock %}
+{% block page_title %}出勤管理{% endblock %}
+{% block page_subtitle %}查看與管理員工出勤紀錄{% endblock %}
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>員工</label>
+            <select name="employee_id">
+                <option value="">全部</option>
+                {% for e in employees %}<option value="{{ e.id }}" {% if employee_id == e.id|string %}selected{% endif %}>{{ e.employee_no }} - {{ e.name }}</option>{% endfor %}
+            </select>
+        </div>
+        <div>
+            <label>日期</label>
+            <input type="date" name="attendance_date" value="{{ attendance_date }}">
+        </div>
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_attendance.attendance_index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_attendance') %}
+            <a href="{{ url_for('hr_attendance.attendance_manual_create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>員工</th><th>日期</th><th>上班</th><th>下班</th><th>狀態</th><th>備註</th><th>操作</th></tr></thead>
+            <tbody>
+                {% for r in attendance_records %}
+                <tr>
+                    <td>{{ r.employee_no }} - {{ r.employee_name }}</td>
+                    <td>{{ r.attendance_date }}</td>
+                    <td>{{ r.check_in_time or '' }}</td>
+                    <td>{{ r.check_out_time or '' }}</td>
+                    <td>{{ r.status }}</td>
+                    <td>{{ r.note or '' }}</td>
+                    <td class="inline-actions">
+                        {% if current_user.has_permission('delete_attendance') %}
+                        <form method="post" action="{{ url_for('hr_attendance.attendance_delete', record_id=r.id) }}" class="inline-delete-form"
+                              data-confirm-title="確認刪除出勤紀錄？"
+                              data-confirm-text="刪除後將無法復原。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not attendance_records %}<tr><td colspan="7">目前沒有資料</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

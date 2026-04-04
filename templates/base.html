@@ -48,6 +48,41 @@
                     </div>
                 </details>
                 {% endif %}
+                {% if current_user.has_permission('view_hr')
+                    or current_user.has_permission('view_departments')
+                    or current_user.has_permission('view_job_titles')
+                    or current_user.has_permission('view_employee_movements')
+                    or current_user.has_permission('view_leave')
+                    or current_user.has_permission('view_attendance')
+                    or current_user.has_permission('clock_attendance') %}
+                <details class="nav-group" open>
+                    <summary><span class="nav-text">人資管理</span></summary>
+                    <div class="nav-submenu">
+                        {% if current_user.has_permission('view_hr') %}
+                        <a href="{{ url_for('hr_employees.index') }}"><span class="nav-text">人員主檔</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('view_departments') %}
+                        <a href="{{ url_for('hr_departments.index') }}"><span class="nav-text">部門管理</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('view_job_titles') %}
+                        <a href="{{ url_for('hr_job_titles.index') }}"><span class="nav-text">職稱管理</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('view_employee_movements') %}
+                        <a href="{{ url_for('hr_movements.index') }}"><span class="nav-text">任用異動</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('view_leave') %}
+                        <a href="{{ url_for('hr_leave.leave_requests_index') }}"><span class="nav-text">請假管理</span></a>
+                        <a href="{{ url_for('hr_leave.leave_types_index') }}"><span class="nav-text">請假類型</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('view_attendance') %}
+                        <a href="{{ url_for('hr_attendance.attendance_index') }}"><span class="nav-text">出勤管理</span></a>
+                        {% endif %}
+                        {% if current_user.has_permission('clock_attendance') %}
+                        <a href="{{ url_for('hr_attendance.my_clock') }}"><span class="nav-text">我的打卡</span></a>
+                        {% endif %}
+                    </div>
+                </details>
+                {% endif %}
                 {% if current_user.has_permission('view_projects') %}
                 <details class="nav-group" open>
                     <summary><span class="nav-text">專案管理</span></summary>

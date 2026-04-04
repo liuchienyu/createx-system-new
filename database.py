@@ -157,11 +157,140 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS departments (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL UNIQUE,
+                    parent_id INTEGER REFERENCES departments(id) ON DELETE SET NULL,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS job_titles (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL UNIQUE,
+                    level INTEGER NOT NULL DEFAULT 1,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS employees (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE SET NULL,
+                    employee_no VARCHAR(50) UNIQUE NOT NULL,
+                    name VARCHAR(100) NOT NULL,
+                    english_name VARCHAR(100),
+                    nickname VARCHAR(100),
+                    gender VARCHAR(20),
+                    birthday DATE,
+                    phone VARCHAR(50),
+                    email VARCHAR(100),
+                    address TEXT,
+                    emergency_contact_name VARCHAR(100),
+                    emergency_contact_phone VARCHAR(50),
+                    status VARCHAR(30) NOT NULL DEFAULT 'active',
+                    hire_date DATE,
+                    leave_date DATE,
+                    department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL,
+                    job_title_id INTEGER REFERENCES job_titles(id) ON DELETE SET NULL,
+                    manager_employee_id INTEGER REFERENCES employees(id) ON DELETE SET NULL,
+                    notes TEXT,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS employee_movements (
+                    id SERIAL PRIMARY KEY,
+                    employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+                    movement_type VARCHAR(30) NOT NULL,
+                    effective_date DATE NOT NULL,
+                    from_department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL,
+                    to_department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL,
+                    from_job_title_id INTEGER REFERENCES job_titles(id) ON DELETE SET NULL,
+                    to_job_title_id INTEGER REFERENCES job_titles(id) ON DELETE SET NULL,
+                    from_status VARCHAR(30),
+                    to_status VARCHAR(30),
+                    remark TEXT,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS leave_types (
+                    id SERIAL PRIMARY KEY,
+                    code VARCHAR(50) NOT NULL UNIQUE,
+                    name VARCHAR(100) NOT NULL UNIQUE,
+                    is_paid BOOLEAN NOT NULL DEFAULT TRUE,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS leave_requests (
+                    id SERIAL PRIMARY KEY,
+                    employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+                    leave_type_id INTEGER NOT NULL REFERENCES leave_types(id) ON DELETE RESTRICT,
+                    start_datetime TIMESTAMP NOT NULL,
+                    end_datetime TIMESTAMP NOT NULL,
+                    hours NUMERIC(8, 2) NOT NULL DEFAULT 0,
+                    reason TEXT,
+                    status VARCHAR(30) NOT NULL DEFAULT 'pending',
+                    approved_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    approved_at TIMESTAMP NULL,
+                    approval_note TEXT,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS attendance_records (
+                    id SERIAL PRIMARY KEY,
+                    employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+                    attendance_date DATE NOT NULL,
+                    check_in_time TIMESTAMP NULL,
+                    check_out_time TIMESTAMP NULL,
+                    status VARCHAR(30) NOT NULL DEFAULT 'present',
+                    note TEXT,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    UNIQUE(employee_id, attendance_date)
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)
     seed_admin_user(database_url)
     seed_finance_categories(database_url)
+    seed_hr_basic_data(database_url)
 
 
 def seed_rbac(database_url: str) -> None:
@@ -355,5 +484,28 @@ def seed_finance_categories(database_url: str):
                     ON CONFLICT (category_type, name) DO NOTHING
                     """,
                     (category_type, name, sort_order),
+                )
+        conn.commit()
+
+def seed_hr_basic_data(database_url: str):
+    default_leave_types = [
+        ("annual_leave", "特休", True, 1),
+        ("sick_leave", "病假", True, 2),
+        ("personal_leave", "事假", False, 3),
+        ("official_leave", "公假", True, 4),
+        ("comp_leave", "補休", True, 5),
+        ("unpaid_leave", "無薪假", False, 6),
+    ]
+
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            for code, name, is_paid, sort_order in default_leave_types:
+                cur.execute(
+                    """
+                    INSERT INTO leave_types (code, name, is_paid, sort_order, is_active)
+                    VALUES (%s, %s, %s, %s, TRUE)
+                    ON CONFLICT (code) DO NOTHING
+                    """,
+                    (code, name, is_paid, sort_order),
                 )
         conn.commit()

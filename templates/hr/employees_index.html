@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}人員主檔 - Createx{% endblock %}
+{% block page_title %}人員主檔{% endblock %}
+{% block page_subtitle %}管理員工資料與封存狀態{% endblock %}
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="status">
+                <option value="">全部</option>
+                <option value="active" {% if status == 'active' %}selected{% endif %}>在職</option>
+                <option value="probation" {% if status == 'probation' %}selected{% endif %}>試用</option>
+                <option value="leave" {% if status == 'leave' %}selected{% endif %}>留停</option>
+                <option value="terminated" {% if status == 'terminated' %}selected{% endif %}>離職</option>
+                <option value="archived" {% if status == 'archived' %}selected{% endif %}>封存</option>
+            </select>
+        </div>
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('hr_employees.index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_hr') %}
+            <a href="{{ url_for('hr_employees.create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>員工編號</th>
+                    <th>姓名</th>
+                    <th>部門</th>
+                    <th>職稱</th>
+                    <th>電話</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in employees %}
+                <tr>
+                    <td>{{ e.employee_no }}</td>
+                    <td>{{ e.name }}</td>
+                    <td>{{ e.department_name or '' }}</td>
+                    <td>{{ e.job_title_name or '' }}</td>
+                    <td>{{ e.phone or '' }}</td>
+                    <td>{{ e.status }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('hr_employees.detail', employee_id=e.id) }}">明細</a>
+                        {% if current_user.has_permission('edit_hr') %}
+                        <a class="btn btn-sm" href="{{ url_for('hr_employees.edit', employee_id=e.id) }}">編輯</a>
+                        {% endif %}
+                        {% if current_user.has_permission('delete_hr') and e.status != 'archived' %}
+                        <form method="post" action="{{ url_for('hr_employees.archive', employee_id=e.id) }}" class="inline-delete-form"
+                              data-confirm-title="確認封存員工？"
+                              data-confirm-text="封存後將不再列為正常使用資料，但歷史紀錄仍會保留。"
+                              data-confirm-button="確認封存">
+                            <button type="submit" class="btn btn-sm btn-warning">封存</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not employees %}
+                <tr><td colspan="7">目前沒有資料</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
