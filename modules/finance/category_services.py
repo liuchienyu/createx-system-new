@@ -1,7 +1,7 @@
 from database import get_db
 
 
-def get_finance_categories(database_url: str, category_type: str | None = None, only_active: bool = True):
+def get_finance_categories(database_url: str, category_type: str | None = None, active_filter: str = "true"):
     query = """
         SELECT id, category_type, name, sort_order, is_active
         FROM finance_categories
@@ -9,8 +9,10 @@ def get_finance_categories(database_url: str, category_type: str | None = None, 
     conditions = []
     params = []
 
-    if only_active:
+    if active_filter == "true":
         conditions.append("is_active = TRUE")
+    elif active_filter == "false":
+        conditions.append("is_active = FALSE")
 
     if category_type:
         conditions.append("category_type = %s")

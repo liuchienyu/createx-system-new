@@ -141,8 +141,8 @@ def finance_create():
         flash("財務紀錄新增成功", "success")
         return redirect(url_for("finance.finance_index"))
 
-    income_categories = get_finance_categories(database_url, "income", True)
-    expense_categories = get_finance_categories(database_url, "expense", True)
+    income_categories = get_finance_categories(database_url, "income", "true")
+    expense_categories = get_finance_categories(database_url, "expense", "true")
     projects = list_projects_for_select(database_url)
 
     return render_template(
@@ -258,9 +258,21 @@ def finance_delete(record_id: int):
 @permission_required("view_finance")
 def finance_category_index():
     database_url = current_app.config["DATABASE_URL"]
-    categories = get_finance_categories(database_url, None, False)
-    return render_template("finance/categories_index.html", categories=categories)
+    active_filter = (request.args.get("is_active") or "").strip()
+    category_type = (request.args.get("category_type") or "").strip()
 
+    categories = get_finance_categories(
+        database_url,
+        category_type if category_type else None,
+        active_filter if active_filter else "",
+    )
+
+    return render_template(
+        "finance/categories_index.html",
+        categories=categories,
+        active_filter=active_filter,
+        category_type=category_type,
+    )
 
 @finance_bp.route("/finance/categories/create", methods=["GET", "POST"])
 @login_required
