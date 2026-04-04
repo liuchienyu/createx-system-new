@@ -6,6 +6,7 @@ from extensions import login_manager
 from modules.auth.routes import auth_bp
 from modules.dashboard.routes import dashboard_bp
 from modules.admin import admin_bp
+from modules.finance import finance_bp
 
 
 def create_app():
@@ -20,6 +21,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(finance_bp)
 
     @app.errorhandler(403)
     def handle_403(_error):

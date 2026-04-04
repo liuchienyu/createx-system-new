@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}新增財務分類 - Createx{% endblock %}
+{% block page_title %}新增財務分類{% endblock %}
+{% block page_subtitle %}建立新的收入或支出分類{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px;">
+    <form method="post">
+        <label>分類類型</label>
+        <select name="category_type" required>
+            <option value="">請選擇</option>
+            <option value="income">收入</option>
+            <option value="expense">支出</option>
+        </select>
+
+        <label>分類名稱</label>
+        <input type="text" name="name" required>
+
+        <label>排序</label>
+        <input type="number" name="sort_order" value="0">
+
+        <div style="margin: 12px 0 18px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="is_active" checked>
+                啟用分類
+            </label>
+        </div>
+
+        <div class="page-actions" style="margin-top:16px;">
+            <a href="{{ url_for('finance.finance_category_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

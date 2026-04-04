@@ -75,10 +75,93 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS projects (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(200) NOT NULL,
+                    description TEXT,
+                    start_date DATE,
+                    end_date DATE,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS finance_categories (
+                    id SERIAL PRIMARY KEY,
+                    category_type VARCHAR(20) NOT NULL,
+                    name VARCHAR(100) NOT NULL,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    UNIQUE(category_type, name)
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS finance_records (
+                    id SERIAL PRIMARY KEY,
+                    record_date DATE NOT NULL,
+                    category_type VARCHAR(20) NOT NULL,
+                    category_name VARCHAR(100) NOT NULL,
+                    item_name VARCHAR(200) NOT NULL,
+                    amount NUMERIC(12, 2) NOT NULL DEFAULT 0,
+                    payment_method VARCHAR(50),
+                    counterparty VARCHAR(100),
+                    note TEXT,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE finance_records
+                ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES finance_categories(id) ON DELETE SET NULL;
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE finance_records
+                ADD COLUMN IF NOT EXISTS project_id INTEGER REFERENCES projects(id) ON DELETE SET NULL;
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS receivable_payable_records (
+                    id SERIAL PRIMARY KEY,
+                    record_type VARCHAR(20) NOT NULL,
+                    title VARCHAR(200) NOT NULL,
+                    counterparty VARCHAR(100),
+                    amount NUMERIC(12, 2) NOT NULL DEFAULT 0,
+                    due_date DATE,
+                    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+                    note TEXT,
+                    project_id INTEGER REFERENCES projects(id) ON DELETE SET NULL,
+                    finance_record_id INTEGER REFERENCES finance_records(id) ON DELETE SET NULL,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    paid_received_at TIMESTAMP NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)
     seed_admin_user(database_url)
+    seed_finance_categories(database_url)
 
 
 def seed_rbac(database_url: str) -> None:
@@ -241,3 +324,36 @@ def get_user_by_id(database_url: str, user_id: int):
                 (user_id,),
             )
             return cur.fetchone()
+        
+def seed_finance_categories(database_url: str):
+    default_categories = [
+        ("income", "票務收入", 1),
+        ("income", "周邊收入", 2),
+        ("income", "贊助收入", 3),
+        ("income", "合作分潤", 4),
+        ("income", "其他收入", 99),
+
+        ("expense", "活動成本", 1),
+        ("expense", "場地費", 2),
+        ("expense", "餐飲費", 3),
+        ("expense", "設計費", 4),
+        ("expense", "交通費", 5),
+        ("expense", "住宿費", 6),
+        ("expense", "人事費", 7),
+        ("expense", "行銷費", 8),
+        ("expense", "印刷製作費", 9),
+        ("expense", "其他支出", 99),
+    ]
+
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            for category_type, name, sort_order in default_categories:
+                cur.execute(
+                    """
+                    INSERT INTO finance_categories (category_type, name, sort_order, is_active)
+                    VALUES (%s, %s, %s, TRUE)
+                    ON CONFLICT (category_type, name) DO NOTHING
+                    """,
+                    (category_type, name, sort_order),
+                )
+        conn.commit()

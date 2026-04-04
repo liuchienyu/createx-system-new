@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}財務儀表板 - Createx{% endblock %}
+{% block page_title %}財務儀表板{% endblock %}
+{% block page_subtitle %}查看本月收入、支出與重點財務資訊{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>本月統計（{{ month }}）</h3>
+    <p>收入：{{ total_income }}</p>
+    <p>支出：{{ total_expense }}</p>
+    <p>淨額：{{ net_amount }}</p>
+</div>
+
+<div class="card">
+    <h3>最近財務紀錄</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>分類</th>
+                    <th>項目</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent_records %}
+                <tr>
+                    <td>{{ r.record_date }}</td>
+                    <td>{{ r.category_type }}</td>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.item_name }}</td>
+                    <td>{{ r.amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not recent_records %}
+                <tr>
+                    <td colspan="5">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>本月前 5 大支出分類</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in top_expense_categories %}
+                <tr>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not top_expense_categories %}
+                <tr>
+                    <td colspan="2">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

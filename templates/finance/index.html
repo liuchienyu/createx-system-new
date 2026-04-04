@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}財務管理 - Createx{% endblock %}
+{% block page_title %}財務管理{% endblock %}
+{% block page_subtitle %}管理正式財務紀錄{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>月份</label>
+            <input type="month" name="month" value="{{ month }}">
+        </div>
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('finance.finance_index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_finance') %}
+            <a href="{{ url_for('finance.finance_create') }}" class="btn">新增</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>財務紀錄列表</h3>
+    </div>
+
+    <p>收入：{{ total_income }} / 支出：{{ total_expense }} / 淨額：{{ net_amount }}</p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>分類</th>
+                    <th>項目</th>
+                    <th>金額</th>
+                    <th>專案</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.record_date }}</td>
+                    <td>{{ r.category_type }}</td>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.item_name }}</td>
+                    <td>{{ r.amount }}</td>
+                    <td>{{ r.project_name or '' }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('finance.finance_edit', record_id=r.id) }}">編輯</a>
+
+                        <form method="post"
+                              action="{{ url_for('finance.finance_delete', record_id=r.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除財務紀錄？"
+                              data-confirm-text="刪除後將無法復原。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not records %}
+                <tr>
+                    <td colspan="7">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

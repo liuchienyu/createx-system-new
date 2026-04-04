@@ -36,6 +36,18 @@
                     </div>
                 </details>
                 {% endif %}
+                {% if current_user.has_permission('view_finance') %}
+                <details class="nav-group" open>
+                    <summary><span class="nav-text">財務管理</span></summary>
+                    <div class="nav-submenu">
+                        <a href="{{ url_for('finance.finance_dashboard') }}"><span class="nav-text">財務儀表板</span></a>
+                        <a href="{{ url_for('finance.finance_index') }}"><span class="nav-text">財務紀錄管理</span></a>
+                        <a href="{{ url_for('finance.finance_monthly_report') }}"><span class="nav-text">月報表統計</span></a>
+                        <a href="{{ url_for('finance.finance_category_index') }}"><span class="nav-text">財務分類管理</span></a>
+                        <a href="{{ url_for('finance.ar_ap_index') }}"><span class="nav-text">應收應付管理</span></a>
+                    </div>
+                </details>
+                {% endif %}
 
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">
                     <span class="nav-text">登出</span>

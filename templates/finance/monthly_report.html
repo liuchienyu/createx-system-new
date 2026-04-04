@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}月報表統計 - Createx{% endblock %}
+{% block page_title %}月報表統計{% endblock %}
+{% block page_subtitle %}查看指定月份的收入與支出分類統計{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>月份</label>
+            <input type="month" name="month" value="{{ month }}">
+        </div>
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <p>收入：{{ total_income }}</p>
+    <p>支出：{{ total_expense }}</p>
+    <p>淨額：{{ net_amount }}</p>
+</div>
+
+<div class="card">
+    <h3>收入分類</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in income_by_category %}
+                <tr>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not income_by_category %}
+                <tr>
+                    <td colspan="2">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>支出分類</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>分類</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in expense_by_category %}
+                <tr>
+                    <td>{{ r.category_name }}</td>
+                    <td>{{ r.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                {% if not expense_by_category %}
+                <tr>
+                    <td colspan="2">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

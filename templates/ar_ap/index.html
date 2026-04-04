@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}應收應付管理 - Createx{% endblock %}
+{% block page_title %}應收應付管理{% endblock %}
+{% block page_subtitle %}管理待收與待付款項{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>類型</label>
+            <select name="type">
+                <option value="">全部</option>
+                <option value="receivable" {% if record_type == 'receivable' %}selected{% endif %}>應收</option>
+                <option value="payable" {% if record_type == 'payable' %}selected{% endif %}>應付</option>
+            </select>
+        </div>
+
+        <div>
+            <label>狀態</label>
+            <select name="status">
+                <option value="">全部</option>
+                <option value="pending" {% if status == 'pending' %}selected{% endif %}>待處理</option>
+                <option value="completed" {% if status == 'completed' %}selected{% endif %}>已完成</option>
+                <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>已取消</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('finance.ar_ap_index') }}" class="btn btn-secondary">清除</a>
+            <a href="{{ url_for('finance.ar_ap_create') }}" class="btn">新增</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <p>待收總額：{{ total_receivable }}</p>
+    <p>待付總額：{{ total_payable }}</p>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>應收應付列表</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>類型</th>
+                    <th>標題</th>
+                    <th>對象</th>
+                    <th>金額</th>
+                    <th>到期日</th>
+                    <th>狀態</th>
+                    <th>專案</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.record_type }}</td>
+                    <td>{{ r.title }}</td>
+                    <td>{{ r.counterparty or '' }}</td>
+                    <td>{{ r.amount }}</td>
+                    <td>{{ r.due_date or '' }}</td>
+                    <td>{{ r.status }}</td>
+                    <td>{{ r.project_name or '' }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('finance.ar_ap_edit', record_id=r.id) }}">編輯</a>
+
+                        {% if r.status != 'completed' %}
+                        <form method="post"
+                              action="{{ url_for('finance.ar_ap_mark_completed', record_id=r.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認標記完成？"
+                              data-confirm-text="標記完成後，系統會嘗試自動轉入正式財務紀錄。"
+                              data-confirm-button="確認完成">
+                            <button type="submit" class="btn btn-sm btn-warning">完成</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not records %}
+                <tr>
+                    <td colspan="8">目前沒有資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

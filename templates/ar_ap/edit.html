@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}編輯應收應付 - Createx{% endblock %}
+{% block page_title %}編輯應收應付{% endblock %}
+{% block page_subtitle %}修改應收或應付款項資料{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px;">
+    <form method="post">
+        <label>類型</label>
+        <select name="record_type" required>
+            <option value="receivable" {% if record.record_type == 'receivable' %}selected{% endif %}>應收</option>
+            <option value="payable" {% if record.record_type == 'payable' %}selected{% endif %}>應付</option>
+        </select>
+
+        <label>標題</label>
+        <input type="text" name="title" value="{{ record.title }}" required>
+
+        <label>對象</label>
+        <input type="text" name="counterparty" value="{{ record.counterparty or '' }}">
+
+        <label>金額</label>
+        <input type="number" step="0.01" name="amount" value="{{ record.amount }}" required>
+
+        <label>到期日</label>
+        <input type="date" name="due_date" value="{{ record.due_date or '' }}">
+
+        <label>狀態</label>
+        <select name="status">
+            <option value="pending" {% if record.status == 'pending' %}selected{% endif %}>待處理</option>
+            <option value="completed" {% if record.status == 'completed' %}selected{% endif %}>已完成</option>
+            <option value="cancelled" {% if record.status == 'cancelled' %}selected{% endif %}>已取消</option>
+        </select>
+
+        <label>綁定專案</label>
+        <select name="project_id">
+            <option value="">不綁定</option>
+            {% for p in projects %}
+            <option value="{{ p.id }}" {% if record.project_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>備註</label>
+        <textarea name="note" rows="4">{{ record.note or '' }}</textarea>
+
+        <div class="page-actions" style="margin-top:16px;">
+            <a href="{{ url_for('finance.ar_ap_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">儲存</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

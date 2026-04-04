@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}新增應收應付 - Createx{% endblock %}
+{% block page_title %}新增應收應付{% endblock %}
+{% block page_subtitle %}建立新的應收或應付款項{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px;">
+    <form method="post">
+        <label>類型</label>
+        <select name="record_type" required>
+            <option value="">請選擇</option>
+            <option value="receivable">應收</option>
+            <option value="payable">應付</option>
+        </select>
+
+        <label>標題</label>
+        <input type="text" name="title" required>
+
+        <label>對象</label>
+        <input type="text" name="counterparty">
+
+        <label>金額</label>
+        <input type="number" step="0.01" name="amount" required>
+
+        <label>到期日</label>
+        <input type="date" name="due_date">
+
+        <label>狀態</label>
+        <select name="status">
+            <option value="pending">待處理</option>
+            <option value="completed">已完成</option>
+            <option value="cancelled">已取消</option>
+        </select>
+
+        <label>綁定專案</label>
+        <select name="project_id">
+            <option value="">不綁定</option>
+            {% for p in projects %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>備註</label>
+        <textarea name="note" rows="4"></textarea>
+
+        <div class="page-actions" style="margin-top:16px;">
+            <a href="{{ url_for('finance.ar_ap_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

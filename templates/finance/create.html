@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}新增財務紀錄 - Createx{% endblock %}
+{% block page_title %}新增財務紀錄{% endblock %}
+{% block page_subtitle %}建立新的正式財務紀錄{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 900px;">
+    <form method="post">
+        <label>日期</label>
+        <input type="date" name="record_date" required>
+
+        <label>收支類型</label>
+        <select name="category_type" id="category_type" required>
+            <option value="">請選擇</option>
+            <option value="income">收入</option>
+            <option value="expense">支出</option>
+        </select>
+
+        <label>分類</label>
+        <select name="category_id" required>
+            <option value="">請選擇</option>
+            {% for c in income_categories %}
+            <option value="{{ c.id }}">收入｜{{ c.name }}</option>
+            {% endfor %}
+            {% for c in expense_categories %}
+            <option value="{{ c.id }}">支出｜{{ c.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>項目名稱</label>
+        <input type="text" name="item_name" required>
+
+        <label>金額</label>
+        <input type="number" step="0.01" name="amount" required>
+
+        <label>付款方式</label>
+        <input type="text" name="payment_method">
+
+        <label>交易對象</label>
+        <input type="text" name="counterparty">
+
+        <label>綁定專案</label>
+        <select name="project_id">
+            <option value="">不綁定</option>
+            {% for p in projects %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>備註</label>
+        <textarea name="note" rows="4"></textarea>
+
+        <div class="page-actions" style="margin-top:16px;">
+            <a href="{{ url_for('finance.finance_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
