@@ -18,9 +18,9 @@
 </div>
 
 <div class="card">
-    <p>收入：{{ total_income }}</p>
-    <p>支出：{{ total_expense }}</p>
-    <p>淨額：{{ net_amount }}</p>
+    <p>收入：{{ total_income|money }}</p>
+    <p>支出：{{ total_expense|money }}</p>
+    <p>淨額：{{ net_amount |money}}</p>
 </div>
 
 <div class="card">

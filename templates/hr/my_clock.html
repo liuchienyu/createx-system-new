@@ -6,11 +6,11 @@
 {% block content %}
 <div class="card" style="max-width: 720px;">
     <p><strong>員工：</strong>{{ employee.employee_no }} - {{ employee.name }}</p>
-    <p><strong>目前時間：</strong><span id="clock-page-now">{{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</span></p>
+    <p><strong>目前時間：</strong><span id="clock-page-now">{{ current_time|datetime_tw }}</span></p>
 
     {% if today_record %}
-    <p><strong>今日上班：</strong>{{ today_record.check_in_time or '尚未打卡' }}</p>
-    <p><strong>今日下班：</strong>{{ today_record.check_out_time or '尚未打卡' }}</p>
+    <p><strong>今日上班：</strong>{{ today_record.check_in_time|datetime_tw or '尚未打卡' }}</p>
+    <p><strong>今日下班：</strong>{{ today_record.check_out_time |datetime_twor '尚未打卡' }}</p>
     <p><strong>今日狀態：</strong>{{ today_record.status or '上班' }}</p>
     {% else %}
     <p><strong>今日尚無出勤紀錄</strong></p>
