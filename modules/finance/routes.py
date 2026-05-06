@@ -278,8 +278,8 @@ def finance_edit(record_id: int):
         flash("財務紀錄更新成功", "success")
         return redirect(url_for("finance.finance_index"))
 
-    income_categories = get_finance_categories(database_url, "income", True)
-    expense_categories = get_finance_categories(database_url, "expense", True)
+    income_categories = get_finance_categories(database_url, "income", "true")
+    expense_categories = get_finance_categories(database_url, "expense", "true")
     projects = list_projects_for_select(database_url)
 
     return render_template(
