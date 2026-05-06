@@ -50,8 +50,8 @@ def attendance_manual_create():
             {
                 "employee_id": int(employee_id),
                 "attendance_date": attendance_date,
-                "check_in_time": (request.form.get("check_in_time") or "").strip() or None,
-                "check_out_time": (request.form.get("check_out_time") or "").strip() or None,
+                "check_in_time": ((request.form.get("check_in_time") or "").strip().replace("T", " ") or None),
+                "check_out_time": ((request.form.get("check_out_time") or "").strip().replace("T", " ") or None),
                 "status": (request.form.get("status") or "").strip() or "present",
                 "note": (request.form.get("note") or "").strip() or None,
                 "created_by": int(current_user.id),
@@ -84,7 +84,7 @@ def my_clock():
         flash("目前帳號尚未綁定員工資料", "danger")
         return redirect(url_for("dashboard.index"))
 
-    now_dt = datetime.now(TW)
+    now_dt = datetime.now(TW).replace(tzinfo=None)
     today = now_dt.date()
     today_record = get_today_attendance(database_url, employee["id"], today)
 
