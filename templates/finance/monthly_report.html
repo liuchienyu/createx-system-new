@@ -37,7 +37,7 @@
                 {% for r in income_by_category %}
                 <tr>
                     <td>{{ r.category_name }}</td>
-                    <td>{{ r.total_amount }}</td>
+                    <td>{{ r.total_amount|money}}</td>
                 </tr>
                 {% endfor %}
                 {% if not income_by_category %}
@@ -64,7 +64,7 @@
                 {% for r in expense_by_category %}
                 <tr>
                     <td>{{ r.category_name }}</td>
-                    <td>{{ r.total_amount }}</td>
+                    <td>{{ r.total_amount|money }}</td>
                 </tr>
                 {% endfor %}
                 {% if not expense_by_category %}

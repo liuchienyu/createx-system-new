@@ -7,9 +7,9 @@
 {% block content %}
 <div class="card">
     <h3>本月統計（{{ month }}）</h3>
-    <p>收入：{{ total_income }}</p>
-    <p>支出：{{ total_expense }}</p>
-    <p>淨額：{{ net_amount }}</p>
+    <p>收入：{{ total_income |money}}</p>
+    <p>支出：{{ total_expense |money}}</p>
+    <p>淨額：{{ net_amount |money}}</p>
 </div>
 
 <div class="card">
@@ -32,7 +32,7 @@
                     <td>{{ r.category_type }}</td>
                     <td>{{ r.category_name }}</td>
                     <td>{{ r.item_name }}</td>
-                    <td>{{ r.amount }}</td>
+                    <td>{{ r.amount|money }}</td>
                 </tr>
                 {% endfor %}
                 {% if not recent_records %}
@@ -59,7 +59,7 @@
                 {% for r in top_expense_categories %}
                 <tr>
                     <td>{{ r.category_name }}</td>
-                    <td>{{ r.total_amount }}</td>
+                    <td>{{ r.total_amount |money}}</td>
                 </tr>
                 {% endfor %}
                 {% if not top_expense_categories %}
