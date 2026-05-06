@@ -7,9 +7,9 @@
 {% block content %}
 <div class="card">
     <p><strong>專案名稱：</strong>{{ project.name }}</p>
-    <p><strong>收入：</strong>{{ report.total_income }}</p>
-    <p><strong>支出：</strong>{{ report.total_expense }}</p>
-    <p><strong>淨額：</strong>{{ report.net_amount }}</p>
+    <p><strong>收入：</strong>{{ report.total_income|money }}</p>
+    <p><strong>支出：</strong>{{ report.total_expense|money }}</p>
+    <p><strong>淨額：</strong>{{ report.net_amount|money }}</p>
 </div>
 
 <div class="card">
@@ -26,7 +26,7 @@
                 {% for r in report.income_by_category %}
                 <tr>
                     <td>{{ r.category_name }}</td>
-                    <td>{{ r.total_amount }}</td>
+                    <td>{{ r.total_amount|money }}</td>
                 </tr>
                 {% endfor %}
                 {% if not report.income_by_category %}
@@ -53,7 +53,7 @@
                 {% for r in report.expense_by_category %}
                 <tr>
                     <td>{{ r.category_name }}</td>
-                    <td>{{ r.total_amount }}</td>
+                    <td>{{ r.total_amount|money}}</td>
                 </tr>
                 {% endfor %}
                 {% if not report.expense_by_category %}

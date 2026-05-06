@@ -21,6 +21,28 @@ from modules.approvals import approvals_bp
 
 def create_app():
     app = Flask(__name__)
+    from datetime import datetime
+
+    def format_datetime(value):
+        if not value:
+            return ""
+        if isinstance(value, str):
+            return value
+        return value.strftime("%Y-%m-%d %H:%M:%S")
+
+    def format_money(value):
+        if value is None:
+            return "0"
+
+        try:
+            number = float(value)
+        except Exception:
+            return str(value)
+
+        return f"{int(round(number)):,}"
+
+    app.jinja_env.filters["datetime_tw"] = format_datetime
+    app.jinja_env.filters["money"] = format_money
     app.config.from_object(Config)
 
     login_manager.init_app(app)

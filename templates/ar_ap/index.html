@@ -64,7 +64,7 @@
                     <td>{{ r.record_type }}</td>
                     <td>{{ r.title }}</td>
                     <td>{{ r.counterparty or '' }}</td>
-                    <td>{{ r.amount }}</td>
+                    <td>{{ r.amount|money }}</td>
                     <td>{{ r.due_date or '' }}</td>
                     <td>{{ r.status }}</td>
                     <td>{{ r.project_name or '' }}</td>

@@ -52,9 +52,9 @@
             <tbody>
                 <tr>
                     <th>本月收入</th>
-                    <td>{{ total_income }}</td>
+                    <td>{{ total_income|money }}</td>
                     <th>本月支出</th>
-                    <td>{{ total_expense }}</td>
+                    <td>{{ total_expense|money }}</td>
                     <th>本月淨額</th>
                     <td>{{ net_amount }}</td>
                 </tr>

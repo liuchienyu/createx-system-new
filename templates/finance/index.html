@@ -50,7 +50,7 @@
         <h3>財務紀錄列表</h3>
     </div>
 
-    <p>收入：{{ total_income }} / 支出：{{ total_expense }} / 淨額：{{ net_amount }}</p>
+    <p>收入：{{ total_income|money }}/ 支出：{{ total_expense|money }}/ 淨額：{{ net_amount|money }}</p>
 
     <div class="table-wrap">
         <table>
@@ -72,7 +72,7 @@
                     <td>{{ r.category_type }}</td>
                     <td>{{ r.category_name }}</td>
                     <td>{{ r.item_name }}</td>
-                    <td>{{ r.amount }}</td>
+                    <td>{{ r.amount|money }}</td>
                     <td>{{ r.project_name or '' }}</td>
                     <td class="inline-actions">
                         <a class="btn btn-sm" href="{{ url_for('finance.finance_edit', record_id=r.id) }}">編輯</a>
