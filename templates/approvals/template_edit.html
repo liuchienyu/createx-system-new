@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}編輯模板 - Createx{% endblock %}
+{% block page_title %}編輯模板{% endblock %}
+{% block page_subtitle %}修改公文模板與固定簽核流程{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 960px;">
+    <form method="post">
+        <label>模板名稱</label>
+        <input type="text" name="template_name" value="{{ template.template_name }}" required>
+
+        <label>公文類型</label>
+        <input type="text" name="doc_type" value="{{ template.doc_type }}" required>
+
+        <label>標題模板</label>
+        <input type="text" name="title_template" value="{{ template.title_template }}" required>
+
+        <label>內容模板</label>
+        <textarea name="content_template" rows="8">{{ template.content_template or '' }}</textarea>
+
+        <div style="margin: 12px 0 10px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="is_active" {% if template.is_active %}checked{% endif %}>
+                啟用模板
+            </label>
+        </div>
+
+        <div style="margin: 12px 0 10px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="allow_pdf_export" {% if template.allow_pdf_export %}checked{% endif %}>
+                此流程可提前匯出 PDF
+            </label>
+        </div>
+
+        <div style="margin: 12px 0 18px;">
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="is_fixed_flow" {% if template.is_fixed_flow %}checked{% endif %}>
+                固定簽核流程（建立後草稿不可改簽核人）
+            </label>
+        </div>
+
+        {% set s1 = template_steps[0] if template_steps|length > 0 else None %}
+        {% set s2 = template_steps[1] if template_steps|length > 1 else None %}
+        {% set s3 = template_steps[2] if template_steps|length > 2 else None %}
+
+        <label>第一關簽核人</label>
+        <select name="approver_1" required>
+            <option value="">請選擇</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}" {% if s1 and s1.approver_user_id == u.id %}selected{% endif %}>
+                {{ u.display_name or u.username }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>第二關簽核人</label>
+        <select name="approver_2">
+            <option value="">不設定</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}" {% if s2 and s2.approver_user_id == u.id %}selected{% endif %}>
+                {{ u.display_name or u.username }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>第三關簽核人</label>
+        <select name="approver_3">
+            <option value="">不設定</option>
+            {% for u in approver_users %}
+            <option value="{{ u.id }}" {% if s3 and s3.approver_user_id == u.id %}selected{% endif %}>
+                {{ u.display_name or u.username }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <div class="page-actions">
+            <a href="{{ url_for('approvals.templates_index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">儲存</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

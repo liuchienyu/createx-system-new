@@ -348,6 +348,13 @@ def init_db(database_url: str) -> None:
 
             cur.execute(
                 """
+                ALTER TABLE approval_documents
+                ADD COLUMN IF NOT EXISTS template_id INTEGER REFERENCES approval_templates(id) ON DELETE SET NULL;
+                """
+            )
+
+            cur.execute(
+                """
                 CREATE TABLE IF NOT EXISTS approval_templates (
                     id SERIAL PRIMARY KEY,
                     template_name VARCHAR(100) NOT NULL UNIQUE,
@@ -357,6 +364,20 @@ def init_db(database_url: str) -> None:
                     is_active BOOLEAN NOT NULL DEFAULT TRUE,
                     created_at TIMESTAMP NOT NULL DEFAULT NOW()
                 );
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE approval_templates
+                ADD COLUMN IF NOT EXISTS allow_pdf_export BOOLEAN NOT NULL DEFAULT FALSE;
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE approval_templates
+                ADD COLUMN IF NOT EXISTS is_fixed_flow BOOLEAN NOT NULL DEFAULT TRUE;
                 """
             )
 

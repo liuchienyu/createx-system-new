@@ -42,6 +42,7 @@
                     <td>{{ t.doc_type }}</td>
                     <td>{{ t.title_template }}</td>
                     <td>{{ '啟用中' if t.is_active else '停用' }}</td>
+                    <a class="btn btn-sm" href="{{ url_for('approvals.templates_edit', template_id=t.id) }}">編輯</a>
                     <td class="inline-actions">
                         {% if t.is_active %}
                         <form method="post"

@@ -7,7 +7,10 @@
 <div class="card">
     <p><strong>公文編號：</strong>{{ document.doc_no }}</p>
     <p><strong>標題：</strong>{{ document.title }}</p>
-    <p><strong>類型：</strong>{{ document.doc_type }}</p>
+    <p><strong>公文類型：</strong>{{ document.doc_type }}</p>
+    <p><strong>模板名稱：</strong>{{ document.template_name or '' }}</p>
+    <p><strong>固定流程：</strong>{{ '是' if document.is_fixed_flow else '否' }}</p>
+    <p><strong>可提前列印 PDF：</strong>{{ '是' if document.allow_pdf_export else '否' }}</p>
     <p><strong>申請人：</strong>{{ document.applicant_name or '' }}</p>
     <p><strong>狀態：</strong>{{ document.status }}</p>
     <p><strong>目前關卡：</strong>{{ document.current_step }}</p>
@@ -54,6 +57,7 @@
         <div class="page-actions">
             <a href="{{ url_for('approvals.index') }}" class="btn btn-secondary">返回</a>
             <a href="{{ url_for('approvals.export_pdf', document_id=document.id) }}" class="btn btn-secondary">匯出 PDF</a>
+            <a href="{{ url_for('approvals.edit', document_id=document.id) }}" class="btn btn-secondary">編輯草稿</a>
             <button type="submit" class="btn">送出簽核</button>
         </div>
     </form>

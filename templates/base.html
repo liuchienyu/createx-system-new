@@ -57,7 +57,7 @@
                         {% endif %}
 
                         {% if current_user.has_permission('edit_approvals') %}
-                        <a class="{% if ep == 'approvals.create' %}active{% endif %}"
+                        <a class="{% if ep in ['approvals.create', 'approvals.edit'] %}active{% endif %}"
                         href="{{ url_for('approvals.create') }}">
                             <span class="nav-text">新增公文</span>
                         </a>
@@ -70,7 +70,7 @@
                         </a>
                         {% endif %}
                         {% if current_user.has_permission('manage_approval_templates') %}
-                        <a class="{% if ep in ['approvals.templates_index', 'approvals.templates_create'] %}active{% endif %}"
+                        <a class="{% if ep in ['approvals.templates_index', 'approvals.templates_create', 'approvals.templates_edit'] %}active{% endif %}"
                         href="{{ url_for('approvals.templates_index') }}">
                             <span class="nav-text">模板管理</span>
                         </a>

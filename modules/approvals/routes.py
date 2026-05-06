@@ -13,6 +13,7 @@ from modules.approvals.services import (
     list_my_pending_documents,
     approve_document,
     create_document_from_template,
+    update_document_draft,
 )
 
 from flask import send_file
@@ -23,6 +24,7 @@ from modules.approvals.template_services import (
     list_approval_templates,
     create_approval_template,
     disable_approval_template,
+    update_approval_template,    
 )
 from modules.approvals.pdf_services import build_approval_pdf
 
@@ -217,6 +219,89 @@ def templates_create():
 
     return render_template("approvals/create.html", mode="template", approver_users=approver_users)
 
+@approvals_bp.route("/templates/<int:template_id>/edit", methods=["GET", "POST"])
+@login_required
+@permission_required("manage_approval_templates")
+def templates_edit(template_id: int):
+    database_url = current_app.config["DATABASE_URL"]
+    template = get_approval_template(database_url, template_id)
+
+    if not template:
+        abort(404)
+
+    approver_users = list_approver_users(database_url)
+    template_steps = get_template_steps(database_url, template_id)
+
+    if request.method == "POST":
+        template_name = (request.form.get("template_name") or "").strip()
+        doc_type = (request.form.get("doc_type") or "").strip()
+        title_template = (request.form.get("title_template") or "").strip()
+        content_template = (request.form.get("content_template") or "").strip()
+        is_active = request.form.get("is_active") == "on"
+        allow_pdf_export = request.form.get("allow_pdf_export") == "on"
+        is_fixed_flow = request.form.get("is_fixed_flow") == "on"
+
+        approver_1 = (request.form.get("approver_1") or "").strip()
+        approver_2 = (request.form.get("approver_2") or "").strip()
+        approver_3 = (request.form.get("approver_3") or "").strip()
+
+        if not template_name:
+            flash("請輸入模板名稱", "danger")
+            return redirect(url_for("approvals.templates_edit", template_id=template_id))
+
+        if not doc_type:
+            flash("請輸入公文類型", "danger")
+            return redirect(url_for("approvals.templates_edit", template_id=template_id))
+
+        if not title_template:
+            flash("請輸入標題模板", "danger")
+            return redirect(url_for("approvals.templates_edit", template_id=template_id))
+
+        selected_ids = [x for x in [approver_1, approver_2, approver_3] if x]
+        if not selected_ids:
+            flash("至少要設定一位簽核人", "danger")
+            return redirect(url_for("approvals.templates_edit", template_id=template_id))
+
+        approver_map = {str(u["id"]): u for u in approver_users}
+        steps = []
+        for approver_id in selected_ids:
+            user = approver_map.get(approver_id)
+            if not user:
+                flash("簽核人不存在", "danger")
+                return redirect(url_for("approvals.templates_edit", template_id=template_id))
+
+            steps.append(
+                {
+                    "approver_user_id": user["id"],
+                    "approver_name": user["display_name"] or user["username"],
+                }
+            )
+
+        update_approval_template(
+            database_url,
+            template_id,
+            {
+                "template_name": template_name,
+                "doc_type": doc_type,
+                "title_template": title_template,
+                "content_template": content_template,
+                "is_active": is_active,
+                "allow_pdf_export": allow_pdf_export,
+                "is_fixed_flow": is_fixed_flow,
+                "steps": steps,
+            },
+        )
+
+        flash("模板更新成功", "success")
+        return redirect(url_for("approvals.templates_index"))
+
+    return render_template(
+        "approvals/template_edit.html",
+        template=template,
+        approver_users=approver_users,
+        template_steps=template_steps,
+    )
+
 @approvals_bp.route("/templates/<int:template_id>/disable", methods=["POST"])
 @login_required
 @permission_required("manage_approval_templates")
@@ -263,6 +348,89 @@ def detail(document_id: int):
         can_approve=can_approve,
     )
 
+@approvals_bp.route("/<int:document_id>/edit", methods=["GET", "POST"])
+@login_required
+@permission_required("edit_approvals")
+def edit(document_id: int):
+    database_url = current_app.config["DATABASE_URL"]
+    document = get_document(database_url, document_id)
+
+    if not document:
+        abort(404)
+
+    if document["status"] != "draft":
+        flash("只有草稿狀態可編輯", "danger")
+        return redirect(url_for("approvals.detail", document_id=document_id))
+
+    if document["applicant_user_id"] != int(current_user.id):
+        flash("只能編輯自己建立的草稿", "danger")
+        return redirect(url_for("approvals.detail", document_id=document_id))
+
+    approver_users = list_approver_users(database_url)
+    steps = get_document_steps(database_url, document_id)
+
+    if request.method == "POST":
+        title = (request.form.get("title") or "").strip()
+        doc_type = (request.form.get("doc_type") or "").strip()
+        content = (request.form.get("content") or "").strip()
+
+        if not title:
+            flash("請輸入公文標題", "danger")
+            return redirect(url_for("approvals.edit", document_id=document_id))
+
+        if not doc_type:
+            flash("請輸入公文類型", "danger")
+            return redirect(url_for("approvals.edit", document_id=document_id))
+
+        is_fixed_flow = bool(document.get("is_fixed_flow"))
+
+        step_data = []
+        if not is_fixed_flow:
+            approver_1 = (request.form.get("approver_1") or "").strip()
+            approver_2 = (request.form.get("approver_2") or "").strip()
+            approver_3 = (request.form.get("approver_3") or "").strip()
+
+            selected_ids = [x for x in [approver_1, approver_2, approver_3] if x]
+            if not selected_ids:
+                flash("至少要設定一位簽核人", "danger")
+                return redirect(url_for("approvals.edit", document_id=document_id))
+
+            approver_map = {str(u["id"]): u for u in approver_users}
+            for approver_id in selected_ids:
+                user = approver_map.get(approver_id)
+                if not user:
+                    flash("簽核人不存在", "danger")
+                    return redirect(url_for("approvals.edit", document_id=document_id))
+
+                step_data.append(
+                    {
+                        "approver_user_id": user["id"],
+                        "approver_name": user["display_name"] or user["username"],
+                    }
+                )
+
+        ok, message = update_document_draft(
+            database_url,
+            document_id,
+            {
+                "title": title,
+                "doc_type": doc_type,
+                "content": content,
+                "is_fixed_flow": is_fixed_flow,
+                "steps": step_data,
+            },
+        )
+
+        flash(message, "success" if ok else "danger")
+        return redirect(url_for("approvals.detail", document_id=document_id))
+
+    return render_template(
+        "approvals/edit.html",
+        document=document,
+        approver_users=approver_users,
+        steps=steps,
+    )
+
 @approvals_bp.route("/<int:document_id>/export-pdf")
 @login_required
 @permission_required("view_approvals")
@@ -272,6 +440,18 @@ def export_pdf(document_id: int):
 
     if not document:
         abort(404)
+
+    allow_pdf = False
+
+    if document["status"] == "approved":
+        allow_pdf = True
+
+    if document.get("allow_pdf_export"):
+        allow_pdf = True
+
+    if not allow_pdf:
+        flash("此公文尚未完成簽核，且不屬於可提前列印流程，暫不可匯出 PDF", "danger")
+        return redirect(url_for("approvals.detail", document_id=document_id))
 
     steps = get_document_steps(database_url, document_id)
     pdf_file = build_approval_pdf(document, steps)
@@ -283,7 +463,6 @@ def export_pdf(document_id: int):
         download_name=filename,
         mimetype="application/pdf",
     )
-
 
 @approvals_bp.route("/<int:document_id>/submit", methods=["POST"])
 @login_required

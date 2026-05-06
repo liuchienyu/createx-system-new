@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}編輯公文草稿 - Createx{% endblock %}
+{% block page_title %}編輯公文草稿{% endblock %}
+{% block page_subtitle %}修改草稿內容與簽核流程{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 960px;">
+    <form method="post">
+        <label>公文標題</label>
+        <input type="text" name="title" value="{{ document.title }}" required>
+
+        <label>公文類型</label>
+        <input type="text" name="doc_type" value="{{ document.doc_type }}" required>
+
+        <label>公文內容</label>
+        <textarea name="content" rows="8">{{ document.content or '' }}</textarea>
+
+        {% if document.is_fixed_flow %}
+        <div class="card" style="margin-top: 16px;">
+            <p><strong>此公文使用固定流程模板，草稿不可修改簽核人。</strong></p>
+        </div>
+        {% else %}
+            {% set s1 = steps[0] if steps|length > 0 else None %}
+            {% set s2 = steps[1] if steps|length > 1 else None %}
+            {% set s3 = steps[2] if steps|length > 2 else None %}
+
+            <label>第一關簽核人</label>
+            <select name="approver_1" required>
+                <option value="">請選擇</option>
+                {% for u in approver_users %}
+                <option value="{{ u.id }}" {% if s1 and s1.approver_user_id == u.id %}selected{% endif %}>
+                    {{ u.display_name or u.username }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>第二關簽核人</label>
+            <select name="approver_2">
+                <option value="">不設定</option>
+                {% for u in approver_users %}
+                <option value="{{ u.id }}" {% if s2 and s2.approver_user_id == u.id %}selected{% endif %}>
+                    {{ u.display_name or u.username }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>第三關簽核人</label>
+            <select name="approver_3">
+                <option value="">不設定</option>
+                {% for u in approver_users %}
+                <option value="{{ u.id }}" {% if s3 and s3.approver_user_id == u.id %}selected{% endif %}>
+                    {{ u.display_name or u.username }}
+                </option>
+                {% endfor %}
+            </select>
+        {% endif %}
+
+        <div class="page-actions">
+            <a href="{{ url_for('approvals.detail', document_id=document.id) }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">儲存草稿</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

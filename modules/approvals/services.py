@@ -55,8 +55,13 @@ def get_document(database_url: str, document_id: int):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT d.*
+                SELECT d.*,
+                       t.template_name,
+                       t.allow_pdf_export,
+                       t.is_fixed_flow
                 FROM approval_documents d
+                LEFT JOIN approval_templates t
+                ON t.id = d.template_id
                 WHERE d.id = %s
                 """,
                 (document_id,),
@@ -141,6 +146,71 @@ def create_document(database_url: str, data: dict):
         conn.commit()
 
     return document_id
+
+def update_document_draft(database_url: str, document_id: int, data: dict):
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, status
+                FROM approval_documents
+                WHERE id = %s
+                """,
+                (document_id,),
+            )
+            doc = cur.fetchone()
+
+            if not doc:
+                return False, "公文不存在"
+
+            if doc["status"] != "draft":
+                return False, "只有草稿狀態可編輯"
+
+            cur.execute(
+                """
+                UPDATE approval_documents
+                SET title = %s,
+                    doc_type = %s,
+                    content = %s,
+                    updated_at = NOW()
+                WHERE id = %s
+                """,
+                (
+                    data["title"],
+                    data["doc_type"],
+                    data["content"],
+                    document_id,
+                ),
+            )
+
+            if not data["is_fixed_flow"]:
+                cur.execute(
+                    """
+                    DELETE FROM approval_steps
+                    WHERE document_id = %s
+                    """,
+                    (document_id,),
+                )
+
+                for idx, step in enumerate(data["steps"], start=1):
+                    cur.execute(
+                        """
+                        INSERT INTO approval_steps (
+                            document_id, step_no, approver_user_id, approver_name, action_status
+                        )
+                        VALUES (%s, %s, %s, %s, 'pending')
+                        """,
+                        (
+                            document_id,
+                            idx,
+                            step["approver_user_id"],
+                            step["approver_name"],
+                        ),
+                    )
+
+        conn.commit()
+
+    return True, "草稿更新成功"
 
 
 def submit_document(database_url: str, document_id: int):
@@ -315,7 +385,8 @@ def create_document_from_template(database_url: str, data: dict):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, template_name, doc_type, title_template, content_template, is_active
+                                SELECT id, template_name, doc_type, title_template, content_template,
+                       is_active, allow_pdf_export, is_fixed_flow
                 FROM approval_templates
                 WHERE id = %s
                 """,
@@ -349,14 +420,15 @@ def create_document_from_template(database_url: str, data: dict):
             cur.execute(
                 """
                 INSERT INTO approval_documents (
-                    doc_no, title, doc_type, applicant_user_id, applicant_name,
+                    doc_no, template_id, title, doc_type, applicant_user_id, applicant_name,
                     content, status, current_step, current_approver_user_id
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, 'draft', 0, NULL)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'draft', 0, NULL)
                 RETURNING id
                 """,
                 (
                     data["doc_no"],
+                    template["id"],
                     title,
                     template["doc_type"],
                     data["applicant_user_id"],

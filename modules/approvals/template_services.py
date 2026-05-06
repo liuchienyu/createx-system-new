@@ -3,7 +3,8 @@ from database import get_db
 
 def list_approval_templates(database_url: str, active_filter: str = ""):
     query = """
-        SELECT id, template_name, doc_type, title_template, content_template, is_active
+        SELECT id, template_name, doc_type, title_template, content_template,
+               is_active, allow_pdf_export, is_fixed_flow
         FROM approval_templates
     """
     params = []
@@ -26,7 +27,8 @@ def get_approval_template(database_url: str, template_id: int):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, template_name, doc_type, title_template, content_template, is_active
+                SELECT id, template_name, doc_type, title_template, content_template,
+                       is_active, allow_pdf_export, is_fixed_flow
                 FROM approval_templates
                 WHERE id = %s
                 """,
@@ -55,10 +57,11 @@ def create_approval_template(database_url: str, data: dict):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO approval_templates (
-                    template_name, doc_type, title_template, content_template, is_active
+                                INSERT INTO approval_templates (
+                    template_name, doc_type, title_template, content_template,
+                    is_active, allow_pdf_export, is_fixed_flow
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
                 """,
                 (
@@ -67,6 +70,8 @@ def create_approval_template(database_url: str, data: dict):
                     data["title_template"],
                     data["content_template"],
                     data["is_active"],
+                    data["allow_pdf_export"],
+                    data["is_fixed_flow"],
                 ),
             )
             template_id = cur.fetchone()["id"]
@@ -90,6 +95,58 @@ def create_approval_template(database_url: str, data: dict):
 
     return template_id
 
+def update_approval_template(database_url: str, template_id: int, data: dict):
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE approval_templates
+                SET template_name = %s,
+                    doc_type = %s,
+                    title_template = %s,
+                    content_template = %s,
+                    is_active = %s,
+                    allow_pdf_export = %s,
+                    is_fixed_flow = %s
+                WHERE id = %s
+                """,
+                (
+                    data["template_name"],
+                    data["doc_type"],
+                    data["title_template"],
+                    data["content_template"],
+                    data["is_active"],
+                    data["allow_pdf_export"],
+                    data["is_fixed_flow"],
+                    template_id,
+                ),
+            )
+
+            cur.execute(
+                """
+                DELETE FROM approval_template_steps
+                WHERE template_id = %s
+                """,
+                (template_id,),
+            )
+
+            for idx, step in enumerate(data["steps"], start=1):
+                cur.execute(
+                    """
+                    INSERT INTO approval_template_steps (
+                        template_id, step_no, approver_user_id, approver_name
+                    )
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    (
+                        template_id,
+                        idx,
+                        step["approver_user_id"],
+                        step["approver_name"],
+                    ),
+                )
+
+        conn.commit()
 
 def disable_approval_template(database_url: str, template_id: int):
     with get_db(database_url) as conn:
