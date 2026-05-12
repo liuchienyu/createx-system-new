@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}評估報告明細 - Createx{% endblock %}
+{% block page_title %}評估報告明細{% endblock %}
+{% block page_subtitle %}查看藝人評估分數、等級與簽約建議{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="section-header">
+        <h3>{{ evaluation.report_title }}</h3>
+        <span class="status-chip status-chip-info">{{ evaluation.grade }} 級</span>
+    </div>
+
+    <p><strong>藝人：</strong>{{ evaluation.stage_name }}</p>
+    <p><strong>評估日期：</strong>{{ evaluation.evaluation_date }}</p>
+    <p><strong>總分：</strong>{{ evaluation.total_score }}</p>
+    <p><strong>等級：</strong>{{ evaluation.grade }}</p>
+    <p><strong>狀態：</strong>{{ evaluation.status }}</p>
+</div>
+
+<div class="card">
+    <h3>核心評分</h3>
+    <div class="table-wrap">
+        <table>
+            <tbody>
+                <tr>
+                    <th>外型形象</th>
+                    <td>{{ evaluation.appearance_score }}</td>
+                    <th>表演 / 鏡頭感</th>
+                    <td>{{ evaluation.performance_score }}</td>
+                </tr>
+                <tr>
+                    <th>社群影響力</th>
+                    <td>{{ evaluation.social_score }}</td>
+                    <th>商業價值</th>
+                    <td>{{ evaluation.commercial_score }}</td>
+                </tr>
+                <tr>
+                    <th>球團 / 品牌適性</th>
+                    <td>{{ evaluation.team_fit_score }}</td>
+                    <th>成長潛力</th>
+                    <td>{{ evaluation.growth_score }}</td>
+                </tr>
+                <tr>
+                    <th>風險扣分</th>
+                    <td>{{ evaluation.risk_score }}</td>
+                    <th>總分</th>
+                    <td>{{ evaluation.total_score }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>社群數據分析</h3>
+    <div class="table-wrap">
+        <table>
+            <tbody>
+                <tr>
+                    <th>Instagram 粉絲</th>
+                    <td>{{ evaluation.instagram_followers|money }}</td>
+                    <th>TikTok 粉絲</th>
+                    <td>{{ evaluation.tiktok_followers|money }}</td>
+                </tr>
+                <tr>
+                    <th>YouTube 訂閱</th>
+                    <td>{{ evaluation.youtube_subscribers|money }}</td>
+                    <th>互動率</th>
+                    <td>{{ evaluation.engagement_rate }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p style="white-space: pre-wrap;">{{ evaluation.social_analysis or '' }}</p>
+</div>
+
+<div class="card">
+    <h3>商業價值評估</h3>
+    <p style="white-space: pre-wrap;">{{ evaluation.business_value or '' }}</p>
+</div>
+
+<div class="card">
+    <h3>球團適性評估</h3>
+    <p style="white-space: pre-wrap;">{{ evaluation.team_fit_analysis or '' }}</p>
+</div>
+
+<div class="card">
+    <h3>簽約審核</h3>
+    <p style="white-space: pre-wrap;">{{ evaluation.signing_review or '' }}</p>
+</div>
+
+<div class="card">
+    <h3>投資收益模型</h3>
+    <p style="white-space: pre-wrap;">{{ evaluation.investment_model or '' }}</p>
+</div>
+
+{% if current_user.has_permission('review_talent_signing') %}
+<div class="card">
+    <h3>高層內部備註</h3>
+    <p style="white-space: pre-wrap;">{{ evaluation.executive_notes or '' }}</p>
+</div>
+{% endif %}
+
+<div class="page-actions">
+    <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">返回藝人明細</a>
+
+    {% if current_user.has_permission('delete_talent_evaluation') %}
+    <form method="post"
+          action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=evaluation.id) }}"
+          class="inline-delete-form"
+          data-confirm-title="確認刪除評估報告？"
+          data-confirm-text="刪除後將無法復原。"
+          data-confirm-button="確認刪除">
+        <button type="submit" class="btn btn-danger">刪除報告</button>
+    </form>
+    {% endif %}
+</div>
+
+{% endblock %}

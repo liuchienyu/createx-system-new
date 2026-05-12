@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}藝人資料庫 - Createx{% endblock %}
+{% block page_title %}藝人資料庫{% endblock %}
+{% block page_subtitle %}管理啦啦隊女孩、藝人與潛力合作對象{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <form method="get" class="form-row">
+        <div>
+            <label>狀態</label>
+            <select name="status">
+                <option value="">全部</option>
+                <option value="active" {% if status == 'active' %}selected{% endif %}>觀察中</option>
+                <option value="contacting" {% if status == 'contacting' %}selected{% endif %}>接洽中</option>
+                <option value="signed" {% if status == 'signed' %}selected{% endif %}>已簽約</option>
+                <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>不合作</option>
+                <option value="archived" {% if status == 'archived' %}selected{% endif %}>封存</option>
+            </select>
+        </div>
+
+        <div class="page-actions">
+            <button type="submit" class="btn btn-secondary">查詢</button>
+            <a href="{{ url_for('talent_evaluation.index') }}" class="btn btn-secondary">清除</a>
+            {% if current_user.has_permission('edit_talent_evaluation') %}
+            <a href="{{ url_for('talent_evaluation.create') }}" class="btn">新增藝人</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>藝人列表</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>藝名 / 顯示名稱</th>
+                    <th>本名</th>
+                    <th>國籍</th>
+                    <th>球團 / 團隊</th>
+                    <th>經紀公司</th>
+                    <th>狀態</th>
+                    <th>建立時間</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in talents %}
+                <tr>
+                    <td>{{ t.stage_name }}</td>
+                    <td>{{ t.real_name or '' }}</td>
+                    <td>{{ t.nationality or '' }}</td>
+                    <td>{{ t.team_name or '' }}</td>
+                    <td>{{ t.agency_name or '' }}</td>
+                    <td>
+                        {% if t.status == 'signed' %}
+                        <span class="status-chip status-chip-success">已簽約</span>
+                        {% elif t.status == 'contacting' %}
+                        <span class="status-chip status-chip-info">接洽中</span>
+                        {% elif t.status == 'rejected' %}
+                        <span class="status-chip status-chip-danger">不合作</span>
+                        {% elif t.status == 'archived' %}
+                        <span class="status-chip status-chip-neutral">封存</span>
+                        {% else %}
+                        <span class="status-chip status-chip-warning">觀察中</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ t.created_at|datetime_tw }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('talent_evaluation.detail', talent_id=t.id) }}">明細</a>
+
+                        {% if current_user.has_permission('edit_talent_evaluation') %}
+                        <a class="btn btn-sm" href="{{ url_for('talent_evaluation.edit', talent_id=t.id) }}">編輯</a>
+                        {% endif %}
+
+                        {% if current_user.has_permission('delete_talent_evaluation') %}
+                        <form method="post"
+                              action="{{ url_for('talent_evaluation.delete', talent_id=t.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除藝人資料？"
+                              data-confirm-text="刪除後，此藝人的所有評估報告也會一併刪除，且無法復原。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not talents %}
+                <tr>
+                    <td colspan="8">目前沒有藝人資料</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -395,6 +395,69 @@ def init_db(database_url: str) -> None:
                 """
             )
 
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS talents (
+                    id SERIAL PRIMARY KEY,
+                    stage_name VARCHAR(100) NOT NULL,
+                    real_name VARCHAR(100),
+                    gender VARCHAR(30),
+                    nationality VARCHAR(100),
+                    birthday DATE,
+                    team_name VARCHAR(100),
+                    agency_name VARCHAR(100),
+                    instagram_url TEXT,
+                    tiktok_url TEXT,
+                    youtube_url TEXT,
+                    contact_info TEXT,
+                    status VARCHAR(30) NOT NULL DEFAULT 'active',
+                    notes TEXT,
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS talent_evaluations (
+                    id SERIAL PRIMARY KEY,
+                    talent_id INTEGER NOT NULL REFERENCES talents(id) ON DELETE CASCADE,
+                    report_title VARCHAR(200) NOT NULL,
+                    evaluation_date DATE NOT NULL DEFAULT CURRENT_DATE,
+
+                    appearance_score INTEGER NOT NULL DEFAULT 0,
+                    performance_score INTEGER NOT NULL DEFAULT 0,
+                    social_score INTEGER NOT NULL DEFAULT 0,
+                    commercial_score INTEGER NOT NULL DEFAULT 0,
+                    team_fit_score INTEGER NOT NULL DEFAULT 0,
+                    growth_score INTEGER NOT NULL DEFAULT 0,
+                    risk_score INTEGER NOT NULL DEFAULT 0,
+
+                    instagram_followers INTEGER NOT NULL DEFAULT 0,
+                    tiktok_followers INTEGER NOT NULL DEFAULT 0,
+                    youtube_subscribers INTEGER NOT NULL DEFAULT 0,
+                    engagement_rate NUMERIC(6, 2) NOT NULL DEFAULT 0,
+
+                    business_value TEXT,
+                    social_analysis TEXT,
+                    team_fit_analysis TEXT,
+                    signing_review TEXT,
+                    investment_model TEXT,
+                    executive_notes TEXT,
+
+                    total_score INTEGER NOT NULL DEFAULT 0,
+                    grade VARCHAR(5) NOT NULL DEFAULT 'D',
+                    status VARCHAR(30) NOT NULL DEFAULT 'draft',
+
+                    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+                """
+            )
+
         conn.commit()
 
     seed_rbac(database_url)

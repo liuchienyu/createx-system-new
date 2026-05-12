@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}新增評估報告 - Createx{% endblock %}
+{% block page_title %}新增評估報告{% endblock %}
+{% block page_subtitle %}建立啦啦隊女孩 / 藝人商業評估報告{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h3>{{ talent.stage_name }}</h3>
+    <p>請依據形象、表演、社群、商業價值、球團適性與風險進行評分。</p>
+</div>
+
+<div class="card" style="max-width: 1080px;">
+    <form method="post">
+        <label>報告標題</label>
+        <input type="text" name="report_title" required>
+
+        <label>評估日期</label>
+        <input type="date" name="evaluation_date" required>
+
+        <h3>核心評分</h3>
+
+        <label>外型形象分數（0-20）</label>
+        <input type="number" name="appearance_score" min="0" max="20" value="0">
+
+        <label>表演 / 鏡頭感分數（0-20）</label>
+        <input type="number" name="performance_score" min="0" max="20" value="0">
+
+        <label>社群影響力分數（0-20）</label>
+        <input type="number" name="social_score" min="0" max="20" value="0">
+
+        <label>商業價值分數（0-20）</label>
+        <input type="number" name="commercial_score" min="0" max="20" value="0">
+
+        <label>球團 / 品牌適性分數（0-10）</label>
+        <input type="number" name="team_fit_score" min="0" max="10" value="0">
+
+        <label>成長潛力分數（0-10）</label>
+        <input type="number" name="growth_score" min="0" max="10" value="0">
+
+        <label>風險扣分（0-20）</label>
+        <input type="number" name="risk_score" min="0" max="20" value="0">
+
+        <h3>社群數據</h3>
+
+        <label>Instagram 粉絲數</label>
+        <input type="number" name="instagram_followers" value="0">
+
+        <label>TikTok 粉絲數</label>
+        <input type="number" name="tiktok_followers" value="0">
+
+        <label>YouTube 訂閱數</label>
+        <input type="number" name="youtube_subscribers" value="0">
+
+        <label>互動率（%）</label>
+        <input type="number" step="0.01" name="engagement_rate" value="0">
+
+        <h3>文字分析</h3>
+
+        <label>商業價值評估</label>
+        <textarea name="business_value" rows="4"></textarea>
+
+        <label>社群數據分析</label>
+        <textarea name="social_analysis" rows="4"></textarea>
+
+        <label>球團適性評估</label>
+        <textarea name="team_fit_analysis" rows="4"></textarea>
+
+        <label>簽約審核意見</label>
+        <textarea name="signing_review" rows="4"></textarea>
+
+        <label>投資收益模型</label>
+        <textarea name="investment_model" rows="4"></textarea>
+
+        {% if current_user.has_permission('review_talent_signing') %}
+        <label>高層內部備註</label>
+        <textarea name="executive_notes" rows="4"></textarea>
+        {% endif %}
+
+        <label>報告狀態</label>
+        <select name="status">
+            <option value="draft">草稿</option>
+            <option value="reviewing">審核中</option>
+            <option value="approved">建議簽約</option>
+            <option value="rejected">不建議簽約</option>
+        </select>
+
+        <div class="page-actions">
+            <a href="{{ url_for('talent_evaluation.detail', talent_id=talent.id) }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立報告</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

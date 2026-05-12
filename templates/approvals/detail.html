@@ -40,7 +40,7 @@
                     <td>{{ s.approver_name or '' }}</td>
                     <td>{{ s.action_status }}</td>
                     <td>{{ s.action_note or '' }}</td>
-                    <td>{{ s.acted_at or '' }}</td>
+                    <td>{{ s.acted_at|datetime_tw or '' }}</td>
                 </tr>
                 {% endfor %}
                 {% if not steps %}

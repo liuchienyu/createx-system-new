@@ -18,6 +18,8 @@ from modules.hr import (
 )
 from modules.approvals import approvals_bp
 
+from modules.talent_evaluation import talent_evaluation_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -62,6 +64,7 @@ def create_app():
     app.register_blueprint(hr_leave_bp)
     app.register_blueprint(hr_attendance_bp)
     app.register_blueprint(approvals_bp)
+    app.register_blueprint(talent_evaluation_bp)
     
 
     @app.errorhandler(403)

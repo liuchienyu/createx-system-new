@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}藝人明細 - Createx{% endblock %}
+{% block page_title %}藝人明細{% endblock %}
+{% block page_subtitle %}查看藝人資料、社群連結與評估報告{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="section-header">
+        <h3>{{ talent.stage_name }}</h3>
+        <div class="page-actions">
+            {% if current_user.has_permission('edit_talent_evaluation') %}
+            <a class="btn btn-sm" href="{{ url_for('talent_evaluation.edit', talent_id=talent.id) }}">編輯資料</a>
+            <a class="btn btn-sm" href="{{ url_for('talent_evaluation.evaluation_create', talent_id=talent.id) }}">新增評估報告</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <p><strong>本名：</strong>{{ talent.real_name or '' }}</p>
+    <p><strong>性別：</strong>{{ talent.gender or '' }}</p>
+    <p><strong>國籍：</strong>{{ talent.nationality or '' }}</p>
+    <p><strong>生日：</strong>{{ talent.birthday or '' }}</p>
+    <p><strong>球團 / 團隊：</strong>{{ talent.team_name or '' }}</p>
+    <p><strong>經紀公司：</strong>{{ talent.agency_name or '' }}</p>
+    <p><strong>狀態：</strong>{{ talent.status }}</p>
+    <p><strong>聯絡資訊：</strong>{{ talent.contact_info or '' }}</p>
+    <p><strong>備註：</strong>{{ talent.notes or '' }}</p>
+
+    <div class="page-actions">
+        {% if talent.instagram_url %}
+        <a class="btn btn-secondary" href="{{ talent.instagram_url }}" target="_blank">Instagram</a>
+        {% endif %}
+        {% if talent.tiktok_url %}
+        <a class="btn btn-secondary" href="{{ talent.tiktok_url }}" target="_blank">TikTok</a>
+        {% endif %}
+        {% if talent.youtube_url %}
+        <a class="btn btn-secondary" href="{{ talent.youtube_url }}" target="_blank">YouTube</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-header">
+        <h3>評估報告</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>報告標題</th>
+                    <th>評估日期</th>
+                    <th>總分</th>
+                    <th>等級</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in evaluations %}
+                <tr>
+                    <td>{{ e.report_title }}</td>
+                    <td>{{ e.evaluation_date }}</td>
+                    <td>{{ e.total_score }}</td>
+                    <td>
+                        {% if e.grade == 'S' %}
+                        <span class="status-chip status-chip-success">S</span>
+                        {% elif e.grade == 'A' %}
+                        <span class="status-chip status-chip-info">A</span>
+                        {% elif e.grade == 'B' %}
+                        <span class="status-chip status-chip-warning">B</span>
+                        {% else %}
+                        <span class="status-chip status-chip-neutral">{{ e.grade }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ e.status }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('talent_evaluation.evaluation_detail', evaluation_id=e.id) }}">查看</a>
+
+                        {% if current_user.has_permission('delete_talent_evaluation') %}
+                        <form method="post"
+                              action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=e.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除評估報告？"
+                              data-confirm-text="刪除後將無法復原。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not evaluations %}
+                <tr>
+                    <td colspan="6">目前沒有評估報告</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="page-actions">
+    <a href="{{ url_for('talent_evaluation.index') }}" class="btn btn-secondary">返回</a>
+</div>
+
+{% endblock %}

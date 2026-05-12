@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}評估報告 - Createx{% endblock %}
+{% block page_title %}評估報告{% endblock %}
+{% block page_subtitle %}查看所有藝人評估報告與等級判定{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="section-header">
+        <h3>評估報告列表</h3>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>藝人</th>
+                    <th>報告標題</th>
+                    <th>評估日期</th>
+                    <th>總分</th>
+                    <th>等級</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in evaluations %}
+                <tr>
+                    <td>{{ e.stage_name }}</td>
+                    <td>{{ e.report_title }}</td>
+                    <td>{{ e.evaluation_date }}</td>
+                    <td>{{ e.total_score }}</td>
+                    <td>
+                        {% if e.grade == 'S' %}
+                        <span class="status-chip status-chip-success">S 級</span>
+                        {% elif e.grade == 'A' %}
+                        <span class="status-chip status-chip-info">A 級</span>
+                        {% elif e.grade == 'B' %}
+                        <span class="status-chip status-chip-warning">B 級</span>
+                        {% elif e.grade == 'C' %}
+                        <span class="status-chip status-chip-neutral">C 級</span>
+                        {% else %}
+                        <span class="status-chip status-chip-danger">D 級</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ e.status }}</td>
+                    <td class="inline-actions">
+                        <a class="btn btn-sm" href="{{ url_for('talent_evaluation.evaluation_detail', evaluation_id=e.id) }}">查看</a>
+
+                        {% if current_user.has_permission('delete_talent_evaluation') %}
+                        <form method="post"
+                              action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=e.id) }}"
+                              class="inline-delete-form"
+                              data-confirm-title="確認刪除評估報告？"
+                              data-confirm-text="刪除後將無法復原。"
+                              data-confirm-button="確認刪除">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not evaluations %}
+                <tr>
+                    <td colspan="7">目前沒有評估報告</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

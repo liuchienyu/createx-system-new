@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}新增藝人 - Createx{% endblock %}
+{% block page_title %}新增藝人{% endblock %}
+{% block page_subtitle %}建立藝人 / 啦啦隊女孩基礎資料{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 960px;">
+    <form method="post">
+        <label>藝名 / 顯示名稱</label>
+        <input type="text" name="stage_name" required>
+
+        <label>本名</label>
+        <input type="text" name="real_name">
+
+        <label>性別</label>
+        <input type="text" name="gender">
+
+        <label>國籍</label>
+        <input type="text" name="nationality" placeholder="例如：韓國、台灣、日本">
+
+        <label>生日</label>
+        <input type="date" name="birthday">
+
+        <label>球團 / 團隊</label>
+        <input type="text" name="team_name" placeholder="例如：味全龍、韓國啦啦隊、經紀公司團隊">
+
+        <label>經紀公司</label>
+        <input type="text" name="agency_name">
+
+        <label>Instagram 連結</label>
+        <input type="url" name="instagram_url">
+
+        <label>TikTok 連結</label>
+        <input type="url" name="tiktok_url">
+
+        <label>YouTube 連結</label>
+        <input type="url" name="youtube_url">
+
+        <label>聯絡資訊</label>
+        <textarea name="contact_info" rows="3"></textarea>
+
+        <label>狀態</label>
+        <select name="status">
+            <option value="active">觀察中</option>
+            <option value="contacting">接洽中</option>
+            <option value="signed">已簽約</option>
+            <option value="rejected">不合作</option>
+            <option value="archived">封存</option>
+        </select>
+
+        <label>備註</label>
+        <textarea name="notes" rows="5"></textarea>
+
+        <div class="page-actions">
+            <a href="{{ url_for('talent_evaluation.index') }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">建立</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

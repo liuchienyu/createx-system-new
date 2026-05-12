@@ -31,6 +31,10 @@ PERMS = [
     ("edit_approvals", "可建立與送出公文"),
     ("approve_documents", "可執行公文簽核"),
     ("manage_approval_templates", "可管理公文模板與簽核流程模板"),
+    ("view_talent_evaluation", "可查看藝人評估中心"),
+    ("edit_talent_evaluation", "可新增與編輯藝人資料及評估報告"),
+    ("delete_talent_evaluation", "可刪除藝人資料及評估報告"),
+    ("review_talent_signing", "可進行簽約審核與高層備註"),
 ]
 
 DEFAULT_ROLES = {
@@ -71,6 +75,10 @@ DEFAULT_ROLES = {
             "edit_approvals",
             "approve_documents",
             "manage_approval_templates",
+            "view_talent_evaluation",
+            "edit_talent_evaluation",
+            "delete_talent_evaluation",
+            "review_talent_signing",
         ],
     },
     "Staff": {
@@ -88,6 +96,8 @@ DEFAULT_ROLES = {
             "clock_attendance",
             "view_approvals",
             "edit_approvals",
+            "view_talent_evaluation",
+            "edit_talent_evaluation",
         ],
     },
     "Viewer": {
