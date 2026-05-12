@@ -123,12 +123,12 @@
                 <details class="nav-group" {% if ep.startswith('talent_evaluation.') %}open{% endif %}>
                     <summary><span class="nav-text">藝人評估中心</span></summary>
                     <div class="nav-submenu">
-                        <a class="{% if ep in ['talent_evaluation.evaluations_index', 'talent_evaluation.evaluation_detail', 'talent_evaluation.evaluation_create', 'talent_evaluation.evaluation_edit'] %}active{% endif %}"
+                        <a class="{% if ep in ['talent_evaluation.index', 'talent_evaluation.detail', 'talent_evaluation.create', 'talent_evaluation.edit'] %}active{% endif %}"
                         href="{{ url_for('talent_evaluation.index') }}">
                             <span class="nav-text">藝人資料庫</span>
                         </a>
 
-                        <a class="{% if ep in ['talent_evaluation.evaluations_index', 'talent_evaluation.evaluation_detail', 'talent_evaluation.evaluation_create'] %}active{% endif %}"
+                        <a class="{% if ep in ['talent_evaluation.evaluations_index', 'talent_evaluation.evaluation_detail', 'talent_evaluation.evaluation_create', 'talent_evaluation.evaluation_edit'] %}active{% endif %}"
                         href="{{ url_for('talent_evaluation.evaluations_index') }}">
                             <span class="nav-text">評估報告</span>
                         </a>
