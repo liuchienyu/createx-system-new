@@ -233,6 +233,66 @@ def create_evaluation(database_url: str, data: dict):
 
     return evaluation_id
 
+def update_evaluation(database_url: str, evaluation_id: int, data: dict):
+    total_score, grade = calculate_total_score(data)
+
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE talent_evaluations
+                SET report_title = %s,
+                    evaluation_date = %s,
+                    appearance_score = %s,
+                    performance_score = %s,
+                    social_score = %s,
+                    commercial_score = %s,
+                    team_fit_score = %s,
+                    growth_score = %s,
+                    risk_score = %s,
+                    instagram_followers = %s,
+                    tiktok_followers = %s,
+                    youtube_subscribers = %s,
+                    engagement_rate = %s,
+                    business_value = %s,
+                    social_analysis = %s,
+                    team_fit_analysis = %s,
+                    signing_review = %s,
+                    investment_model = %s,
+                    executive_notes = %s,
+                    total_score = %s,
+                    grade = %s,
+                    status = %s,
+                    updated_at = NOW()
+                WHERE id = %s
+                """,
+                (
+                    data["report_title"],
+                    data["evaluation_date"],
+                    data["appearance_score"],
+                    data["performance_score"],
+                    data["social_score"],
+                    data["commercial_score"],
+                    data["team_fit_score"],
+                    data["growth_score"],
+                    data["risk_score"],
+                    data["instagram_followers"],
+                    data["tiktok_followers"],
+                    data["youtube_subscribers"],
+                    data["engagement_rate"],
+                    data["business_value"],
+                    data["social_analysis"],
+                    data["team_fit_analysis"],
+                    data["signing_review"],
+                    data["investment_model"],
+                    data["executive_notes"],
+                    total_score,
+                    grade,
+                    data["status"],
+                    evaluation_id,
+                ),
+            )
+        conn.commit()
 
 def delete_evaluation(database_url: str, evaluation_id: int):
     with get_db(database_url) as conn:

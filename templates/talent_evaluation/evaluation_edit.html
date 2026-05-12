@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}編輯評估報告 - Createx{% endblock %}
+{% block page_title %}編輯評估報告{% endblock %}
+{% block page_subtitle %}修改啦啦隊女孩 / 藝人商業評估報告{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h3>{{ evaluation.stage_name }}</h3>
+    <p>
+        目前總分：
+        <strong>{{ evaluation.total_score }}</strong>
+        ｜目前等級：
+        <strong>{{ evaluation.grade }}</strong>
+    </p>
+</div>
+
+<div class="card" style="max-width: 1080px;">
+    <form method="post">
+        <label>報告標題</label>
+        <input type="text" name="report_title" value="{{ evaluation.report_title }}" required>
+
+        <label>評估日期</label>
+        <input type="date" name="evaluation_date" value="{{ evaluation.evaluation_date or '' }}" required>
+
+        <h3>核心評分</h3>
+
+        <label>外型形象分數（0-20）</label>
+        <input type="number" name="appearance_score" min="0" max="20" value="{{ evaluation.appearance_score }}">
+
+        <label>表演 / 鏡頭感分數（0-20）</label>
+        <input type="number" name="performance_score" min="0" max="20" value="{{ evaluation.performance_score }}">
+
+        <label>社群影響力分數（0-20）</label>
+        <input type="number" name="social_score" min="0" max="20" value="{{ evaluation.social_score }}">
+
+        <label>商業價值分數（0-20）</label>
+        <input type="number" name="commercial_score" min="0" max="20" value="{{ evaluation.commercial_score }}">
+
+        <label>球團 / 品牌適性分數（0-10）</label>
+        <input type="number" name="team_fit_score" min="0" max="10" value="{{ evaluation.team_fit_score }}">
+
+        <label>成長潛力分數（0-10）</label>
+        <input type="number" name="growth_score" min="0" max="10" value="{{ evaluation.growth_score }}">
+
+        <label>風險扣分（0-20）</label>
+        <input type="number" name="risk_score" min="0" max="20" value="{{ evaluation.risk_score }}">
+
+        <h3>社群數據</h3>
+
+        <label>Instagram 粉絲數</label>
+        <input type="number" name="instagram_followers" min="0" value="{{ evaluation.instagram_followers }}">
+
+        <label>TikTok 粉絲數</label>
+        <input type="number" name="tiktok_followers" min="0" value="{{ evaluation.tiktok_followers }}">
+
+        <label>YouTube 訂閱數</label>
+        <input type="number" name="youtube_subscribers" min="0" value="{{ evaluation.youtube_subscribers }}">
+
+        <label>互動率（%）</label>
+        <input type="number" step="0.01" name="engagement_rate" min="0" value="{{ evaluation.engagement_rate }}">
+
+        <h3>文字分析</h3>
+
+        <label>商業價值評估</label>
+        <textarea name="business_value" rows="4">{{ evaluation.business_value or '' }}</textarea>
+
+        <label>社群數據分析</label>
+        <textarea name="social_analysis" rows="4">{{ evaluation.social_analysis or '' }}</textarea>
+
+        <label>球團適性評估</label>
+        <textarea name="team_fit_analysis" rows="4">{{ evaluation.team_fit_analysis or '' }}</textarea>
+
+        <label>簽約審核意見</label>
+        <textarea name="signing_review" rows="4">{{ evaluation.signing_review or '' }}</textarea>
+
+        <label>投資收益模型</label>
+        <textarea name="investment_model" rows="4">{{ evaluation.investment_model or '' }}</textarea>
+
+        {% if current_user.has_permission('review_talent_signing') %}
+        <label>高層內部備註</label>
+        <textarea name="executive_notes" rows="4">{{ evaluation.executive_notes or '' }}</textarea>
+        {% endif %}
+
+        <label>報告狀態</label>
+        <select name="status">
+            <option value="draft" {% if evaluation.status == 'draft' %}selected{% endif %}>草稿</option>
+            <option value="reviewing" {% if evaluation.status == 'reviewing' %}selected{% endif %}>審核中</option>
+            <option value="approved" {% if evaluation.status == 'approved' %}selected{% endif %}>建議簽約</option>
+            <option value="rejected" {% if evaluation.status == 'rejected' %}selected{% endif %}>不建議簽約</option>
+        </select>
+
+        <div class="page-actions">
+            <a href="{{ url_for('talent_evaluation.evaluation_detail', evaluation_id=evaluation.id) }}" class="btn btn-secondary">返回</a>
+            <button type="submit" class="btn">儲存報告</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

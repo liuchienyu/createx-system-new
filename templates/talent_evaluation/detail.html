@@ -77,7 +77,9 @@
                     <td>{{ e.status }}</td>
                     <td class="inline-actions">
                         <a class="btn btn-sm" href="{{ url_for('talent_evaluation.evaluation_detail', evaluation_id=e.id) }}">查看</a>
-
+                        {% if current_user.has_permission('edit_talent_evaluation') %}
+                        <a class="btn btn-sm" href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=e.id) }}">編輯</a>
+                        {% endif %}
                         {% if current_user.has_permission('delete_talent_evaluation') %}
                         <form method="post"
                               action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=e.id) }}"

@@ -12,6 +12,7 @@ from modules.talent_evaluation.services import (
     get_evaluation,
     create_evaluation,
     delete_evaluation,
+    update_evaluation,
 )
 
 talent_evaluation_bp = Blueprint(
@@ -221,6 +222,114 @@ def evaluation_detail(evaluation_id: int):
         evaluation=evaluation,
     )
 
+@talent_evaluation_bp.route("/evaluations/<int:evaluation_id>/edit", methods=["GET", "POST"])
+@login_required
+@permission_required("edit_talent_evaluation")
+def evaluation_edit(evaluation_id: int):
+    database_url = current_app.config["DATABASE_URL"]
+    evaluation = get_evaluation(database_url, evaluation_id)
+
+    if not evaluation:
+        abort(404)
+
+    if request.method == "POST":
+        try:
+            data = {
+                "report_title": (request.form.get("report_title") or "").strip(),
+                "evaluation_date": (request.form.get("evaluation_date") or "").strip(),
+                "appearance_score": int(request.form.get("appearance_score") or 0),
+                "performance_score": int(request.form.get("performance_score") or 0),
+                "social_score": int(request.form.get("social_score") or 0),
+                "commercial_score": int(request.form.get("commercial_score") or 0),
+                "team_fit_score": int(request.form.get("team_fit_score") or 0),
+                "growth_score": int(request.form.get("growth_score") or 0),
+                "risk_score": int(request.form.get("risk_score") or 0),
+                "instagram_followers": int(request.form.get("instagram_followers") or 0),
+                "tiktok_followers": int(request.form.get("tiktok_followers") or 0),
+                "youtube_subscribers": int(request.form.get("youtube_subscribers") or 0),
+                "engagement_rate": float(request.form.get("engagement_rate") or 0),
+                "business_value": (request.form.get("business_value") or "").strip() or None,
+                "social_analysis": (request.form.get("social_analysis") or "").strip() or None,
+                "team_fit_analysis": (request.form.get("team_fit_analysis") or "").strip() or None,
+                "signing_review": (request.form.get("signing_review") or "").strip() or None,
+                "investment_model": (request.form.get("investment_model") or "").strip() or None,
+                "executive_notes": (request.form.get("executive_notes") or "").strip() or None,
+                "status": (request.form.get("status") or "").strip() or "draft",
+            }
+        except ValueError:
+            flash("分數、粉絲數或互動率格式錯誤", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if not data["report_title"]:
+            flash("請輸入評估報告標題", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if not data["evaluation_date"]:
+            flash("請選擇評估日期", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        for field in [
+            "appearance_score",
+            "performance_score",
+            "social_score",
+            "commercial_score",
+            "team_fit_score",
+            "growth_score",
+            "risk_score",
+        ]:
+            if data[field] < 0:
+                flash("分數不可小於 0", "danger")
+                return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["appearance_score"] > 20:
+            flash("外型形象分數不可超過 20", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["performance_score"] > 20:
+            flash("表演 / 鏡頭感分數不可超過 20", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["social_score"] > 20:
+            flash("社群影響力分數不可超過 20", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["commercial_score"] > 20:
+            flash("商業價值分數不可超過 20", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["team_fit_score"] > 10:
+            flash("球團 / 品牌適性分數不可超過 10", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["growth_score"] > 10:
+            flash("成長潛力分數不可超過 10", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["risk_score"] > 20:
+            flash("風險扣分不可超過 20", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["instagram_followers"] < 0 or data["tiktok_followers"] < 0 or data["youtube_subscribers"] < 0:
+            flash("社群粉絲數不可小於 0", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["engagement_rate"] < 0:
+            flash("互動率不可小於 0", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        if data["status"] not in ["draft", "reviewing", "approved", "rejected"]:
+            flash("報告狀態不合法", "danger")
+            return redirect(url_for("talent_evaluation.evaluation_edit", evaluation_id=evaluation_id))
+
+        update_evaluation(database_url, evaluation_id, data)
+
+        flash("評估報告更新成功", "success")
+        return redirect(url_for("talent_evaluation.evaluation_detail", evaluation_id=evaluation_id))
+
+    return render_template(
+        "talent_evaluation/evaluation_edit.html",
+        evaluation=evaluation,
+    )
 
 @talent_evaluation_bp.route("/evaluations/<int:evaluation_id>/delete", methods=["POST"])
 @login_required

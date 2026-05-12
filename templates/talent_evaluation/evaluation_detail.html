@@ -106,6 +106,10 @@
 <div class="page-actions">
     <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">返回藝人明細</a>
 
+    {% if current_user.has_permission('edit_talent_evaluation') %}
+    <a href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=evaluation.id) }}" class="btn">編輯報告</a>
+    {% endif %}
+
     {% if current_user.has_permission('delete_talent_evaluation') %}
     <form method="post"
           action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=evaluation.id) }}"
