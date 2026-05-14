@@ -290,99 +290,92 @@
             <button type="button" class="btn btn-sm" id="downloadEmployeeCardBtn">下載員工證</button>
         </div>
 
-       <div id="employeeCardCapture" class="employee-id-card">
+        <div id="employeeCardCapture" class="employee-id-card">
 
-        <div class="employee-card-glow glow-top"></div>
-        <div class="employee-card-glow glow-bottom"></div>
+            <div class="employee-card-overlay"></div>
 
-        <div class="employee-card-header">
-            <div>
-                <h3>創造娛樂工作室CREATEX ENTERTAINMENT</h3>
-                <p> 員工識別證</p>
-            </div>
+            <div class="employee-card-line line-top"></div>
+            <div class="employee-card-line line-bottom"></div>
 
-            <div class="employee-card-badge">
-                STAFF CARD
-            </div>
-        </div>
+            <div class="employee-card-header">
 
-        <div class="employee-card-photo-section">
-
-            <div class="employee-card-photo">
-                {% if card_photo_url %}
-                <img src="{{ card_photo_url }}" alt="員工照片">
-                {% else %}
-                <div class="employee-card-photo-placeholder">
-                    {{ card_name[:1] }}
-                </div>
-                {% endif %}
-            </div>
-
-        </div>
-
-        <div class="employee-card-name-section">
-
-            <h1>
-                {{ card_name }}
-            </h1>
-
-            <h2>
-                {% if card_english_name %}
-                    {{ card_english_name }}
-                {% else %}
-                    工作人員
-                {% endif %}
-            </h2>
-
-        </div>
-
-        <div class="employee-card-info-grid">
-
-            <div class="employee-card-info-item">
-                <span>員工編號</span>
-
-                <strong>
-                    {{ card_employee_no }}
-                </strong>
-            </div>
-
-            <div class="employee-card-info-item">
-                <span>部門</span>
-
-                <strong>
-                    {{ card_department }}
-                </strong>
-            </div>
-
-            <div class="employee-card-info-item full">
-                <span>職稱</span>
-
-                <strong>
-                    {{ card_job_title }}
-                </strong>
-            </div>
-
-        </div>
-
-        <div class="employee-card-footer">
-
-            <div class="employee-card-footer-left">
-                <div class="employee-card-logo">
-                    C
+                <div class="employee-card-brand">
+                    <h1>CREATEX</h1>
+                    <p>ENTERTAINMENT</p>
                 </div>
 
-                <div>
-                    <p>CREATE YOUR ENTERTAINMENT</p>
-                    <strong>CREATEX</strong>
-                </div>
             </div>
 
-            <div class="employee-card-footer-right">
-                INTERNAL
+            <div class="employee-card-photo-section">
+
+                <div class="employee-card-photo-frame">
+
+                    <div class="employee-card-photo">
+
+                        {% if card_photo_url %}
+                        <img src="{{ card_photo_url }}" alt="員工照片">
+                        {% else %}
+                        <div class="employee-card-photo-placeholder">
+                            {{ card_name[:1] }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="employee-card-name-section">
+
+                <h2>{{ card_name }}</h2>
+
+                <h3>
+                    {% if card_english_name %}
+                        {{ card_english_name }}
+                    {% else %}
+                        STAFF MEMBER
+                    {% endif %}
+                </h3>
+
+            </div>
+
+            <div class="employee-card-position">
+                {{ card_job_title }}
+            </div>
+
+            <div class="employee-card-info-list">
+
+                <div class="employee-card-info-row">
+                    <span>EMPLOYEE ID</span>
+                    <strong>{{ card_employee_no }}</strong>
+                </div>
+
+                <div class="employee-card-info-row">
+                    <span>DEPARTMENT</span>
+                    <strong>{{ card_department }}</strong>
+                </div>
+
+                <div class="employee-card-info-row">
+                    <span>POSITION</span>
+                    <strong>{{ card_job_title }}</strong>
+                </div>
+
+            </div>
+
+            <div class="employee-card-footer">
+
+                <div class="employee-card-footer-logo">
+                    X
+                </div>
+
+                <div class="employee-card-footer-text">
+                    INTERNAL STAFF
+                </div>
+
             </div>
 
         </div>
-
     </div>
 </div>
 {% endif %}
