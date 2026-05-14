@@ -118,6 +118,7 @@
                        href="{{ url_for('projects.project_index') }}">
                         <span class="nav-text">專案列表</span>
                     </a>
+
                     {% if current_user.has_permission('edit_projects') %}
                     <a class="{% if ep == 'projects.project_create' %}active{% endif %}"
                        href="{{ url_for('projects.project_create') }}">
@@ -305,14 +306,21 @@
 
             <div class="employee-card-main">
                 <h2>{{ current_user.display_name }}</h2>
-                <h1>{{ current_user.username|upper if current_user.username is defined else current_user.display_name|upper }}</h1>
+                <h1>
+                    {% if current_user.username is defined and current_user.username %}
+                        {{ current_user.username|upper }}
+                    {% else %}
+                        {{ current_user.display_name|upper }}
+                    {% endif %}
+                </h1>
             </div>
 
             <div class="employee-card-meta">
                 <div>
                     <span>ID</span>
-                    <strong>CTX-{{ "%04d"|format(current_user.id) }}</strong>
+                    <strong>CTX-{{ current_user.id }}</strong>
                 </div>
+
                 <div>
                     <span>ROLE</span>
                     <strong>{{ current_user.role_name if current_user.role_name is defined else 'TEAM' }}</strong>
