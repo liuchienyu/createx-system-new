@@ -38,7 +38,6 @@
 
         <nav class="nav-menu">
 
-            <!-- Dashboard -->
             <a
                 class="nav-link {% if ep in ['dashboard.index', 'dashboard.home'] %}active{% endif %}"
                 href="{{ url_for('dashboard.index') }}"
@@ -46,7 +45,6 @@
                 <span class="nav-text">首頁儀表板</span>
             </a>
 
-            <!-- Admin -->
             {% if current_user.has_permission('admin_users')
                or current_user.has_permission('admin_roles') %}
 
@@ -85,7 +83,6 @@
 
             {% endif %}
 
-            <!-- Finance -->
             {% if current_user.has_permission('view_finance') %}
 
             <details
@@ -127,20 +124,12 @@
                         財務分類管理
                     </a>
 
-                    <a
-                        class="{% if ep in ['finance.ar_ap_index','finance.ar_ap_create','finance.ar_ap_edit'] %}active{% endif %}"
-                        href="{{ url_for('finance.ar_ap_index') }}"
-                    >
-                        應收應付管理
-                    </a>
-
                 </div>
 
             </details>
 
             {% endif %}
 
-            <!-- Projects -->
             {% if current_user.has_permission('view_projects') %}
 
             <details
@@ -176,47 +165,7 @@
 
             {% endif %}
 
-            <!-- Talent Evaluation -->
-            {% if current_user.has_permission('view_talent_evaluation') %}
-
-            <details
-                class="nav-group"
-                {% if ep.startswith('talent_evaluation.') %}open{% endif %}
-            >
-
-                <summary>
-                    <span class="nav-text">藝人評估中心</span>
-                </summary>
-
-                <div class="nav-submenu">
-
-                    <a
-                        class="{% if ep in ['talent_evaluation.index','talent_evaluation.create','talent_evaluation.edit'] %}active{% endif %}"
-                        href="{{ url_for('talent_evaluation.index') }}"
-                    >
-                        藝人資料庫
-                    </a>
-
-                    <a
-                        class="{% if ep in ['talent_evaluation.evaluations_index','talent_evaluation.evaluation_detail','talent_evaluation.evaluation_create','talent_evaluation.evaluation_edit'] %}active{% endif %}"
-                        href="{{ url_for('talent_evaluation.evaluations_index') }}"
-                    >
-                        評估報告
-                    </a>
-
-                </div>
-
-            </details>
-
-            {% endif %}
-
-            <!-- HR -->
-            {% if current_user.has_permission('view_hr')
-               or current_user.has_permission('view_departments')
-               or current_user.has_permission('view_job_titles')
-               or current_user.has_permission('view_employee_movements')
-               or current_user.has_permission('view_leave')
-               or current_user.has_permission('view_attendance') %}
+            {% if current_user.has_permission('view_hr') %}
 
             <details
                 class="nav-group"
@@ -229,59 +178,40 @@
 
                 <div class="nav-submenu">
 
-                    {% if current_user.has_permission('view_hr') %}
                     <a
                         class="{% if ep.startswith('hr_employees.') %}active{% endif %}"
                         href="{{ url_for('hr_employees.index') }}"
                     >
                         人員主檔
                     </a>
-                    {% endif %}
 
-                    {% if current_user.has_permission('view_departments') %}
                     <a
                         class="{% if ep.startswith('hr_departments.') %}active{% endif %}"
                         href="{{ url_for('hr_departments.index') }}"
                     >
                         部門管理
                     </a>
-                    {% endif %}
 
-                    {% if current_user.has_permission('view_job_titles') %}
                     <a
                         class="{% if ep.startswith('hr_job_titles.') %}active{% endif %}"
                         href="{{ url_for('hr_job_titles.index') }}"
                     >
                         職稱管理
                     </a>
-                    {% endif %}
 
-                    {% if current_user.has_permission('view_employee_movements') %}
-                    <a
-                        class="{% if ep.startswith('hr_movements.') %}active{% endif %}"
-                        href="{{ url_for('hr_movements.index') }}"
-                    >
-                        任用異動
-                    </a>
-                    {% endif %}
-
-                    {% if current_user.has_permission('view_leave') %}
                     <a
                         class="{% if ep.startswith('hr_leave.') %}active{% endif %}"
                         href="{{ url_for('hr_leave.leave_requests_index') }}"
                     >
                         請假管理
                     </a>
-                    {% endif %}
 
-                    {% if current_user.has_permission('view_attendance') %}
                     <a
                         class="{% if ep.startswith('hr_attendance.') %}active{% endif %}"
                         href="{{ url_for('hr_attendance.attendance_index') }}"
                     >
                         出勤管理
                     </a>
-                    {% endif %}
 
                 </div>
 
@@ -331,7 +261,6 @@
                     <button
                         type="button"
                         class="topbar-user-button"
-                        id="openEmployeeCardBtn"
                     >
                         {{ current_user.display_name }}
                     </button>
@@ -416,8 +345,6 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 <script>
 
 function updateClock() {
@@ -446,61 +373,11 @@ function updateClock() {
 
 }
 
-function initEmployeeCard() {
-
-    const openBtn = document.getElementById("openEmployeeCardBtn");
-    const closeBtn = document.getElementById("closeEmployeeCardBtn");
-    const backdrop = document.getElementById("employeeCardBackdrop");
-    const modal = document.getElementById("employeeCardModal");
-    const downloadBtn = document.getElementById("downloadEmployeeCardBtn");
-    const card = document.getElementById("employeeCardCapture");
-
-    function openModal() {
-        if (modal) modal.classList.remove("hidden");
-    }
-
-    function closeModal() {
-        if (modal) modal.classList.add("hidden");
-    }
-
-    if (openBtn) openBtn.addEventListener("click", openModal);
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (backdrop) backdrop.addEventListener("click", closeModal);
-
-    if (downloadBtn && card) {
-
-        downloadBtn.addEventListener("click", async function () {
-
-            const canvas = await html2canvas(card, {
-                backgroundColor: null,
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
-                logging: false
-            });
-
-            const link = document.createElement("a");
-
-            link.download =
-                `${card.dataset.filename || 'createx_staff_card'}.png`;
-
-            link.href = canvas.toDataURL("image/png");
-
-            link.click();
-
-        });
-
-    }
-
-}
-
 document.addEventListener("DOMContentLoaded", function () {
 
     updateClock();
 
     setInterval(updateClock, 1000);
-
-    initEmployeeCard();
 
 });
 
