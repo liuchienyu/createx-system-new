@@ -221,6 +221,34 @@ def init_db(database_url: str) -> None:
 
             cur.execute(
                 """
+                ALTER TABLE employees
+                ADD COLUMN IF NOT EXISTS english_name VARCHAR(255);
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE employees
+                ADD COLUMN IF NOT EXISTS photo_url TEXT;
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE employees
+                ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+                """
+            )
+
+            cur.execute(
+                """
+                ALTER TABLE employees
+                ADD COLUMN IF NOT EXISTS employee_no VARCHAR(50);
+                """
+            )
+
+            cur.execute(
+                """
                 CREATE TABLE IF NOT EXISTS employee_movements (
                     id SERIAL PRIMARY KEY,
                     employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
