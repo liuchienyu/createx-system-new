@@ -383,91 +383,9 @@
 
 {% if current_user.is_authenticated %}
 
-{% set card_name = employee_card.name if employee_card and employee_card.name else current_user.display_name %}
-
-{% set card_english_name =
-    employee_card.english_name
-    if employee_card and employee_card.english_name
-    else 'STAFF MEMBER'
-%}
-
-{% set card_employee_no =
-    employee_card.employee_no
-    if employee_card and employee_card.employee_no
-    else ('CTX-' ~ current_user.id)
-%}
-
-{% set card_department =
-    employee_card.department_name
-    if employee_card and employee_card.department_name
-    else '未設定'
-%}
-
-{% set card_job_title =
-    employee_card.job_title_name
-    if employee_card and employee_card.job_title_name
-    else (
-        current_user.role_name
-        if current_user.role_name is defined
-        else 'TEAM MEMBER'
-    )
-%}
-
-{% set card_photo_url =
-    employee_card.photo_url
-    if employee_card and employee_card.photo_url
-    else ''
-%}
-
-<div id="employeeCardModal" class="employee-card-modal hidden">
-
-    <div
-        class="employee-card-backdrop"
-        id="employeeCardBackdrop">
-    </div>
-
-    <div class="employee-card-dialog">
-
-        <div class="employee-card-actionbar no-print">
-
-            <button
-                type="button"
-                class="btn btn-secondary btn-sm"
-                id="closeEmployeeCardBtn">
-                關閉
-            </button>
-
-            <button
-                type="button"
-                class="btn btn-sm"
-                id="downloadEmployeeCardBtn">
-                下載員工證
-            </button>
-
-        </div>
-
-        <div
-            id="employeeCardCapture"
-            class="employee-id-card"
-            data-filename="{{ card_name }}"
-        >
-
-            <!-- Background -->
-            <div class="employee-card-circle circle-top"></div>
-            <div class="employee-card-circle circle-bottom"></div>
-
-            <!-- Header -->
-            <div class="employee-card-header">
-
-                <div>
-                    <h1>CREATEX</h1>
-                    <p>ENTERTAINMENT STAFF CARD</p>
-                </div>
-
             </div>
 
-            <!-- Photo -->
-            <div class="employee-card-photo-wrap">
+            <div class="employee-card-profile">
 
                 <div class="employee-card-photo">
 
@@ -481,46 +399,49 @@
 
                 </div>
 
+                <div class="employee-card-profile-info">
+
+                    <h2>{{ card_name }}</h2>
+
+                    <h3>{{ card_english_name }}</h3>
+
+                    <div class="employee-card-role">
+                        {{ card_job_title }}
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- Name -->
-            <div class="employee-card-name">
+            <div class="employee-card-divider"></div>
 
-                <h2>{{ card_name }}</h2>
+            <div class="employee-card-info-grid">
 
-                <h3>{{ card_english_name }}</h3>
-
-            </div>
-
-            <!-- Info -->
-            <div class="employee-card-info">
-
-                <div class="employee-card-info-item">
+                <div class="employee-card-info-box">
                     <span>EMPLOYEE ID</span>
                     <strong>{{ card_employee_no }}</strong>
                 </div>
 
-                <div class="employee-card-info-item">
+                <div class="employee-card-info-box">
                     <span>DEPARTMENT</span>
                     <strong>{{ card_department }}</strong>
                 </div>
 
-                <div class="employee-card-info-item">
-                    <span>POSITION</span>
-                    <strong>{{ card_job_title }}</strong>
+                <div class="employee-card-info-box full">
+                    <span>ACCESS LEVEL</span>
+                    <strong>INTERNAL STAFF</strong>
                 </div>
 
             </div>
 
-            <!-- Footer -->
-            <div class="employee-card-footer">
+            <div class="employee-card-bottom">
 
-                <div class="employee-card-footer-logo">
+                <div class="employee-card-logo">
                     C
                 </div>
 
-                <div class="employee-card-footer-text">
-                    INTERNAL STAFF
+                <div class="employee-card-bottom-text">
+                    CREATE YOUR ENTERTAINMENT
                 </div>
 
             </div>
