@@ -1,125 +1,251 @@
 {% extends "base.html" %}
 
 {% block title %}評估報告明細 - Createx{% endblock %}
-{% block page_title %}評估報告明細{% endblock %}
-{% block page_subtitle %}查看藝人評估分數、等級與簽約建議{% endblock %}
+{% block page_title %}藝人評估報告{% endblock %}
+{% block page_subtitle %}Talent Evaluation Report / 內部商業評估文件{% endblock %}
 
 {% block content %}
 
-<div class="card">
-    <div class="section-header">
-        <h3>{{ evaluation.report_title }}</h3>
-        <span class="status-chip status-chip-info">{{ evaluation.grade }} 級</span>
-    </div>
+<div class="report-toolbar no-print">
+    <div class="page-actions">
+        <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">
+            返回藝人明細
+        </a>
 
-    <p><strong>藝人：</strong>{{ evaluation.stage_name }}</p>
-    <p><strong>評估日期：</strong>{{ evaluation.evaluation_date }}</p>
-    <p><strong>總分：</strong>{{ evaluation.total_score }}</p>
-    <p><strong>等級：</strong>{{ evaluation.grade }}</p>
-    <p><strong>狀態：</strong>{{ evaluation.status }}</p>
-</div>
+        {% if current_user.has_permission('edit_talent_evaluation') %}
+        <a href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=evaluation.id) }}" class="btn">
+            編輯報告
+        </a>
+        {% endif %}
 
-<div class="card">
-    <h3>核心評分</h3>
-    <div class="table-wrap">
-        <table>
-            <tbody>
-                <tr>
-                    <th>外型形象</th>
-                    <td>{{ evaluation.appearance_score }}</td>
-                    <th>表演 / 鏡頭感</th>
-                    <td>{{ evaluation.performance_score }}</td>
-                </tr>
-                <tr>
-                    <th>社群影響力</th>
-                    <td>{{ evaluation.social_score }}</td>
-                    <th>商業價值</th>
-                    <td>{{ evaluation.commercial_score }}</td>
-                </tr>
-                <tr>
-                    <th>球團 / 品牌適性</th>
-                    <td>{{ evaluation.team_fit_score }}</td>
-                    <th>成長潛力</th>
-                    <td>{{ evaluation.growth_score }}</td>
-                </tr>
-                <tr>
-                    <th>風險扣分</th>
-                    <td>{{ evaluation.risk_score }}</td>
-                    <th>總分</th>
-                    <td>{{ evaluation.total_score }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">
+            列印 / 另存 PDF
+        </button>
+
+        {% if current_user.has_permission('delete_talent_evaluation') %}
+        <form method="post"
+              action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=evaluation.id) }}"
+              class="inline-delete-form"
+              data-confirm-title="確認刪除評估報告？"
+              data-confirm-text="刪除後將無法復原。"
+              data-confirm-button="確認刪除">
+            <button type="submit" class="btn btn-danger">刪除報告</button>
+        </form>
+        {% endif %}
     </div>
 </div>
 
-<div class="card">
-    <h3>社群數據分析</h3>
-    <div class="table-wrap">
-        <table>
-            <tbody>
-                <tr>
-                    <th>Instagram 粉絲</th>
-                    <td>{{ evaluation.instagram_followers|money }}</td>
-                    <th>TikTok 粉絲</th>
-                    <td>{{ evaluation.tiktok_followers|money }}</td>
-                </tr>
-                <tr>
-                    <th>YouTube 訂閱</th>
-                    <td>{{ evaluation.youtube_subscribers|money }}</td>
-                    <th>互動率</th>
-                    <td>{{ evaluation.engagement_rate }}%</td>
-                </tr>
-            </tbody>
-        </table>
+<section class="evaluation-document">
+
+    <div class="report-hero">
+        <div>
+            <p class="report-eyebrow">Talent Evaluation Center</p>
+            <h1>{{ evaluation.stage_name }}</h1>
+            <h2>{{ evaluation.report_title }}</h2>
+
+            <div class="report-meta">
+                <span>評估日期：{{ evaluation.evaluation_date }}</span>
+                <span>報告狀態：{{ evaluation.status }}</span>
+            </div>
+        </div>
+
+        <div class="grade-panel grade-{{ evaluation.grade|lower }}">
+            <span class="grade-label">評估等級</span>
+            <strong>{{ evaluation.grade }}</strong>
+            <span class="grade-score">{{ evaluation.total_score }} / 100</span>
+        </div>
     </div>
-    <p style="white-space: pre-wrap;">{{ evaluation.social_analysis or '' }}</p>
-</div>
 
-<div class="card">
-    <h3>商業價值評估</h3>
-    <p style="white-space: pre-wrap;">{{ evaluation.business_value or '' }}</p>
-</div>
+    <div class="report-kpi-grid">
+        <div class="report-kpi-card">
+            <span>外型形象</span>
+            <strong>{{ evaluation.appearance_score }}</strong>
+            <small>/ 20</small>
+        </div>
+        <div class="report-kpi-card">
+            <span>表演鏡頭感</span>
+            <strong>{{ evaluation.performance_score }}</strong>
+            <small>/ 20</small>
+        </div>
+        <div class="report-kpi-card">
+            <span>社群影響力</span>
+            <strong>{{ evaluation.social_score }}</strong>
+            <small>/ 20</small>
+        </div>
+        <div class="report-kpi-card">
+            <span>商業價值</span>
+            <strong>{{ evaluation.commercial_score }}</strong>
+            <small>/ 20</small>
+        </div>
+        <div class="report-kpi-card">
+            <span>品牌適性</span>
+            <strong>{{ evaluation.team_fit_score }}</strong>
+            <small>/ 10</small>
+        </div>
+        <div class="report-kpi-card">
+            <span>成長潛力</span>
+            <strong>{{ evaluation.growth_score }}</strong>
+            <small>/ 10</small>
+        </div>
+        <div class="report-kpi-card danger">
+            <span>風險扣分</span>
+            <strong>{{ evaluation.risk_score }}</strong>
+            <small>/ 20</small>
+        </div>
+    </div>
 
-<div class="card">
-    <h3>球團適性評估</h3>
-    <p style="white-space: pre-wrap;">{{ evaluation.team_fit_analysis or '' }}</p>
-</div>
+    <div class="report-section-grid">
+        <div class="report-section">
+            <div class="report-section-title">
+                <span>01</span>
+                <h3>評估雷達圖</h3>
+            </div>
+            <div class="chart-box">
+                <canvas id="talentRadarChart"></canvas>
+            </div>
+        </div>
 
-<div class="card">
-    <h3>簽約審核</h3>
-    <p style="white-space: pre-wrap;">{{ evaluation.signing_review or '' }}</p>
-</div>
+        <div class="report-section">
+            <div class="report-section-title">
+                <span>02</span>
+                <h3>社群數據摘要</h3>
+            </div>
 
-<div class="card">
-    <h3>投資收益模型</h3>
-    <p style="white-space: pre-wrap;">{{ evaluation.investment_model or '' }}</p>
-</div>
+            <div class="social-metrics">
+                <div>
+                    <span>Instagram</span>
+                    <strong>{{ evaluation.instagram_followers|money }}</strong>
+                </div>
+                <div>
+                    <span>TikTok</span>
+                    <strong>{{ evaluation.tiktok_followers|money }}</strong>
+                </div>
+                <div>
+                    <span>YouTube</span>
+                    <strong>{{ evaluation.youtube_subscribers|money }}</strong>
+                </div>
+                <div>
+                    <span>互動率</span>
+                    <strong>{{ evaluation.engagement_rate }}%</strong>
+                </div>
+            </div>
 
-{% if current_user.has_permission('review_talent_signing') %}
-<div class="card">
-    <h3>高層內部備註</h3>
-    <p style="white-space: pre-wrap;">{{ evaluation.executive_notes or '' }}</p>
-</div>
-{% endif %}
+            <div class="report-note">
+                {{ evaluation.social_analysis or '尚未填寫社群數據分析。' }}
+            </div>
+        </div>
+    </div>
 
-<div class="page-actions">
-    <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">返回藝人明細</a>
+    <div class="report-section">
+        <div class="report-section-title">
+            <span>03</span>
+            <h3>商業價值評估</h3>
+        </div>
+        <div class="report-prose">
+            {{ evaluation.business_value or '尚未填寫商業價值評估。' }}
+        </div>
+    </div>
 
-    {% if current_user.has_permission('edit_talent_evaluation') %}
-    <a href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=evaluation.id) }}" class="btn">編輯報告</a>
+    <div class="report-section">
+        <div class="report-section-title">
+            <span>04</span>
+            <h3>球團 / 品牌適性評估</h3>
+        </div>
+        <div class="report-prose">
+            {{ evaluation.team_fit_analysis or '尚未填寫球團適性評估。' }}
+        </div>
+    </div>
+
+    <div class="report-section-grid">
+        <div class="report-section">
+            <div class="report-section-title">
+                <span>05</span>
+                <h3>簽約審核意見</h3>
+            </div>
+            <div class="decision-box">
+                {{ evaluation.signing_review or '尚未填寫簽約審核意見。' }}
+            </div>
+        </div>
+
+        <div class="report-section">
+            <div class="report-section-title">
+                <span>06</span>
+                <h3>投資收益模型</h3>
+            </div>
+            <div class="investment-box">
+                {{ evaluation.investment_model or '尚未填寫投資收益模型。' }}
+            </div>
+        </div>
+    </div>
+
+    {% if current_user.has_permission('review_talent_signing') %}
+    <div class="report-section executive-section">
+        <div class="report-section-title">
+            <span>07</span>
+            <h3>高層內部備註</h3>
+        </div>
+        <div class="executive-note">
+            {{ evaluation.executive_notes or '尚未填寫高層內部備註。' }}
+        </div>
+    </div>
     {% endif %}
 
-    {% if current_user.has_permission('delete_talent_evaluation') %}
-    <form method="post"
-          action="{{ url_for('talent_evaluation.evaluation_delete', evaluation_id=evaluation.id) }}"
-          class="inline-delete-form"
-          data-confirm-title="確認刪除評估報告？"
-          data-confirm-text="刪除後將無法復原。"
-          data-confirm-button="確認刪除">
-        <button type="submit" class="btn btn-danger">刪除報告</button>
-    </form>
-    {% endif %}
-</div>
+    <div class="report-footer">
+        <p>Createx Internal Use Only</p>
+        <p>本文件僅供內部評估、簽約審核與商業決策使用。</p>
+    </div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const radarCanvas = document.getElementById("talentRadarChart");
+
+    if (radarCanvas) {
+        new Chart(radarCanvas, {
+            type: "radar",
+            data: {
+                labels: [
+                    "外型形象",
+                    "表演鏡頭感",
+                    "社群影響力",
+                    "商業價值",
+                    "品牌適性",
+                    "成長潛力"
+                ],
+                datasets: [{
+                    label: "評估分數",
+                    data: [
+                        {{ evaluation.appearance_score }},
+                        {{ evaluation.performance_score }},
+                        {{ evaluation.social_score }},
+                        {{ evaluation.commercial_score }},
+                        {{ evaluation.team_fit_score * 2 }},
+                        {{ evaluation.growth_score * 2 }}
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 20,
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+</script>
 
 {% endblock %}
