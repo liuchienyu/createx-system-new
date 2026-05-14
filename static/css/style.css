@@ -619,30 +619,26 @@ table tr:last-child td {
     color: #111827;
 }
 
-.decision-box {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+.decision-box,
+.investment-box,
+.executive-note {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
     border-radius: 18px;
     padding: 18px;
-}
-
-.investment-box {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 18px;
-    padding: 18px;
+    white-space: pre-line;
+    line-height: 1.8;
+    color: #374151;
+    font-size: 15px;
+    text-align: left;
+    word-break: break-word;
+    margin-left: 0;
+    text-indent: 0;
 }
 
 .executive-section {
     border-color: #ddd6fe;
     background: #faf5ff;
-}
-
-.executive-note {
-    background: #ffffff;
-    border: 1px solid #ddd6fe;
-    border-radius: 18px;
-    padding: 18px;
 }
 
 .report-footer {
