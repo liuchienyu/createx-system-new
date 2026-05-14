@@ -619,22 +619,6 @@ table tr:last-child td {
     color: #111827;
 }
 
-.report-note,
-.report-prose,
-.decision-box,
-.investment-box,
-.executive-note {
-    white-space: pre-line;
-    line-height: 1.8;
-    color: #374151;
-    font-size: 15px;
-    text-align: left;
-    word-break: break-word;
-    padding-left: 0;
-    margin-left: 0;
-    text-indent: 0;
-}
-
 .decision-box {
     background: #f0fdf4;
     border: 1px solid #bbf7d0;
@@ -765,5 +749,21 @@ table tr:last-child td {
 .executive-note::first-line,
 .decision-box::first-line,
 .investment-box::first-line {
+    text-indent: 0;
+}
+
+.report-note,
+.report-prose,
+.decision-box,
+.investment-box,
+.executive-note {
+    white-space: pre-line;
+    line-height: 1.8;
+    color: #374151;
+    font-size: 15px;
+    text-align: left;
+    word-break: break-word;
+    padding-left: 0;
+    margin-left: 0;
     text-indent: 0;
 }

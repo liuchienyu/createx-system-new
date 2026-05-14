@@ -62,31 +62,37 @@
             <strong>{{ evaluation.appearance_score }}</strong>
             <small>/ 20</small>
         </div>
+
         <div class="report-kpi-card">
             <span>表演鏡頭感</span>
             <strong>{{ evaluation.performance_score }}</strong>
             <small>/ 20</small>
         </div>
+
         <div class="report-kpi-card">
             <span>社群影響力</span>
             <strong>{{ evaluation.social_score }}</strong>
             <small>/ 20</small>
         </div>
+
         <div class="report-kpi-card">
             <span>商業價值</span>
             <strong>{{ evaluation.commercial_score }}</strong>
             <small>/ 20</small>
         </div>
+
         <div class="report-kpi-card">
             <span>品牌適性</span>
             <strong>{{ evaluation.team_fit_score }}</strong>
             <small>/ 10</small>
         </div>
+
         <div class="report-kpi-card">
             <span>成長潛力</span>
             <strong>{{ evaluation.growth_score }}</strong>
             <small>/ 10</small>
         </div>
+
         <div class="report-kpi-card danger">
             <span>風險扣分</span>
             <strong>{{ evaluation.risk_score }}</strong>
@@ -133,40 +139,34 @@
             </div>
         </div>
 
-        <div class="report-note">
-            {{ evaluation.social_analysis or '尚未填寫社群數據分析。' }}
-        </div>
+        <div class="report-note">{{ (evaluation.social_analysis or '尚未填寫社群數據分析。')|trim }}</div>
     </div>
 
     <div class="report-section">
-            <div class="report-section-title">
-                <span>03</span>
-                <h3>商業價值評估</h3>
-            </div>
-            <div class="report-prose">
-                {{ evaluation.business_value or '尚未填寫商業價值評估。' }}
-            </div>
+        <div class="report-section-title">
+            <span>03</span>
+            <h3>商業價值評估</h3>
         </div>
 
-        <div class="report-section">
-            <div class="report-section-title">
-                <span>04</span>
-                <h3>球團 / 品牌適性評估</h3>
-            </div>
-            <div class="report-prose">
-                {{ evaluation.team_fit_analysis or '尚未填寫球團適性評估。' }}
-            </div>
+        <div class="report-prose">{{ (evaluation.business_value or '尚未填寫商業價值評估。')|trim }}</div>
+    </div>
+
+    <div class="report-section">
+        <div class="report-section-title">
+            <span>04</span>
+            <h3>球團 / 品牌適性評估</h3>
         </div>
 
-        <div class="report-section">
+        <div class="report-prose">{{ (evaluation.team_fit_analysis or '尚未填寫球團適性評估。')|trim }}</div>
+    </div>
+
+    <div class="report-section">
         <div class="report-section-title">
             <span>05</span>
             <h3>簽約審核意見</h3>
         </div>
 
-        <div class="decision-box">
-            {{ evaluation.signing_review or '尚未填寫簽約審核意見。' }}
-        </div>
+        <div class="decision-box">{{ (evaluation.signing_review or '尚未填寫簽約審核意見。')|trim }}</div>
     </div>
 
     <div class="report-section">
@@ -175,9 +175,23 @@
             <h3>投資收益模型</h3>
         </div>
 
-        <div class="investment-box">
-            {{ evaluation.investment_model or '尚未填寫投資收益模型。' }}
+        <div class="investment-box">{{ (evaluation.investment_model or '尚未填寫投資收益模型。')|trim }}</div>
+    </div>
+
+    {% if current_user.has_permission('review_talent_signing') %}
+    <div class="report-section executive-section">
+        <div class="report-section-title">
+            <span>07</span>
+            <h3>高層內部備註</h3>
         </div>
+
+        <div class="executive-note">{{ (evaluation.executive_notes or '尚未填寫高層內部備註。')|trim }}</div>
+    </div>
+    {% endif %}
+
+    <div class="report-footer">
+        <p>Createx Internal Use Only</p>
+        <p>本文件僅供內部評估、簽約審核與商業決策使用。</p>
     </div>
 
 </section>
