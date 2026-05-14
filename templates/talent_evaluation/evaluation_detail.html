@@ -8,19 +8,13 @@
 
 <div class="report-toolbar no-print">
     <div class="page-actions">
-        <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">
-            返回藝人明細
-        </a>
+        <a href="{{ url_for('talent_evaluation.detail', talent_id=evaluation.talent_id) }}" class="btn btn-secondary">返回藝人明細</a>
 
         {% if current_user.has_permission('edit_talent_evaluation') %}
-        <a href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=evaluation.id) }}" class="btn">
-            編輯報告
-        </a>
+        <a href="{{ url_for('talent_evaluation.evaluation_edit', evaluation_id=evaluation.id) }}" class="btn">編輯報告</a>
         {% endif %}
 
-        <button type="button" class="btn btn-secondary" onclick="window.print()">
-            列印 / 另存 PDF
-        </button>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">列印 / 另存 PDF</button>
 
         {% if current_user.has_permission('delete_talent_evaluation') %}
         <form method="post"
@@ -57,47 +51,13 @@
     </div>
 
     <div class="report-kpi-grid">
-        <div class="report-kpi-card">
-            <span>外型形象</span>
-            <strong>{{ evaluation.appearance_score }}</strong>
-            <small>/ 20</small>
-        </div>
-
-        <div class="report-kpi-card">
-            <span>表演鏡頭感</span>
-            <strong>{{ evaluation.performance_score }}</strong>
-            <small>/ 20</small>
-        </div>
-
-        <div class="report-kpi-card">
-            <span>社群影響力</span>
-            <strong>{{ evaluation.social_score }}</strong>
-            <small>/ 20</small>
-        </div>
-
-        <div class="report-kpi-card">
-            <span>商業價值</span>
-            <strong>{{ evaluation.commercial_score }}</strong>
-            <small>/ 20</small>
-        </div>
-
-        <div class="report-kpi-card">
-            <span>品牌適性</span>
-            <strong>{{ evaluation.team_fit_score }}</strong>
-            <small>/ 10</small>
-        </div>
-
-        <div class="report-kpi-card">
-            <span>成長潛力</span>
-            <strong>{{ evaluation.growth_score }}</strong>
-            <small>/ 10</small>
-        </div>
-
-        <div class="report-kpi-card danger">
-            <span>風險扣分</span>
-            <strong>{{ evaluation.risk_score }}</strong>
-            <small>/ 20</small>
-        </div>
+        <div class="report-kpi-card"><span>外型形象</span><strong>{{ evaluation.appearance_score }}</strong><small>/ 20</small></div>
+        <div class="report-kpi-card"><span>表演鏡頭感</span><strong>{{ evaluation.performance_score }}</strong><small>/ 20</small></div>
+        <div class="report-kpi-card"><span>社群影響力</span><strong>{{ evaluation.social_score }}</strong><small>/ 20</small></div>
+        <div class="report-kpi-card"><span>商業價值</span><strong>{{ evaluation.commercial_score }}</strong><small>/ 20</small></div>
+        <div class="report-kpi-card"><span>品牌適性</span><strong>{{ evaluation.team_fit_score }}</strong><small>/ 10</small></div>
+        <div class="report-kpi-card"><span>成長潛力</span><strong>{{ evaluation.growth_score }}</strong><small>/ 10</small></div>
+        <div class="report-kpi-card danger"><span>風險扣分</span><strong>{{ evaluation.risk_score }}</strong><small>/ 20</small></div>
     </div>
 
     <div class="report-section">
@@ -117,29 +77,17 @@
             <h3>社群數據摘要</h3>
         </div>
 
-        <div class="social-metrics social-metrics-wide">
-            <div>
-                <span>Instagram 粉絲數</span>
-                <strong>{{ evaluation.instagram_followers|money }}</strong>
-            </div>
-
-            <div>
-                <span>TikTok 粉絲數</span>
-                <strong>{{ evaluation.tiktok_followers|money }}</strong>
-            </div>
-
-            <div>
-                <span>YouTube 訂閱數</span>
-                <strong>{{ evaluation.youtube_subscribers|money }}</strong>
-            </div>
-
-            <div>
-                <span>互動率</span>
-                <strong>{{ evaluation.engagement_rate }}%</strong>
-            </div>
+        <div class="social-metrics">
+            <div><span>Instagram 粉絲數</span><strong>{{ evaluation.instagram_followers|money }}</strong></div>
+            <div><span>TikTok 粉絲數</span><strong>{{ evaluation.tiktok_followers|money }}</strong></div>
+            <div><span>YouTube 訂閱數</span><strong>{{ evaluation.youtube_subscribers|money }}</strong></div>
+            <div><span>互動率</span><strong>{{ evaluation.engagement_rate }}%</strong></div>
         </div>
 
-        <div class="report-prose">{{ (evaluation.social_analysis or '尚未填寫社群數據分析。')|trim }}</div>
+        <div class="report-field">
+            <div class="report-field-label">社群數據分析</div>
+            <div class="report-field-body">{{ (evaluation.social_analysis or '尚未填寫社群數據分析。')|trim }}</div>
+        </div>
     </div>
 
     <div class="report-section">
@@ -147,8 +95,7 @@
             <span>03</span>
             <h3>商業價值評估</h3>
         </div>
-
-        <div class="report-prose">{{ (evaluation.business_value or '尚未填寫商業價值評估。')|trim }}</div>
+        <div class="report-field-body">{{ (evaluation.business_value or '尚未填寫商業價值評估。')|trim }}</div>
     </div>
 
     <div class="report-section">
@@ -156,8 +103,7 @@
             <span>04</span>
             <h3>球團 / 品牌適性評估</h3>
         </div>
-
-        <div class="report-prose">{{ (evaluation.team_fit_analysis or '尚未填寫球團適性評估。')|trim }}</div>
+        <div class="report-field-body">{{ (evaluation.team_fit_analysis or '尚未填寫球團適性評估。')|trim }}</div>
     </div>
 
     <div class="report-section">
@@ -165,8 +111,7 @@
             <span>05</span>
             <h3>投資收益模型</h3>
         </div>
-
-        <div class="report-prose">{{ (evaluation.investment_model or '尚未填寫投資收益模型。')|trim }}</div>
+        <div class="report-field-body">{{ (evaluation.investment_model or '尚未填寫投資收益模型。')|trim }}</div>
     </div>
 
     <div class="report-section">
@@ -174,8 +119,7 @@
             <span>06</span>
             <h3>簽約審核意見</h3>
         </div>
-
-        <div class="report-prose">{{ (evaluation.signing_review or '尚未填寫簽約審核意見。')|trim }}</div>
+        <div class="report-field-body">{{ (evaluation.signing_review or '尚未填寫簽約審核意見。')|trim }}</div>
     </div>
 
     {% if current_user.has_permission('review_talent_signing') %}
@@ -184,8 +128,7 @@
             <span>07</span>
             <h3>高層內部備註</h3>
         </div>
-
-        <div class="report-prose">{{ (evaluation.executive_notes or '尚未填寫高層內部備註。')|trim }}</div>
+        <div class="report-field-body">{{ (evaluation.executive_notes or '尚未填寫高層內部備註。')|trim }}</div>
     </div>
     {% endif %}
 
@@ -204,14 +147,7 @@
         new Chart(radarCanvas, {
             type: "radar",
             data: {
-                labels: [
-                    "外型形象",
-                    "表演鏡頭感",
-                    "社群影響力",
-                    "商業價值",
-                    "品牌適性",
-                    "成長潛力"
-                ],
+                labels: ["外型形象", "表演鏡頭感", "社群影響力", "商業價值", "品牌適性", "成長潛力"],
                 datasets: [{
                     label: "評估分數",
                     data: [
@@ -222,12 +158,14 @@
                         {{ evaluation.team_fit_score * 2 }},
                         {{ evaluation.growth_score * 2 }}
                     ],
-                    borderWidth: 2
+                    borderWidth: 2,
+                    pointRadius: 3
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: false,
                 scales: {
                     r: {
                         min: 0,
@@ -245,6 +183,24 @@
             }
         });
     }
+
+    window.addEventListener("beforeprint", function () {
+        if (window.Chart) {
+            Object.values(Chart.instances || {}).forEach(chart => {
+                chart.resize(520, 420);
+                chart.update("none");
+            });
+        }
+    });
+
+    window.addEventListener("afterprint", function () {
+        if (window.Chart) {
+            Object.values(Chart.instances || {}).forEach(chart => {
+                chart.resize();
+                chart.update("none");
+            });
+        }
+    });
 </script>
 
 {% endblock %}
