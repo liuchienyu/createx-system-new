@@ -377,7 +377,10 @@
 
 </div>
 
-<!-- Employee Card -->
+<!-- =========================
+     Employee Card Modal
+========================= -->
+
 {% if current_user.is_authenticated %}
 
 {% set card_name = employee_card.name if employee_card and employee_card.name else current_user.display_name %}
@@ -449,45 +452,39 @@
             data-filename="{{ card_name }}"
         >
 
-            <div class="employee-card-overlay"></div>
+            <!-- Background -->
+            <div class="employee-card-circle circle-top"></div>
+            <div class="employee-card-circle circle-bottom"></div>
 
-            <div class="employee-card-line line-top"></div>
-            <div class="employee-card-line line-bottom"></div>
-
+            <!-- Header -->
             <div class="employee-card-header">
 
-                <div class="employee-card-brand">
+                <div>
                     <h1>CREATEX</h1>
-                    <p>ENTERTAINMENT</p>
-                </div>
-
-                <div class="employee-card-badge">
-                    OFFICIAL
+                    <p>ENTERTAINMENT STAFF CARD</p>
                 </div>
 
             </div>
 
-            <div class="employee-card-photo-section">
+            <!-- Photo -->
+            <div class="employee-card-photo-wrap">
 
-                <div class="employee-card-photo-frame">
+                <div class="employee-card-photo">
 
-                    <div class="employee-card-photo">
-
-                        {% if card_photo_url %}
-                        <img src="{{ card_photo_url }}" alt="員工照片">
-                        {% else %}
-                        <div class="employee-card-photo-placeholder">
-                            {{ card_name[:1] }}
-                        </div>
-                        {% endif %}
-
+                    {% if card_photo_url %}
+                    <img src="{{ card_photo_url }}" alt="員工照片">
+                    {% else %}
+                    <div class="employee-card-photo-placeholder">
+                        {{ card_name[:1] }}
                     </div>
+                    {% endif %}
 
                 </div>
 
             </div>
 
-            <div class="employee-card-name-section">
+            <!-- Name -->
+            <div class="employee-card-name">
 
                 <h2>{{ card_name }}</h2>
 
@@ -495,34 +492,27 @@
 
             </div>
 
-            <div class="employee-card-position">
-                INTERNAL STAFF
-            </div>
+            <!-- Info -->
+            <div class="employee-card-info">
 
-            <div class="employee-card-info-list">
-
-                <div class="employee-card-info-row">
+                <div class="employee-card-info-item">
                     <span>EMPLOYEE ID</span>
                     <strong>{{ card_employee_no }}</strong>
                 </div>
 
-                <div class="employee-card-info-row">
+                <div class="employee-card-info-item">
                     <span>DEPARTMENT</span>
                     <strong>{{ card_department }}</strong>
                 </div>
 
-                <div class="employee-card-info-row">
+                <div class="employee-card-info-item">
                     <span>POSITION</span>
                     <strong>{{ card_job_title }}</strong>
                 </div>
 
-                <div class="employee-card-info-row">
-                    <span>ACCESS LEVEL</span>
-                    <strong>ALL ACCESS</strong>
-                </div>
-
             </div>
 
+            <!-- Footer -->
             <div class="employee-card-footer">
 
                 <div class="employee-card-footer-logo">
@@ -530,7 +520,7 @@
                 </div>
 
                 <div class="employee-card-footer-text">
-                    CREATE YOUR ENTERTAINMENT
+                    INTERNAL STAFF
                 </div>
 
             </div>

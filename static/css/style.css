@@ -811,26 +811,7 @@ table tr:last-child td {
 }
 
 /* =========================
-   Employee Card System
-========================= */
-
-.topbar-user-button {
-    border: none;
-    background: transparent;
-    color: var(--primary-700);
-    font-weight: 900;
-    cursor: pointer;
-    font-size: 15px;
-    padding: 0;
-    transition: 0.2s ease;
-}
-
-.topbar-user-button:hover {
-    color: #7c3aed;
-}
-
-/* =========================
-   Modal
+   Employee Card
 ========================= */
 
 .employee-card-modal.hidden {
@@ -847,18 +828,18 @@ table tr:last-child td {
     position: absolute;
     inset: 0;
 
-    background: rgba(2, 6, 23, 0.76);
+    background: rgba(15, 23, 42, 0.7);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
 }
 
 .employee-card-dialog {
     position: relative;
     z-index: 2;
 
-    width: min(430px, calc(100vw - 32px));
+    width: min(400px, calc(100vw - 32px));
 
-    margin: 3vh auto;
+    margin: 4vh auto;
 }
 
 .employee-card-actionbar {
@@ -866,55 +847,38 @@ table tr:last-child td {
     justify-content: flex-end;
     gap: 8px;
 
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
-/* =========================
-   Card
-========================= */
+/* Card */
 
 .employee-id-card {
     position: relative;
 
-    width: 390px;
-    height: 720px;
+    width: 360px;
+    height: 620px;
 
     overflow: hidden;
 
-    border-radius: 36px;
+    border-radius: 32px;
 
     background:
-        radial-gradient(
-            circle at top right,
-            rgba(139, 92, 246, 0.22),
-            transparent 24%
-        ),
-
-        radial-gradient(
-            circle at bottom left,
-            rgba(109, 40, 217, 0.28),
-            transparent 28%
-        ),
-
         linear-gradient(
             145deg,
-            #020617 0%,
-            #050816 45%,
-            #0f172a 100%
+            #111827 0%,
+            #0f172a 50%,
+            #020617 100%
         );
-
-    padding: 34px 30px;
 
     color: #ffffff;
 
-    box-shadow:
-        0 40px 90px rgba(0,0,0,0.55),
-        inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 32px 28px;
 
     border: 1px solid rgba(255,255,255,0.08);
-}
 
-/* 外框 */
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.45);
+}
 
 .employee-id-card::before {
     content: "";
@@ -923,170 +887,89 @@ table tr:last-child td {
 
     inset: 14px;
 
-    border-radius: 26px;
+    border-radius: 24px;
 
     border: 1px solid rgba(255,255,255,0.06);
 }
 
-/* 光感 */
+/* Purple Circle */
 
-.employee-id-card::after {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,0.04),
-            transparent 22%
-        );
-
-    pointer-events: none;
-}
-
-/* =========================
-   Overlay
-========================= */
-
-.employee-card-overlay {
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.02),
-            transparent 40%
-        );
-
-    pointer-events: none;
-}
-
-/* =========================
-   Purple Lines
-========================= */
-
-.employee-card-line {
+.employee-card-circle {
     position: absolute;
 
-    border-radius: 999px;
+    border-radius: 50%;
 
-    border: 34px solid rgba(124, 58, 237, 0.92);
+    border: 34px solid rgba(124,58,237,0.95);
 }
 
-.line-top {
-    width: 320px;
-    height: 320px;
+.circle-top {
+    width: 280px;
+    height: 280px;
 
-    top: -140px;
+    top: -120px;
     right: -150px;
 }
 
-.line-bottom {
-    width: 420px;
-    height: 420px;
+.circle-bottom {
+    width: 360px;
+    height: 360px;
 
-    bottom: -260px;
-    left: -250px;
+    bottom: -240px;
+    left: -220px;
 }
 
-/* =========================
-   Header
-========================= */
+/* Header */
 
 .employee-card-header {
     position: relative;
     z-index: 2;
-
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
 }
 
-.employee-card-brand h1 {
+.employee-card-header h1 {
     margin: 0;
 
-    font-size: 38px;
+    font-size: 34px;
 
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
 
     font-weight: 1000;
 }
 
-.employee-card-brand p {
-    margin: 8px 0 0;
+.employee-card-header p {
+    margin: 6px 0 0;
 
-    font-size: 14px;
+    font-size: 12px;
 
-    letter-spacing: 0.32em;
+    color: rgba(255,255,255,0.65);
 
-    color: rgba(255,255,255,0.72);
+    letter-spacing: 0.18em;
 
     font-weight: 800;
 }
 
-/* Badge */
+/* Photo */
 
-.employee-card-badge {
-    padding: 8px 14px;
-
-    border-radius: 999px;
-
-    background: rgba(255,255,255,0.08);
-
-    border: 1px solid rgba(255,255,255,0.12);
-
-    color: #c084fc;
-
-    font-size: 11px;
-
-    letter-spacing: 0.14em;
-
-    font-weight: 900;
-}
-
-/* =========================
-   Photo
-========================= */
-
-.employee-card-photo-section {
+.employee-card-photo-wrap {
     position: relative;
     z-index: 2;
 
     display: flex;
     justify-content: center;
 
-    margin-top: 56px;
-}
-
-.employee-card-photo-frame {
-    padding: 5px;
-
-    border-radius: 28px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #c084fc,
-            #7c3aed,
-            #5b21b6
-        );
-
-    box-shadow:
-        0 0 30px rgba(124,58,237,0.45);
+    margin-top: 42px;
 }
 
 .employee-card-photo {
-    width: 220px;
-    height: 280px;
+    width: 190px;
+    height: 190px;
+
+    border-radius: 50%;
 
     overflow: hidden;
 
-    border-radius: 24px;
-
     background: #ffffff;
+
+    border: 8px solid rgba(124,58,237,0.95);
 }
 
 .employee-card-photo img {
@@ -1113,72 +996,38 @@ table tr:last-child td {
 
     color: #6d28d9;
 
-    font-size: 84px;
+    font-size: 74px;
 
     font-weight: 1000;
 }
 
-/* =========================
-   Name
-========================= */
+/* Name */
 
-.employee-card-name-section {
+.employee-card-name {
     position: relative;
     z-index: 2;
 
     text-align: center;
 
-    margin-top: 34px;
+    margin-top: 28px;
 }
 
-.employee-card-name-section h2 {
+.employee-card-name h2 {
     margin: 0;
 
-    font-size: 56px;
+    font-size: 38px;
 
-    line-height: 1;
+    line-height: 1.1;
 
     font-weight: 1000;
 }
 
-.employee-card-name-section h3 {
-    margin: 14px 0 0;
+.employee-card-name h3 {
+    margin: 10px 0 0;
 
-    color: #c084fc;
+    font-size: 14px;
 
-    font-size: 22px;
-
-    letter-spacing: 0.14em;
-
-    font-weight: 900;
-
-    text-transform: uppercase;
-}
-
-/* =========================
-   Position Badge
-========================= */
-
-.employee-card-position {
-    position: relative;
-    z-index: 2;
-
-    margin: 26px auto 0;
-
-    width: fit-content;
-
-    padding: 10px 20px;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(168,85,247,0.9),
-            rgba(109,40,217,0.9)
-        );
-
-    font-size: 15px;
+    color: #c4b5fd;
 
     letter-spacing: 0.14em;
 
@@ -1187,18 +1036,16 @@ table tr:last-child td {
     text-transform: uppercase;
 }
 
-/* =========================
-   Info List
-========================= */
+/* Info */
 
-.employee-card-info-list {
+.employee-card-info {
     position: relative;
     z-index: 2;
 
-    margin-top: 36px;
+    margin-top: 34px;
 }
 
-.employee-card-info-row {
+.employee-card-info-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1208,7 +1055,7 @@ table tr:last-child td {
     border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.employee-card-info-row span {
+.employee-card-info-item span {
     color: rgba(255,255,255,0.58);
 
     font-size: 11px;
@@ -1218,21 +1065,19 @@ table tr:last-child td {
     font-weight: 900;
 }
 
-.employee-card-info-row strong {
+.employee-card-info-item strong {
     font-size: 15px;
 
     font-weight: 900;
 }
 
-/* =========================
-   Footer
-========================= */
+/* Footer */
 
 .employee-card-footer {
     position: absolute;
 
-    left: 30px;
-    right: 30px;
+    left: 0;
+    right: 0;
     bottom: 28px;
 
     z-index: 2;
@@ -1241,14 +1086,14 @@ table tr:last-child td {
     flex-direction: column;
     align-items: center;
 
-    gap: 12px;
+    gap: 10px;
 }
 
 .employee-card-footer-logo {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
 
-    border-radius: 18px;
+    border-radius: 16px;
 
     display: flex;
     align-items: center;
@@ -1261,52 +1106,39 @@ table tr:last-child td {
             #6d28d9
         );
 
-    font-size: 32px;
+    font-size: 28px;
 
     font-weight: 1000;
-
-    box-shadow:
-        0 0 24px rgba(124,58,237,0.45);
 }
 
 .employee-card-footer-text {
-    color: #c084fc;
+    color: #c4b5fd;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    letter-spacing: 0.22em;
+    letter-spacing: 0.18em;
 
     font-weight: 900;
 }
 
-/* =========================
-   Responsive
-========================= */
+/* Responsive */
 
 @media (max-width: 520px) {
 
     .employee-id-card {
-        width: 340px;
-        height: 650px;
+        width: 330px;
+        height: 590px;
 
         padding: 28px 24px;
     }
 
-    .employee-card-brand h1 {
-        font-size: 30px;
-    }
-
     .employee-card-photo {
-        width: 180px;
-        height: 220px;
+        width: 170px;
+        height: 170px;
     }
 
-    .employee-card-name-section h2 {
-        font-size: 46px;
-    }
-
-    .employee-card-name-section h3 {
-        font-size: 18px;
+    .employee-card-name h2 {
+        font-size: 34px;
     }
 
 }
