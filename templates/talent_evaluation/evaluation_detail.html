@@ -139,7 +139,7 @@
             </div>
         </div>
 
-        <div class="report-note">{{ (evaluation.social_analysis or '尚未填寫社群數據分析。')|trim }}</div>
+        <div class="report-prose">{{ (evaluation.social_analysis or '尚未填寫社群數據分析。')|trim }}</div>
     </div>
 
     <div class="report-section">
@@ -163,29 +163,29 @@
     <div class="report-section">
         <div class="report-section-title">
             <span>05</span>
-            <h3>簽約審核意見</h3>
+            <h3>投資收益模型</h3>
         </div>
 
-        <div class="decision-box">{{ (evaluation.signing_review or '尚未填寫簽約審核意見。')|trim }}</div>
+        <div class="report-prose">{{ (evaluation.investment_model or '尚未填寫投資收益模型。')|trim }}</div>
     </div>
 
     <div class="report-section">
         <div class="report-section-title">
             <span>06</span>
-            <h3>投資收益模型</h3>
+            <h3>簽約審核意見</h3>
         </div>
 
-        <div class="investment-box">{{ (evaluation.investment_model or '尚未填寫投資收益模型。')|trim }}</div>
+        <div class="report-prose">{{ (evaluation.signing_review or '尚未填寫簽約審核意見。')|trim }}</div>
     </div>
 
     {% if current_user.has_permission('review_talent_signing') %}
-    <div class="report-section executive-section">
+    <div class="report-section">
         <div class="report-section-title">
             <span>07</span>
             <h3>高層內部備註</h3>
         </div>
 
-        <div class="executive-note">{{ (evaluation.executive_notes or '尚未填寫高層內部備註。')|trim }}</div>
+        <div class="report-prose">{{ (evaluation.executive_notes or '尚未填寫高層內部備註。')|trim }}</div>
     </div>
     {% endif %}
 
