@@ -386,12 +386,13 @@ table tr:last-child td {
 }
 
 .evaluation-document {
-    max-width: 1120px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
     background: #ffffff;
     border: 1px solid var(--neutral-300);
     border-radius: 28px;
-    padding: 34px;
+    padding: 22px;
     box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
 }
 
@@ -407,6 +408,8 @@ table tr:last-child td {
         linear-gradient(135deg, #f8fafc 0%, #ede9fe 100%);
     border: 1px solid #ddd6fe;
     margin-bottom: 24px;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .report-eyebrow {
@@ -541,8 +544,8 @@ table tr:last-child td {
 }
 
 .report-section-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 18px;
     margin-bottom: 18px;
 }
@@ -550,15 +553,16 @@ table tr:last-child td {
 .report-section {
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    border-radius: 24px;
-    padding: 22px;
+    border-radius: 18px;
+    padding: 18px 20px;
     margin-bottom: 18px;
 }
 
 .report-section-title {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
     margin-bottom: 18px;
 }
 
@@ -581,16 +585,20 @@ table tr:last-child td {
 }
 
 .chart-box {
-    height: 340px;
+    height: 380px;
+    position: relative;
+}
+
+.chart-box-large {
+    height: 460px;
 }
 
 .social-metrics {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
     margin-bottom: 18px;
 }
-
 .social-metrics div {
     padding: 14px;
     border-radius: 16px;
@@ -617,9 +625,13 @@ table tr:last-child td {
 .investment-box,
 .executive-note {
     white-space: pre-wrap;
-    line-height: 1.9;
+    line-height: 1.75;
     color: #374151;
     font-size: 15px;
+    text-align: left;
+    word-break: break-word;
+    padding-left: 0;
+    margin-left: 0;
 }
 
 .decision-box {
@@ -675,6 +687,14 @@ table tr:last-child td {
     .grade-panel {
         min-width: 100%;
     }
+
+        .social-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .chart-box-large {
+        height: 320px;
+    }
 }
 
 @media print {
@@ -717,4 +737,24 @@ table tr:last-child td {
     .chart-box {
         height: 300px;
     }
+}
+
+.report-section p,
+.report-section div,
+.report-section span,
+.report-section li {
+    text-align: left;
+}
+
+.report-prose,
+.report-note,
+.executive-note,
+.decision-box,
+.investment-box {
+    width: 100%;
+}
+
+.report-prose p,
+.report-note p {
+    margin-top: 0;
 }

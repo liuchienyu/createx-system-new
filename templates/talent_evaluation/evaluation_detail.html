@@ -94,105 +94,90 @@
         </div>
     </div>
 
-    <div class="report-section-grid">
-        <div class="report-section">
-            <div class="report-section-title">
-                <span>01</span>
-                <h3>評估雷達圖</h3>
-            </div>
-            <div class="chart-box">
-                <canvas id="talentRadarChart"></canvas>
-            </div>
+    <div class="report-section">
+        <div class="report-section-title">
+            <span>01</span>
+            <h3>評估雷達圖</h3>
         </div>
 
-        <div class="report-section">
-            <div class="report-section-title">
-                <span>02</span>
-                <h3>社群數據摘要</h3>
-            </div>
-
-            <div class="social-metrics">
-                <div>
-                    <span>Instagram</span>
-                    <strong>{{ evaluation.instagram_followers|money }}</strong>
-                </div>
-                <div>
-                    <span>TikTok</span>
-                    <strong>{{ evaluation.tiktok_followers|money }}</strong>
-                </div>
-                <div>
-                    <span>YouTube</span>
-                    <strong>{{ evaluation.youtube_subscribers|money }}</strong>
-                </div>
-                <div>
-                    <span>互動率</span>
-                    <strong>{{ evaluation.engagement_rate }}%</strong>
-                </div>
-            </div>
-
-            <div class="report-note">
-                {{ evaluation.social_analysis or '尚未填寫社群數據分析。' }}
-            </div>
+        <div class="chart-box chart-box-large">
+            <canvas id="talentRadarChart"></canvas>
         </div>
     </div>
 
     <div class="report-section">
         <div class="report-section-title">
-            <span>03</span>
-            <h3>商業價值評估</h3>
+            <span>02</span>
+            <h3>社群數據摘要</h3>
         </div>
-        <div class="report-prose">
-            {{ evaluation.business_value or '尚未填寫商業價值評估。' }}
+
+        <div class="social-metrics social-metrics-wide">
+            <div>
+                <span>Instagram 粉絲數</span>
+                <strong>{{ evaluation.instagram_followers|money }}</strong>
+            </div>
+
+            <div>
+                <span>TikTok 粉絲數</span>
+                <strong>{{ evaluation.tiktok_followers|money }}</strong>
+            </div>
+
+            <div>
+                <span>YouTube 訂閱數</span>
+                <strong>{{ evaluation.youtube_subscribers|money }}</strong>
+            </div>
+
+            <div>
+                <span>互動率</span>
+                <strong>{{ evaluation.engagement_rate }}%</strong>
+            </div>
+        </div>
+
+        <div class="report-note">
+            {{ evaluation.social_analysis or '尚未填寫社群數據分析。' }}
+        </div>
+    </div>
+
+    <div class="report-section">
+            <div class="report-section-title">
+                <span>03</span>
+                <h3>商業價值評估</h3>
+            </div>
+            <div class="report-prose">
+                {{ evaluation.business_value or '尚未填寫商業價值評估。' }}
+            </div>
+        </div>
+
+        <div class="report-section">
+            <div class="report-section-title">
+                <span>04</span>
+                <h3>球團 / 品牌適性評估</h3>
+            </div>
+            <div class="report-prose">
+                {{ evaluation.team_fit_analysis or '尚未填寫球團適性評估。' }}
+            </div>
+        </div>
+
+        <div class="report-section">
+        <div class="report-section-title">
+            <span>05</span>
+            <h3>簽約審核意見</h3>
+        </div>
+
+        <div class="decision-box">
+            {{ evaluation.signing_review or '尚未填寫簽約審核意見。' }}
         </div>
     </div>
 
     <div class="report-section">
         <div class="report-section-title">
-            <span>04</span>
-            <h3>球團 / 品牌適性評估</h3>
-        </div>
-        <div class="report-prose">
-            {{ evaluation.team_fit_analysis or '尚未填寫球團適性評估。' }}
-        </div>
-    </div>
-
-    <div class="report-section-grid">
-        <div class="report-section">
-            <div class="report-section-title">
-                <span>05</span>
-                <h3>簽約審核意見</h3>
-            </div>
-            <div class="decision-box">
-                {{ evaluation.signing_review or '尚未填寫簽約審核意見。' }}
-            </div>
+            <span>06</span>
+            <h3>投資收益模型</h3>
         </div>
 
-        <div class="report-section">
-            <div class="report-section-title">
-                <span>06</span>
-                <h3>投資收益模型</h3>
-            </div>
-            <div class="investment-box">
-                {{ evaluation.investment_model or '尚未填寫投資收益模型。' }}
-            </div>
+        <div class="investment-box">
+            {{ evaluation.investment_model or '尚未填寫投資收益模型。' }}
         </div>
-    </div>
-
-    {% if current_user.has_permission('review_talent_signing') %}
-    <div class="report-section executive-section">
-        <div class="report-section-title">
-            <span>07</span>
-            <h3>高層內部備註</h3>
-        </div>
-        <div class="executive-note">
-            {{ evaluation.executive_notes or '尚未填寫高層內部備註。' }}
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="report-footer">
-        <p>Createx Internal Use Only</p>
-        <p>本文件僅供內部評估、簽約審核與商業決策使用。</p>
     </div>
 
 </section>
