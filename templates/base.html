@@ -3,294 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Createx 辦公系統{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <title>
+        {% block title %}
+        Createx 辦公系統
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
 
 <body class="sidebar-expanded">
+
 {% set ep = request.endpoint or '' %}
 
 <div class="app-layout">
+
+    <!-- Sidebar -->
     <aside class="sidebar">
+
         <div class="sidebar-top">
+
             <div class="brand">
-                <h2>Createx</h2>
-                <p>辦公系統</p>
+                <h2>CREATEX</h2>
+                <p>Entertainment Office System</p>
             </div>
+
         </div>
 
         {% if current_user.is_authenticated %}
+
         <nav class="nav-menu">
-            <a class="nav-link {% if ep in ['dashboard.home', 'dashboard.index'] %}active{% endif %}"
-               href="{{ url_for('dashboard.index') }}">
+
+            <!-- Dashboard -->
+            <a
+                class="nav-link {% if ep in ['dashboard.index', 'dashboard.home'] %}active{% endif %}"
+                href="{{ url_for('dashboard.index') }}"
+            >
                 <span class="nav-text">首頁儀表板</span>
             </a>
 
-            {% if current_user.has_permission('admin_users') or current_user.has_permission('admin_roles') %}
-            <details class="nav-group" {% if ep.startswith('admin.') %}open{% endif %}>
-                <summary><span class="nav-text">系統管理</span></summary>
+            <!-- Admin -->
+            {% if current_user.has_permission('admin_users')
+               or current_user.has_permission('admin_roles') %}
+
+            <details
+                class="nav-group"
+                {% if ep.startswith('admin.') %}open{% endif %}
+            >
+
+                <summary>
+                    <span class="nav-text">系統管理</span>
+                </summary>
+
                 <div class="nav-submenu">
+
                     {% if current_user.has_permission('admin_users') %}
-                    <a class="{% if ep in ['admin.users_index', 'admin.user_create', 'admin.user_edit', 'admin.user_roles', 'admin.user_reset_password'] %}active{% endif %}"
-                       href="{{ url_for('admin.users_index') }}">
-                        <span class="nav-text">使用者管理</span>
+                    <a
+                        class="{% if ep in ['admin.users_index','admin.user_create','admin.user_edit'] %}active{% endif %}"
+                        href="{{ url_for('admin.users_index') }}"
+                    >
+                        使用者管理
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('admin_roles') %}
-                    <a class="{% if ep in ['admin.roles_index', 'admin.role_create', 'admin.role_edit'] %}active{% endif %}"
-                       href="{{ url_for('admin.roles_index') }}">
-                        <span class="nav-text">角色管理</span>
+                    <a
+                        class="{% if ep in ['admin.roles_index','admin.role_create','admin.role_edit'] %}active{% endif %}"
+                        href="{{ url_for('admin.roles_index') }}"
+                    >
+                        角色管理
                     </a>
                     {% endif %}
+
                 </div>
+
             </details>
+
             {% endif %}
 
-            {% if current_user.has_permission('view_approvals') or current_user.has_permission('approve_documents') %}
-            <details class="nav-group" {% if ep.startswith('approvals.') %}open{% endif %}>
-                <summary><span class="nav-text">公文簽核</span></summary>
-                <div class="nav-submenu">
-                    {% if current_user.has_permission('view_approvals') %}
-                    <a class="{% if ep in ['approvals.index', 'approvals.detail'] %}active{% endif %}"
-                       href="{{ url_for('approvals.index') }}">
-                        <span class="nav-text">公文列表</span>
-                    </a>
-                    {% endif %}
-
-                    {% if current_user.has_permission('edit_approvals') %}
-                    <a class="{% if ep in ['approvals.create', 'approvals.edit'] %}active{% endif %}"
-                       href="{{ url_for('approvals.create') }}">
-                        <span class="nav-text">新增公文</span>
-                    </a>
-                    {% endif %}
-
-                    {% if current_user.has_permission('approve_documents') %}
-                    <a class="{% if ep == 'approvals.my_pending' %}active{% endif %}"
-                       href="{{ url_for('approvals.my_pending') }}">
-                        <span class="nav-text">待我簽核</span>
-                    </a>
-                    {% endif %}
-
-                    {% if current_user.has_permission('manage_approval_templates') %}
-                    <a class="{% if ep in ['approvals.templates_index', 'approvals.templates_create', 'approvals.templates_edit'] %}active{% endif %}"
-                       href="{{ url_for('approvals.templates_index') }}">
-                        <span class="nav-text">模板管理</span>
-                    </a>
-                    {% endif %}
-                </div>
-            </details>
-            {% endif %}
-
+            <!-- Finance -->
             {% if current_user.has_permission('view_finance') %}
-            <details class="nav-group" {% if ep.startswith('finance.') %}open{% endif %}>
-                <summary><span class="nav-text">財務管理</span></summary>
+
+            <details
+                class="nav-group"
+                {% if ep.startswith('finance.') %}open{% endif %}
+            >
+
+                <summary>
+                    <span class="nav-text">財務管理</span>
+                </summary>
+
                 <div class="nav-submenu">
-                    <a class="{% if ep == 'finance.finance_dashboard' %}active{% endif %}"
-                       href="{{ url_for('finance.finance_dashboard') }}">
-                        <span class="nav-text">財務儀表板</span>
+
+                    <a
+                        class="{% if ep == 'finance.finance_dashboard' %}active{% endif %}"
+                        href="{{ url_for('finance.finance_dashboard') }}"
+                    >
+                        財務儀表板
                     </a>
-                    <a class="{% if ep in ['finance.finance_index', 'finance.finance_create', 'finance.finance_edit'] %}active{% endif %}"
-                       href="{{ url_for('finance.finance_index') }}">
-                        <span class="nav-text">財務紀錄管理</span>
+
+                    <a
+                        class="{% if ep in ['finance.finance_index','finance.finance_create','finance.finance_edit'] %}active{% endif %}"
+                        href="{{ url_for('finance.finance_index') }}"
+                    >
+                        財務紀錄管理
                     </a>
-                    <a class="{% if ep == 'finance.finance_monthly_report' %}active{% endif %}"
-                       href="{{ url_for('finance.finance_monthly_report') }}">
-                        <span class="nav-text">月報表統計</span>
+
+                    <a
+                        class="{% if ep == 'finance.finance_monthly_report' %}active{% endif %}"
+                        href="{{ url_for('finance.finance_monthly_report') }}"
+                    >
+                        月報表統計
                     </a>
-                    <a class="{% if ep in ['finance.finance_category_index', 'finance.finance_category_create', 'finance.finance_category_edit'] %}active{% endif %}"
-                       href="{{ url_for('finance.finance_category_index') }}">
-                        <span class="nav-text">財務分類管理</span>
+
+                    <a
+                        class="{% if ep in ['finance.finance_category_index','finance.finance_category_create','finance.finance_category_edit'] %}active{% endif %}"
+                        href="{{ url_for('finance.finance_category_index') }}"
+                    >
+                        財務分類管理
                     </a>
-                    <a class="{% if ep in ['finance.ar_ap_index', 'finance.ar_ap_create', 'finance.ar_ap_edit'] %}active{% endif %}"
-                       href="{{ url_for('finance.ar_ap_index') }}">
-                        <span class="nav-text">應收應付管理</span>
+
+                    <a
+                        class="{% if ep in ['finance.ar_ap_index','finance.ar_ap_create','finance.ar_ap_edit'] %}active{% endif %}"
+                        href="{{ url_for('finance.ar_ap_index') }}"
+                    >
+                        應收應付管理
                     </a>
+
                 </div>
+
             </details>
+
             {% endif %}
 
+            <!-- Projects -->
             {% if current_user.has_permission('view_projects') %}
-            <details class="nav-group" {% if ep.startswith('projects.') %}open{% endif %}>
-                <summary><span class="nav-text">專案管理</span></summary>
+
+            <details
+                class="nav-group"
+                {% if ep.startswith('projects.') %}open{% endif %}
+            >
+
+                <summary>
+                    <span class="nav-text">專案管理</span>
+                </summary>
+
                 <div class="nav-submenu">
-                    <a class="{% if ep in ['projects.project_index', 'projects.project_detail', 'projects.project_profit_report'] %}active{% endif %}"
-                       href="{{ url_for('projects.project_index') }}">
-                        <span class="nav-text">專案列表</span>
+
+                    <a
+                        class="{% if ep in ['projects.project_index','projects.project_detail'] %}active{% endif %}"
+                        href="{{ url_for('projects.project_index') }}"
+                    >
+                        專案列表
                     </a>
 
                     {% if current_user.has_permission('edit_projects') %}
-                    <a class="{% if ep == 'projects.project_create' %}active{% endif %}"
-                       href="{{ url_for('projects.project_create') }}">
-                        <span class="nav-text">新增專案</span>
+                    <a
+                        class="{% if ep == 'projects.project_create' %}active{% endif %}"
+                        href="{{ url_for('projects.project_create') }}"
+                    >
+                        新增專案
                     </a>
                     {% endif %}
+
                 </div>
+
             </details>
+
             {% endif %}
 
+            <!-- Talent Evaluation -->
             {% if current_user.has_permission('view_talent_evaluation') %}
-            <details class="nav-group" {% if ep.startswith('talent_evaluation.') %}open{% endif %}>
-                <summary><span class="nav-text">藝人評估中心</span></summary>
+
+            <details
+                class="nav-group"
+                {% if ep.startswith('talent_evaluation.') %}open{% endif %}
+            >
+
+                <summary>
+                    <span class="nav-text">藝人評估中心</span>
+                </summary>
+
                 <div class="nav-submenu">
-                    <a class="{% if ep in ['talent_evaluation.index', 'talent_evaluation.detail', 'talent_evaluation.create', 'talent_evaluation.edit'] %}active{% endif %}"
-                       href="{{ url_for('talent_evaluation.index') }}">
-                        <span class="nav-text">藝人資料庫</span>
+
+                    <a
+                        class="{% if ep in ['talent_evaluation.index','talent_evaluation.create','talent_evaluation.edit'] %}active{% endif %}"
+                        href="{{ url_for('talent_evaluation.index') }}"
+                    >
+                        藝人資料庫
                     </a>
 
-                    <a class="{% if ep in ['talent_evaluation.evaluations_index', 'talent_evaluation.evaluation_detail', 'talent_evaluation.evaluation_create', 'talent_evaluation.evaluation_edit'] %}active{% endif %}"
-                       href="{{ url_for('talent_evaluation.evaluations_index') }}">
-                        <span class="nav-text">評估報告</span>
+                    <a
+                        class="{% if ep in ['talent_evaluation.evaluations_index','talent_evaluation.evaluation_detail','talent_evaluation.evaluation_create','talent_evaluation.evaluation_edit'] %}active{% endif %}"
+                        href="{{ url_for('talent_evaluation.evaluations_index') }}"
+                    >
+                        評估報告
                     </a>
+
                 </div>
+
             </details>
+
             {% endif %}
 
+            <!-- HR -->
             {% if current_user.has_permission('view_hr')
-                  or current_user.has_permission('view_departments')
-                  or current_user.has_permission('view_job_titles')
-                  or current_user.has_permission('view_employee_movements')
-                  or current_user.has_permission('view_leave')
-                  or current_user.has_permission('view_attendance')
-                  or current_user.has_permission('clock_attendance') %}
-            <details class="nav-group"
-                {% if ep.startswith('hr_employees.')
-                      or ep.startswith('hr_departments.')
-                      or ep.startswith('hr_job_titles.')
-                      or ep.startswith('hr_movements.')
-                      or ep.startswith('hr_leave.')
-                      or ep.startswith('hr_attendance.') %}open{% endif %}>
-                <summary><span class="nav-text">人資管理</span></summary>
+               or current_user.has_permission('view_departments')
+               or current_user.has_permission('view_job_titles')
+               or current_user.has_permission('view_employee_movements')
+               or current_user.has_permission('view_leave')
+               or current_user.has_permission('view_attendance') %}
+
+            <details
+                class="nav-group"
+                {% if ep.startswith('hr_') %}open{% endif %}
+            >
+
+                <summary>
+                    <span class="nav-text">人資管理</span>
+                </summary>
+
                 <div class="nav-submenu">
+
                     {% if current_user.has_permission('view_hr') %}
-                    <a class="{% if ep in ['hr_employees.index', 'hr_employees.create', 'hr_employees.edit', 'hr_employees.detail'] %}active{% endif %}"
-                       href="{{ url_for('hr_employees.index') }}">
-                        <span class="nav-text">人員主檔</span>
+                    <a
+                        class="{% if ep.startswith('hr_employees.') %}active{% endif %}"
+                        href="{{ url_for('hr_employees.index') }}"
+                    >
+                        人員主檔
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('view_departments') %}
-                    <a class="{% if ep in ['hr_departments.index', 'hr_departments.create', 'hr_departments.edit'] %}active{% endif %}"
-                       href="{{ url_for('hr_departments.index') }}">
-                        <span class="nav-text">部門管理</span>
+                    <a
+                        class="{% if ep.startswith('hr_departments.') %}active{% endif %}"
+                        href="{{ url_for('hr_departments.index') }}"
+                    >
+                        部門管理
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('view_job_titles') %}
-                    <a class="{% if ep in ['hr_job_titles.index', 'hr_job_titles.create', 'hr_job_titles.edit'] %}active{% endif %}"
-                       href="{{ url_for('hr_job_titles.index') }}">
-                        <span class="nav-text">職稱管理</span>
+                    <a
+                        class="{% if ep.startswith('hr_job_titles.') %}active{% endif %}"
+                        href="{{ url_for('hr_job_titles.index') }}"
+                    >
+                        職稱管理
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('view_employee_movements') %}
-                    <a class="{% if ep in ['hr_movements.index', 'hr_movements.create'] %}active{% endif %}"
-                       href="{{ url_for('hr_movements.index') }}">
-                        <span class="nav-text">任用異動</span>
+                    <a
+                        class="{% if ep.startswith('hr_movements.') %}active{% endif %}"
+                        href="{{ url_for('hr_movements.index') }}"
+                    >
+                        任用異動
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('view_leave') %}
-                    <a class="{% if ep in ['hr_leave.leave_requests_index', 'hr_leave.leave_request_create', 'hr_leave.leave_request_detail'] %}active{% endif %}"
-                       href="{{ url_for('hr_leave.leave_requests_index') }}">
-                        <span class="nav-text">請假管理</span>
-                    </a>
-
-                    <a class="{% if ep in ['hr_leave.leave_types_index'] %}active{% endif %}"
-                       href="{{ url_for('hr_leave.leave_types_index') }}">
-                        <span class="nav-text">請假類型</span>
+                    <a
+                        class="{% if ep.startswith('hr_leave.') %}active{% endif %}"
+                        href="{{ url_for('hr_leave.leave_requests_index') }}"
+                    >
+                        請假管理
                     </a>
                     {% endif %}
 
                     {% if current_user.has_permission('view_attendance') %}
-                    <a class="{% if ep in ['hr_attendance.attendance_index', 'hr_attendance.attendance_manual_create'] %}active{% endif %}"
-                       href="{{ url_for('hr_attendance.attendance_index') }}">
-                        <span class="nav-text">出勤管理</span>
+                    <a
+                        class="{% if ep.startswith('hr_attendance.') %}active{% endif %}"
+                        href="{{ url_for('hr_attendance.attendance_index') }}"
+                    >
+                        出勤管理
                     </a>
                     {% endif %}
 
-                    {% if current_user.has_permission('clock_attendance') %}
-                    <a class="{% if ep == 'hr_attendance.my_clock' %}active{% endif %}"
-                       href="{{ url_for('hr_attendance.my_clock') }}">
-                        <span class="nav-text">我的打卡</span>
-                    </a>
-                    {% endif %}
                 </div>
+
             </details>
+
             {% endif %}
 
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                <span class="nav-text">登出</span>
-            </a>
         </nav>
-        {% else %}
-        <nav class="nav-menu">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">
-                <span class="nav-text">登入</span>
-            </a>
-        </nav>
+
         {% endif %}
+
     </aside>
 
+    <!-- Main -->
     <main class="main-content">
+
+        <!-- Topbar -->
         <header class="topbar">
+
             <div>
-                <h1 class="page-title">{% block page_title %}Createx 辦公系統{% endblock %}</h1>
-                <p class="page-subtitle">{% block page_subtitle %}內部管理平台{% endblock %}</p>
+
+                <h1 class="page-title">
+                    {% block page_title %}
+                    Createx 辦公系統
+                    {% endblock %}
+                </h1>
+
+                <p class="page-subtitle">
+                    {% block page_subtitle %}
+                    Entertainment Management System
+                    {% endblock %}
+                </p>
+
             </div>
 
             {% if current_user.is_authenticated %}
+
             <div class="topbar-right">
+
                 <div class="topbar-live-time">
                     <span class="topbar-live-label">現在時間</span>
                     <strong id="live-clock"></strong>
                 </div>
 
                 <div class="topbar-user-info">
-                    <button type="button" class="topbar-user-button" id="openEmployeeCardBtn">
+
+                    <button
+                        type="button"
+                        class="topbar-user-button"
+                        id="openEmployeeCardBtn"
+                    >
                         {{ current_user.display_name }}
                     </button>
+
                 </div>
+
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    class="btn btn-danger btn-sm"
+                >
+                    登出
+                </a>
+
             </div>
+
             {% endif %}
+
         </header>
 
+        <!-- Flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <section class="flash-wrapper">
-                    {% for category, message in messages %}
-                        <div class="flash-message flash-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </section>
+
+            <section class="flash-wrapper">
+
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+
+            </section>
+
             {% endif %}
         {% endwith %}
 
+        <!-- Content -->
         <section class="content-area">
             {% block content %}{% endblock %}
         </section>
+
     </main>
+
 </div>
 
-{% set card_name = employee_card.name if employee_card else current_user.display_name %}
-{% set card_english_name = employee_card.english_name if employee_card and employee_card.english_name else '' %}
-{% set card_employee_no = employee_card.employee_no if employee_card and employee_card.employee_no else current_user.id %}
-{% set card_department = employee_card.department_name if employee_card and employee_card.department_name else '未設定' %}
-{% set card_job_title = employee_card.job_title_name if employee_card and employee_card.job_title_name else (current_user.role_name if current_user.role_name is defined else 'TEAM MEMBER') %}
-{% set card_photo_url = employee_card.photo_url if employee_card and employee_card.photo_url else '' %}
-
+<!-- Employee Card -->
 {% if current_user.is_authenticated %}
+
+{% set card_name = employee_card.name if employee_card and employee_card.name else current_user.display_name %}
+
+{% set card_english_name =
+    employee_card.english_name
+    if employee_card and employee_card.english_name
+    else 'STAFF MEMBER'
+%}
+
+{% set card_employee_no =
+    employee_card.employee_no
+    if employee_card and employee_card.employee_no
+    else ('CTX-' ~ current_user.id)
+%}
+
+{% set card_department =
+    employee_card.department_name
+    if employee_card and employee_card.department_name
+    else '未設定'
+%}
+
+{% set card_job_title =
+    employee_card.job_title_name
+    if employee_card and employee_card.job_title_name
+    else (
+        current_user.role_name
+        if current_user.role_name is defined
+        else 'TEAM MEMBER'
+    )
+%}
+
+{% set card_photo_url =
+    employee_card.photo_url
+    if employee_card and employee_card.photo_url
+    else ''
+%}
+
 <div id="employeeCardModal" class="employee-card-modal hidden">
-    <div class="employee-card-backdrop" id="employeeCardBackdrop"></div>
+
+    <div
+        class="employee-card-backdrop"
+        id="employeeCardBackdrop">
+    </div>
 
     <div class="employee-card-dialog">
+
         <div class="employee-card-actionbar no-print">
-            <button type="button" class="btn btn-secondary btn-sm" id="closeEmployeeCardBtn">關閉</button>
-            <button type="button" class="btn btn-sm" id="downloadEmployeeCardBtn">下載員工證</button>
+
+            <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                id="closeEmployeeCardBtn">
+                關閉
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-sm"
+                id="downloadEmployeeCardBtn">
+                下載員工證
+            </button>
+
         </div>
 
-        <div id="employeeCardCapture" class="employee-id-card">
+        <div
+            id="employeeCardCapture"
+            class="employee-id-card"
+            data-filename="{{ card_name }}"
+        >
 
             <div class="employee-card-overlay"></div>
 
@@ -302,6 +459,10 @@
                 <div class="employee-card-brand">
                     <h1>CREATEX</h1>
                     <p>ENTERTAINMENT</p>
+                </div>
+
+                <div class="employee-card-badge">
+                    OFFICIAL
                 </div>
 
             </div>
@@ -330,18 +491,12 @@
 
                 <h2>{{ card_name }}</h2>
 
-                <h3>
-                    {% if card_english_name %}
-                        {{ card_english_name }}
-                    {% else %}
-                        STAFF MEMBER
-                    {% endif %}
-                </h3>
+                <h3>{{ card_english_name }}</h3>
 
             </div>
 
             <div class="employee-card-position">
-                {{ card_job_title }}
+                INTERNAL STAFF
             </div>
 
             <div class="employee-card-info-list">
@@ -361,122 +516,104 @@
                     <strong>{{ card_job_title }}</strong>
                 </div>
 
+                <div class="employee-card-info-row">
+                    <span>ACCESS LEVEL</span>
+                    <strong>ALL ACCESS</strong>
+                </div>
+
             </div>
 
             <div class="employee-card-footer">
 
                 <div class="employee-card-footer-logo">
-                    X
+                    C
                 </div>
 
                 <div class="employee-card-footer-text">
-                    INTERNAL STAFF
+                    CREATE YOUR ENTERTAINMENT
                 </div>
 
             </div>
 
         </div>
+
     </div>
+
 </div>
+
 {% endif %}
 
+<!-- Confirm Modal -->
 <div id="confirmModal" class="confirm-modal hidden">
+
     <div class="confirm-modal-backdrop"></div>
+
     <div class="confirm-modal-dialog">
+
         <div class="confirm-modal-header">
             <h3 id="confirmModalTitle">確認操作</h3>
         </div>
+
         <div class="confirm-modal-body">
-            <p id="confirmModalText">你確定要執行這個操作嗎？</p>
+            <p id="confirmModalText">
+                你確定要執行這個操作嗎？
+            </p>
         </div>
+
         <div class="confirm-modal-actions">
-            <button type="button" id="confirmModalCancel" class="btn btn-secondary">取消</button>
-            <button type="button" id="confirmModalSubmit" class="btn btn-danger">確認</button>
+
+            <button
+                type="button"
+                id="confirmModalCancel"
+                class="btn btn-secondary">
+                取消
+            </button>
+
+            <button
+                type="button"
+                id="confirmModalSubmit"
+                class="btn btn-danger">
+                確認
+            </button>
+
         </div>
+
     </div>
+
 </div>
 
-{% if current_user.is_authenticated %}
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
+
 function updateClock() {
+
     const now = new Date();
-    const options = {
-        timeZone: "Asia/Taipei",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-    };
 
-    const formatter = new Intl.DateTimeFormat("zh-TW", options);
-    const parts = formatter.formatToParts(now);
-    const data = {};
+    const formatter = new Intl.DateTimeFormat(
+        "zh-TW",
+        {
+            timeZone: "Asia/Taipei",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        }
+    );
 
-    parts.forEach(part => {
-        data[part.type] = part.value;
-    });
-
-    const formatted = `${data.year}-${data.month}-${data.day} ${data.hour}:${data.minute}:${data.second}`;
     const clock = document.getElementById("live-clock");
 
     if (clock) {
-        clock.textContent = formatted;
-    }
-}
-
-function initConfirmModal() {
-    const modal = document.getElementById("confirmModal");
-    const modalTitle = document.getElementById("confirmModalTitle");
-    const modalText = document.getElementById("confirmModalText");
-    const modalCancel = document.getElementById("confirmModalCancel");
-    const modalSubmit = document.getElementById("confirmModalSubmit");
-
-    let pendingForm = null;
-
-    document.querySelectorAll(".inline-delete-form").forEach(form => {
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            pendingForm = form;
-            modalTitle.textContent = form.dataset.confirmTitle || "確認操作";
-            modalText.textContent = form.dataset.confirmText || "你確定要執行這個操作嗎？";
-            modalSubmit.textContent = form.dataset.confirmButton || "確認";
-
-            modal.classList.remove("hidden");
-        });
-    });
-
-    if (modalCancel) {
-        modalCancel.addEventListener("click", function () {
-            modal.classList.add("hidden");
-            pendingForm = null;
-        });
+        clock.textContent = formatter.format(now);
     }
 
-    if (modalSubmit) {
-        modalSubmit.addEventListener("click", function () {
-            if (pendingForm) {
-                pendingForm.submit();
-            }
-        });
-    }
-
-    if (modal) {
-        modal.addEventListener("click", function (e) {
-            if (e.target.classList.contains("confirm-modal-backdrop")) {
-                modal.classList.add("hidden");
-                pendingForm = null;
-            }
-        });
-    }
 }
 
 function initEmployeeCard() {
+
     const openBtn = document.getElementById("openEmployeeCardBtn");
     const closeBtn = document.getElementById("closeEmployeeCardBtn");
     const backdrop = document.getElementById("employeeCardBackdrop");
@@ -485,15 +622,11 @@ function initEmployeeCard() {
     const card = document.getElementById("employeeCardCapture");
 
     function openModal() {
-        if (modal) {
-            modal.classList.remove("hidden");
-        }
+        if (modal) modal.classList.remove("hidden");
     }
 
     function closeModal() {
-        if (modal) {
-            modal.classList.add("hidden");
-        }
+        if (modal) modal.classList.add("hidden");
     }
 
     if (openBtn) openBtn.addEventListener("click", openModal);
@@ -501,30 +634,43 @@ function initEmployeeCard() {
     if (backdrop) backdrop.addEventListener("click", closeModal);
 
     if (downloadBtn && card) {
+
         downloadBtn.addEventListener("click", async function () {
+
             const canvas = await html2canvas(card, {
                 backgroundColor: null,
                 scale: 3,
-                useCORS: true
+                useCORS: true,
+                allowTaint: true,
+                logging: false
             });
 
             const link = document.createElement("a");
-            link.download = "createx_employee_card.png";
+
+            link.download =
+                `${card.dataset.filename || 'createx_staff_card'}.png`;
+
             link.href = canvas.toDataURL("image/png");
+
             link.click();
+
         });
+
     }
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+
     updateClock();
+
     setInterval(updateClock, 1000);
 
-    initConfirmModal();
     initEmployeeCard();
+
 });
+
 </script>
-{% endif %}
 
 </body>
 </html>
