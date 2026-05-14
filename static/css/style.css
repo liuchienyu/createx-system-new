@@ -833,7 +833,7 @@ table tr:last-child td {
 .employee-card-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.62);
+    background: rgba(15, 23, 42, 0.68);
     backdrop-filter: blur(6px);
 }
 
@@ -854,92 +854,115 @@ table tr:last-child td {
 .employee-id-card {
     position: relative;
     width: 380px;
-    height: 580px;
+    height: 610px;
     overflow: hidden;
-    border-radius: 32px;
+    border-radius: 34px;
+
     background:
-        radial-gradient(circle at 90% 4%, rgba(168, 85, 247, 0.55), transparent 30%),
-        radial-gradient(circle at 0% 70%, rgba(109, 40, 217, 0.55), transparent 34%),
-        linear-gradient(145deg, #111827 0%, #17112b 48%, #0f172a 100%);
+        radial-gradient(circle at top right, rgba(139, 92, 246, 0.35), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(109, 40, 217, 0.42), transparent 34%),
+        linear-gradient(145deg, #0f172a 0%, #171127 48%, #050816 100%);
+
     color: #ffffff;
+
     padding: 28px;
-    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .employee-id-card::before {
     content: "";
     position: absolute;
     inset: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 24px;
-    pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.employee-card-arc {
+.employee-card-glow {
     position: absolute;
     border-radius: 50%;
-    pointer-events: none;
+    filter: blur(80px);
 }
 
-.arc-top {
-    width: 240px;
-    height: 240px;
-    top: -96px;
-    right: -84px;
-    border: 36px solid rgba(196, 181, 253, 0.9);
+.glow-top {
+    width: 180px;
+    height: 180px;
+    background: rgba(139, 92, 246, 0.35);
+    top: -60px;
+    right: -40px;
 }
 
-.arc-left {
-    width: 280px;
-    height: 280px;
-    left: -170px;
-    bottom: 74px;
-    border: 34px solid rgba(124, 58, 237, 0.92);
+.glow-bottom {
+    width: 220px;
+    height: 220px;
+    background: rgba(109, 40, 217, 0.28);
+    bottom: -80px;
+    left: -80px;
 }
 
-.employee-card-brand {
+.employee-card-header {
     position: relative;
     z-index: 2;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
-.employee-card-brand h3 {
+.employee-card-header h3 {
     margin: 0;
-    font-size: 18px;
-    line-height: 1.2;
-    font-weight: 900;
-    letter-spacing: 0.08em;
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    font-weight: 1000;
 }
 
-.employee-card-brand p {
+.employee-card-header p {
     margin: 5px 0 0;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 11px;
+    color: rgba(255,255,255,0.68);
     letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-weight: 800;
 }
 
-.employee-card-photo-area {
+.employee-card-badge {
+    padding: 8px 12px;
+    border-radius: 999px;
+
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    font-weight: 900;
+}
+
+.employee-card-photo-section {
     position: relative;
     z-index: 2;
+
     display: flex;
     justify-content: center;
-    margin-top: 42px;
+
+    margin-top: 34px;
 }
 
 .employee-card-photo {
-    width: 178px;
-    height: 178px;
-    border-radius: 28px;
-    background: #ffffff;
-    border: 5px solid rgba(255, 255, 255, 0.95);
-    outline: 8px solid rgba(124, 58, 237, 0.75);
+    width: 170px;
+    height: 170px;
+
+    border-radius: 30px;
+
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: rotate(-2deg);
+
+    border: 6px solid rgba(255,255,255,0.92);
+
+    outline: 10px solid rgba(109, 40, 217, 0.68);
+
+    background: #ffffff;
 }
 
 .employee-card-photo img {
@@ -951,113 +974,185 @@ table tr:last-child td {
 .employee-card-photo-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #ede9fe, #c4b5fd);
-    color: #6d28d9;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: linear-gradient(135deg, #ede9fe, #c4b5fd);
+
+    color: #6d28d9;
+
     font-size: 72px;
     font-weight: 1000;
 }
 
-.employee-card-main {
+.employee-card-name-section {
     position: relative;
     z-index: 2;
-    text-align: left;
-    margin-top: 34px;
+
+    text-align: center;
+
+    margin-top: 30px;
 }
 
-.employee-card-main h2 {
+.employee-card-name-section h1 {
     margin: 0;
+
     font-size: 34px;
-    line-height: 1.12;
+    line-height: 1.15;
+
     font-weight: 1000;
-    letter-spacing: 0.02em;
 }
 
-.employee-card-main h1 {
-    margin: 8px 0 0;
-    color: rgba(255, 255, 255, 0.68);
+.employee-card-name-section h2 {
+    margin: 10px 0 0;
+
+    color: rgba(255,255,255,0.65);
+
     font-size: 14px;
-    line-height: 1.2;
-    font-weight: 900;
+
     letter-spacing: 0.16em;
+
+    font-weight: 900;
+
     text-transform: uppercase;
 }
 
-.employee-card-meta {
+.employee-card-info-grid {
     position: relative;
     z-index: 2;
+
     display: grid;
+
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 24px;
+
+    gap: 12px;
+
+    margin-top: 28px;
 }
 
-.employee-card-meta div {
+.employee-card-info-item {
     border-radius: 18px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    padding: 14px;
+
+    background: rgba(255,255,255,0.06);
+
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.employee-card-meta span {
+.employee-card-info-item.full {
+    grid-column: 1 / -1;
+}
+
+.employee-card-info-item span {
     display: block;
+
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.58);
-    font-weight: 900;
+
+    color: rgba(255,255,255,0.56);
+
     letter-spacing: 0.14em;
+
+    font-weight: 900;
+
     margin-bottom: 6px;
 }
 
-.employee-card-meta strong {
-    font-size: 13px;
+.employee-card-info-item strong {
+    font-size: 14px;
+
     color: #ffffff;
+
     font-weight: 900;
 }
 
 .employee-card-footer {
     position: absolute;
-    z-index: 2;
+
     left: 28px;
     right: 28px;
     bottom: 28px;
+
+    z-index: 2;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.employee-card-logo-mark {
-    width: 38px;
-    height: 38px;
+.employee-card-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.employee-card-logo {
+    width: 42px;
+    height: 42px;
+
     border-radius: 14px;
-    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-    display: inline-flex;
+
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 23px;
+
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+
+    font-size: 24px;
     font-weight: 1000;
 }
 
-.employee-card-footer strong {
-    font-size: 22px;
-    font-weight: 1000;
+.employee-card-footer-left p {
+    margin: 0;
+
+    font-size: 10px;
+
+    color: rgba(255,255,255,0.55);
+
+    letter-spacing: 0.14em;
+
+    font-weight: 800;
+}
+
+.employee-card-footer-left strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 20px;
+
     letter-spacing: 0.08em;
+
+    font-weight: 1000;
+}
+
+.employee-card-footer-right {
+    font-size: 11px;
+
+    letter-spacing: 0.16em;
+
+    font-weight: 900;
+
+    color: rgba(255,255,255,0.6);
 }
 
 @media (max-width: 520px) {
+
     .employee-id-card {
         width: 330px;
-        height: 535px;
+        height: 570px;
         padding: 24px;
     }
 
     .employee-card-photo {
-        width: 158px;
-        height: 158px;
+        width: 150px;
+        height: 150px;
     }
 
-    .employee-card-main h2 {
+    .employee-card-name-section h1 {
         font-size: 30px;
     }
+
 }

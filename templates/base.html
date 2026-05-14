@@ -283,55 +283,109 @@
             <button type="button" class="btn btn-sm" id="downloadEmployeeCardBtn">下載員工證</button>
         </div>
 
-        <div id="employeeCardCapture" class="employee-id-card">
-            <div class="employee-card-arc arc-top"></div>
-            <div class="employee-card-arc arc-left"></div>
+       <div id="employeeCardCapture" class="employee-id-card">
 
-            <div class="employee-card-brand">
-                <h3>創造娛樂工作室</h3>
-                <p>Createx Entertainment</p>
+        <div class="employee-card-glow glow-top"></div>
+        <div class="employee-card-glow glow-bottom"></div>
+
+        <div class="employee-card-header">
+            <div>
+                <h3>CREATEX</h3>
+                <p>ENTERTAINMENT STAFF CARD</p>
             </div>
 
-            <div class="employee-card-photo-area">
-                <div class="employee-card-photo">
-                    {% if current_user.avatar_url is defined and current_user.avatar_url %}
-                    <img src="{{ current_user.avatar_url }}" alt="員工照片">
-                    {% else %}
-                    <div class="employee-card-photo-placeholder">
-                        {{ current_user.display_name[:1] }}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="employee-card-main">
-                <h2>{{ current_user.display_name }}</h2>
-                <h1>
-                    {% if current_user.username is defined and current_user.username %}
-                        {{ current_user.username|upper }}
-                    {% else %}
-                        {{ current_user.display_name|upper }}
-                    {% endif %}
-                </h1>
-            </div>
-
-            <div class="employee-card-meta">
-                <div>
-                    <span>ID</span>
-                    <strong>CTX-{{ current_user.id }}</strong>
-                </div>
-
-                <div>
-                    <span>ROLE</span>
-                    <strong>{{ current_user.role_name if current_user.role_name is defined else 'TEAM' }}</strong>
-                </div>
-            </div>
-
-            <div class="employee-card-footer">
-                <div class="employee-card-logo-mark">C</div>
-                <strong>CREATEX</strong>
+            <div class="employee-card-badge">
+                STAFF
             </div>
         </div>
+
+        <div class="employee-card-photo-section">
+
+            <div class="employee-card-photo">
+                {% if current_user.avatar_url is defined and current_user.avatar_url %}
+                <img src="{{ current_user.avatar_url }}" alt="員工照片">
+                {% else %}
+                <div class="employee-card-photo-placeholder">
+                    {{ current_user.display_name[:1] }}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="employee-card-name-section">
+
+            <h1>
+                {{ current_user.display_name }}
+            </h1>
+
+            <h2>
+                {% if current_user.english_name is defined and current_user.english_name %}
+                    {{ current_user.english_name }}
+                {% else %}
+                    {{ current_user.display_name }}
+                {% endif %}
+            </h2>
+
+        </div>
+
+        <div class="employee-card-info-grid">
+
+            <div class="employee-card-info-item">
+                <span>EMPLOYEE ID</span>
+
+                <strong>
+                    CTX-{{ current_user.id }}
+                </strong>
+            </div>
+
+            <div class="employee-card-info-item">
+                <span>DEPARTMENT</span>
+
+                <strong>
+                    {% if current_user.department_name is defined and current_user.department_name %}
+                        {{ current_user.department_name }}
+                    {% else %}
+                        未設定
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="employee-card-info-item full">
+                <span>POSITION</span>
+
+                <strong>
+                    {% if current_user.job_title_name is defined and current_user.job_title_name %}
+                        {{ current_user.job_title_name }}
+                    {% elif current_user.role_name is defined and current_user.role_name %}
+                        {{ current_user.role_name }}
+                    {% else %}
+                        TEAM MEMBER
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="employee-card-footer">
+
+            <div class="employee-card-footer-left">
+                <div class="employee-card-logo">
+                    C
+                </div>
+
+                <div>
+                    <p>CREATE YOUR ENTERTAINMENT</p>
+                    <strong>CREATEX</strong>
+                </div>
+            </div>
+
+            <div class="employee-card-footer-right">
+                INTERNAL
+            </div>
+
+        </div>
+
     </div>
 </div>
 {% endif %}
