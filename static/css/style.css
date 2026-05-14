@@ -809,3 +809,234 @@ table tr:last-child td {
         padding-top: 10px !important;
     }
 }
+
+.topbar-user-button {
+    border: none;
+    background: transparent;
+    color: var(--neutral-900);
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 0;
+}
+
+.employee-card-modal.hidden {
+    display: none;
+}
+
+.employee-card-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+}
+
+.employee-card-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+}
+
+.employee-card-dialog {
+    position: relative;
+    z-index: 2;
+    width: min(390px, calc(100vw - 32px));
+    margin: 4vh auto;
+}
+
+.employee-card-actionbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.employee-id-card {
+    position: relative;
+    width: 360px;
+    height: 560px;
+    overflow: hidden;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #050505 0%, #111111 52%, #181818 100%);
+    color: #ffffff;
+    padding: 30px 26px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.employee-card-arc {
+    position: absolute;
+    border: 38px solid #6d28d9;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.arc-top {
+    width: 330px;
+    height: 330px;
+    top: -120px;
+    right: -170px;
+}
+
+.arc-left {
+    width: 380px;
+    height: 380px;
+    left: -245px;
+    top: 175px;
+}
+
+.employee-card-brand {
+    position: relative;
+    z-index: 2;
+}
+
+.employee-card-brand h3 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.employee-card-brand p {
+    margin: 4px 0 0;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.employee-card-photo-area {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 44px;
+}
+
+.employee-card-photo {
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 10px solid #6d28d9;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-card-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #ede9fe;
+    color: #6d28d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 82px;
+    font-weight: 1000;
+}
+
+.employee-card-main {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.employee-card-main h2 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 1000;
+}
+
+.employee-card-main h1 {
+    margin: 16px 0 0;
+    font-size: 27px;
+    line-height: 1.05;
+    font-weight: 1000;
+    letter-spacing: 1px;
+}
+
+.employee-card-meta {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+.employee-card-meta div {
+    border-radius: 14px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.employee-card-meta span {
+    display: block;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    margin-bottom: 5px;
+}
+
+.employee-card-meta strong {
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.employee-card-footer {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.employee-card-logo-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #6d28d9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 1000;
+}
+
+.employee-card-footer strong {
+    font-size: 28px;
+    font-weight: 1000;
+    letter-spacing: -1.5px;
+}
+
+@media (max-width: 520px) {
+    .employee-id-card {
+        width: 330px;
+        height: 530px;
+        padding: 26px 22px;
+    }
+
+    .employee-card-photo {
+        width: 190px;
+        height: 190px;
+    }
+
+    .employee-card-main h2 {
+        font-size: 32px;
+    }
+
+    .employee-card-main h1 {
+        font-size: 24px;
+    }
+}
