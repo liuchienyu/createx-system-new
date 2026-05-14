@@ -624,14 +624,15 @@ table tr:last-child td {
 .decision-box,
 .investment-box,
 .executive-note {
-    white-space: pre-wrap;
-    line-height: 1.75;
+    white-space: pre-line;
+    line-height: 1.8;
     color: #374151;
     font-size: 15px;
     text-align: left;
     word-break: break-word;
     padding-left: 0;
     margin-left: 0;
+    text-indent: 0;
 }
 
 .decision-box {
@@ -757,4 +758,12 @@ table tr:last-child td {
 .report-prose p,
 .report-note p {
     margin-top: 0;
+}
+
+.report-prose::first-line,
+.report-note::first-line,
+.executive-note::first-line,
+.decision-box::first-line,
+.investment-box::first-line {
+    text-indent: 0;
 }
