@@ -273,6 +273,13 @@
     </main>
 </div>
 
+{% set card_name = employee_card.name if employee_card else current_user.display_name %}
+{% set card_english_name = employee_card.english_name if employee_card and employee_card.english_name else '' %}
+{% set card_employee_no = employee_card.employee_no if employee_card and employee_card.employee_no else current_user.id %}
+{% set card_department = employee_card.department_name if employee_card and employee_card.department_name else '未設定' %}
+{% set card_job_title = employee_card.job_title_name if employee_card and employee_card.job_title_name else (current_user.role_name if current_user.role_name is defined else 'TEAM MEMBER') %}
+{% set card_photo_url = employee_card.photo_url if employee_card and employee_card.photo_url else '' %}
+
 {% if current_user.is_authenticated %}
 <div id="employeeCardModal" class="employee-card-modal hidden">
     <div class="employee-card-backdrop" id="employeeCardBackdrop"></div>
@@ -290,23 +297,23 @@
 
         <div class="employee-card-header">
             <div>
-                <h3>CREATEX</h3>
-                <p>ENTERTAINMENT STAFF CARD</p>
+                <h3>創造娛樂工作室CREATEX ENTERTAINMENT</h3>
+                <p> 員工識別證</p>
             </div>
 
             <div class="employee-card-badge">
-                STAFF
+                STAFF CARD
             </div>
         </div>
 
         <div class="employee-card-photo-section">
 
             <div class="employee-card-photo">
-                {% if current_user.avatar_url is defined and current_user.avatar_url %}
-                <img src="{{ current_user.avatar_url }}" alt="員工照片">
+                {% if card_photo_url %}
+                <img src="{{ card_photo_url }}" alt="員工照片">
                 {% else %}
                 <div class="employee-card-photo-placeholder">
-                    {{ current_user.display_name[:1] }}
+                    {{ card_name[:1] }}
                 </div>
                 {% endif %}
             </div>
@@ -316,14 +323,14 @@
         <div class="employee-card-name-section">
 
             <h1>
-                {{ current_user.display_name }}
+                {{ card_name }}
             </h1>
 
             <h2>
-                {% if current_user.english_name is defined and current_user.english_name %}
-                    {{ current_user.english_name }}
+                {% if card_english_name %}
+                    {{ card_english_name }}
                 {% else %}
-                    {{ current_user.display_name }}
+                    工作人員
                 {% endif %}
             </h2>
 
@@ -332,36 +339,26 @@
         <div class="employee-card-info-grid">
 
             <div class="employee-card-info-item">
-                <span>EMPLOYEE ID</span>
+                <span>員工編號</span>
 
                 <strong>
-                    CTX-{{ current_user.id }}
+                    {{ card_employee_no }}
                 </strong>
             </div>
 
             <div class="employee-card-info-item">
-                <span>DEPARTMENT</span>
+                <span>部門</span>
 
                 <strong>
-                    {% if current_user.department_name is defined and current_user.department_name %}
-                        {{ current_user.department_name }}
-                    {% else %}
-                        未設定
-                    {% endif %}
+                    {{ card_department }}
                 </strong>
             </div>
 
             <div class="employee-card-info-item full">
-                <span>POSITION</span>
+                <span>職稱</span>
 
                 <strong>
-                    {% if current_user.job_title_name is defined and current_user.job_title_name %}
-                        {{ current_user.job_title_name }}
-                    {% elif current_user.role_name is defined and current_user.role_name %}
-                        {{ current_user.role_name }}
-                    {% else %}
-                        TEAM MEMBER
-                    {% endif %}
+                    {{ card_job_title }}
                 </strong>
             </div>
 

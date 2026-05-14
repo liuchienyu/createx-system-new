@@ -20,6 +20,8 @@ from modules.approvals import approvals_bp
 
 from modules.talent_evaluation import talent_evaluation_bp
 
+from modules.hr.services.employees import get_employee_by_user_id
+
 
 def create_app():
     app = Flask(__name__)
@@ -74,5 +76,23 @@ def create_app():
     @app.route("/healthz")
     def healthz():
         return {"status": "ok"}, 200
+    
+    @app.context_processor
+    def inject_employee_card():
+        from flask_login import current_user
+
+        if not current_user.is_authenticated:
+            return {"employee_card": None}
+
+        database_url = app.config["DATABASE_URL"]
+
+        employee_card = get_employee_by_user_id(
+            database_url,
+            int(current_user.id),
+        )
+
+        return {
+            "employee_card": employee_card
+        }
 
     return app

@@ -282,3 +282,28 @@ def get_employee_attendance_records(database_url: str, employee_id: int):
                 (employee_id,),
             )
             return cur.fetchall()
+        
+def get_employee_by_user_id(database_url: str, user_id: int):
+    with get_db(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT e.id,
+                       e.employee_no,
+                       e.name,
+                       e.english_name,
+                       e.photo_url,
+                       e.user_id,
+                       d.name AS department_name,
+                       jt.name AS job_title_name
+                FROM employees e
+                LEFT JOIN departments d ON d.id = e.department_id
+                LEFT JOIN job_titles jt ON jt.id = e.job_title_id
+                WHERE e.user_id = %s
+                  AND e.status != 'archived'
+                ORDER BY e.id DESC
+                LIMIT 1
+                """,
+                (user_id,),
+            )
+            return cur.fetchone()
